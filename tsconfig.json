@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Output JS version
+    "module": "CommonJS", // Module system (or "ESNext" for ESM)
+    "outDir": "./dist", // Output directory
+    "rootDir": "./src", // Source directory
+    "declaration": true, // Generate .d.ts type definitions
+    "strict": true, // Enable strict type-checking
+    "esModuleInterop": true, // Improve ESM/CJS compatibility
+    "skipLibCheck": true,
+    "moduleResolution": "node" // Resolve modules Node-style
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
