@@ -29,7 +29,8 @@ export type DevicePermissions = {
     forceWiFiPowerOn: "true" | "false";
 };
 export type MDMQuery = {
-    mdmId: string;
-    serialNumber: string;
     brand: "apple" | "android";
+    mdmId?: number;
+    serialNumber: string;
+    applicationId: string;
 };

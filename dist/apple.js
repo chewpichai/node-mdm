@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppleMDM = void 0;
 exports.sleep = sleep;
 const redis_1 = require("./lib/redis");
-const MDM_URL = process.env.MDM_APPLE_URL;
-const MDM_USERNAME = process.env.MDM_APPLE_USERNAME;
-const MDM_PASSWORD = process.env.MDM_APPLE_PASSWORD;
+const MDM_URL = process.env.MDM_ISHALOU_URL;
+const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
+const MDM_PASSWORD = process.env.MDM_ISHALOU_PASSWORD;
 async function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -47,7 +47,7 @@ class AppleMDM {
                 });
                 const { data } = await response.json();
                 this.token = data;
-                await redis.setex(this.tokenKey, 60 * 60, data);
+                await redis.setEx(this.tokenKey, 60 * 60, data);
             }
             catch {
                 this.token = "error";
@@ -55,6 +55,8 @@ class AppleMDM {
         }
     }
     async getDevice() {
+        if (this.query.brand !== "apple")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/mdm/saas/device/queryPage", {
                 possessor: "",

@@ -53,3 +53,13 @@ export async function getMDM(query: MDMQuery) {
   const clz = query.brand === "apple" ? AppleMDM : AndroidMDM;
   return await clz.getInstance(query);
 }
+
+export { DEVICE_STATUS } from "./types";
+export {
+  AndroidMDM,
+  AppleMDM,
+  DeviceLocation,
+  DevicePermissions,
+  MDMDevice,
+  MDMQuery,
+};

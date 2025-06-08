@@ -23,3 +23,5 @@ export interface IMDM {
 import { AndroidMDM } from "./android";
 import { AppleMDM } from "./apple";
 export declare function getMDM(query: MDMQuery): Promise<AppleMDM | AndroidMDM>;
+export { DEVICE_STATUS } from "./types";
+export { AndroidMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMQuery, };

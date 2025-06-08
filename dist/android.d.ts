@@ -1,5 +1,4 @@
-import { IMDM } from ".";
-import { DeviceLocation, DevicePermissions, MDMDevice, MDMQuery } from "./types";
+import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
 export declare class AndroidMDM implements IMDM {
     tokenKey: string;
     token: string | null;

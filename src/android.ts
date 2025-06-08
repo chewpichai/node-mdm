@@ -1,11 +1,11 @@
-import { IMDM } from ".";
-import { getClient } from "./lib/redis";
 import {
   DeviceLocation,
   DevicePermissions,
+  IMDM,
   MDMDevice,
   MDMQuery,
-} from "./types";
+} from ".";
+import { getClient } from "./lib/redis";
 
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
@@ -56,7 +56,7 @@ export class AndroidMDM implements IMDM {
         });
         const { id_token: data } = await response.json();
         this.token = data;
-        await redis.setex(this.tokenKey, 60 * 60, data);
+        await redis.setEx(this.tokenKey, 60 * 60, data);
       } catch {
         this.token = "error";
       }
@@ -64,6 +64,7 @@ export class AndroidMDM implements IMDM {
   }
 
   async getDevice(): Promise<MDMDevice | undefined> {
+    if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand("/rest/private/devices/search", {
         groupId: -1,
@@ -72,7 +73,7 @@ export class AndroidMDM implements IMDM {
         pageSize: 50,
         sortBy: null,
         sortDir: "ASC",
-        value: this.query.serialNumber,
+        value: this.query.applicationId,
       });
       const data = await response.json();
       const device = data.data.devices.items[0];
@@ -94,12 +95,13 @@ export class AndroidMDM implements IMDM {
   }
 
   async enableLostMode(phoneNumber: string, content: string) {
+    if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
         "/rest/plugins/messaging/private/send",
         {
           scope: "device",
-          deviceNumber: this.query.serialNumber,
+          deviceNumber: this.query.applicationId,
           groupId: "",
           configurationId: "",
           message: JSON.stringify({
@@ -120,12 +122,13 @@ export class AndroidMDM implements IMDM {
   }
 
   async disableLostMode() {
+    if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
         "/rest/plugins/messaging/private/send",
         {
           scope: "device",
-          deviceNumber: this.query.serialNumber,
+          deviceNumber: this.query.applicationId,
           groupId: "",
           configurationId: "",
           message: JSON.stringify({
@@ -188,12 +191,13 @@ export class AndroidMDM implements IMDM {
   }
 
   async setWallpaper() {
+    if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
         "/rest/plugins/messaging/private/send",
         {
           scope: "device",
-          deviceNumber: this.query.serialNumber,
+          deviceNumber: this.query.applicationId,
           groupId: "",
           configurationId: "",
           message: JSON.stringify({
@@ -213,12 +217,13 @@ export class AndroidMDM implements IMDM {
   }
 
   async setADB(enabled: boolean) {
+    if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
         "/rest/plugins/messaging/private/send",
         {
           scope: "device",
-          deviceNumber: this.query.serialNumber,
+          deviceNumber: this.query.applicationId,
           groupId: "",
           configurationId: "",
           message: JSON.stringify({
@@ -238,12 +243,13 @@ export class AndroidMDM implements IMDM {
   }
 
   async setFactoryReset(enabled: boolean) {
+    if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
         "/rest/plugins/messaging/private/send",
         {
           scope: "device",
-          deviceNumber: this.query.serialNumber,
+          deviceNumber: this.query.applicationId,
           groupId: "",
           configurationId: "",
           message: JSON.stringify({

@@ -4,6 +4,8 @@
 
 ## Environment Variables
 
+**REDIS_URL** - URL for redis server.
+
 **MDM_ISHALOU_URL** - URL for ishalou server.
 
 **MDM_ISHALOU_USERNAME** - Username for ishalou server.

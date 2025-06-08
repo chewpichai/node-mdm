@@ -1,15 +1,15 @@
-import { IMDM } from ".";
-import { getClient } from "./lib/redis";
 import {
   DeviceLocation,
   DevicePermissions,
+  IMDM,
   MDMDevice,
   MDMQuery,
-} from "./types";
+} from ".";
+import { getClient } from "./lib/redis";
 
-const MDM_URL = process.env.MDM_APPLE_URL;
-const MDM_USERNAME = process.env.MDM_APPLE_USERNAME;
-const MDM_PASSWORD = process.env.MDM_APPLE_PASSWORD;
+const MDM_URL = process.env.MDM_ISHALOU_URL;
+const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
+const MDM_PASSWORD = process.env.MDM_ISHALOU_PASSWORD;
 
 export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -63,7 +63,7 @@ export class AppleMDM implements IMDM {
         });
         const { data } = await response.json();
         this.token = data;
-        await redis.setex(this.tokenKey, 60 * 60, data);
+        await redis.setEx(this.tokenKey, 60 * 60, data);
       } catch {
         this.token = "error";
       }
@@ -71,6 +71,7 @@ export class AppleMDM implements IMDM {
   }
 
   async getDevice(): Promise<MDMDevice | undefined> {
+    if (this.query.brand !== "apple") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand("/mdm/saas/device/queryPage", {
         possessor: "",

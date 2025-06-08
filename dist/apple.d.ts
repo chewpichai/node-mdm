@@ -1,5 +1,4 @@
-import { IMDM } from ".";
-import { DeviceLocation, DevicePermissions, MDMDevice, MDMQuery } from "./types";
+import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
 export declare function sleep(ms: number): Promise<unknown>;
 export declare class AppleMDM implements IMDM {
     tokenKey: string;

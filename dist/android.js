@@ -42,7 +42,7 @@ class AndroidMDM {
                 });
                 const { id_token: data } = await response.json();
                 this.token = data;
-                await redis.setex(this.tokenKey, 60 * 60, data);
+                await redis.setEx(this.tokenKey, 60 * 60, data);
             }
             catch {
                 this.token = "error";
@@ -50,6 +50,8 @@ class AndroidMDM {
         }
     }
     async getDevice() {
+        if (this.query.brand !== "android")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/rest/private/devices/search", {
                 groupId: -1,
@@ -58,7 +60,7 @@ class AndroidMDM {
                 pageSize: 50,
                 sortBy: null,
                 sortDir: "ASC",
-                value: this.query.serialNumber,
+                value: this.query.applicationId,
             });
             const data = await response.json();
             const device = data.data.devices.items[0];
@@ -79,10 +81,12 @@ class AndroidMDM {
         }
     }
     async enableLostMode(phoneNumber, content) {
+        if (this.query.brand !== "android")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/rest/plugins/messaging/private/send", {
                 scope: "device",
-                deviceNumber: this.query.serialNumber,
+                deviceNumber: this.query.applicationId,
                 groupId: "",
                 configurationId: "",
                 message: JSON.stringify({
@@ -102,10 +106,12 @@ class AndroidMDM {
         }
     }
     async disableLostMode() {
+        if (this.query.brand !== "android")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/rest/plugins/messaging/private/send", {
                 scope: "device",
-                deviceNumber: this.query.serialNumber,
+                deviceNumber: this.query.applicationId,
                 groupId: "",
                 configurationId: "",
                 message: JSON.stringify({
@@ -157,10 +163,12 @@ class AndroidMDM {
         return false;
     }
     async setWallpaper() {
+        if (this.query.brand !== "android")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/rest/plugins/messaging/private/send", {
                 scope: "device",
-                deviceNumber: this.query.serialNumber,
+                deviceNumber: this.query.applicationId,
                 groupId: "",
                 configurationId: "",
                 message: JSON.stringify({
@@ -179,10 +187,12 @@ class AndroidMDM {
         }
     }
     async setADB(enabled) {
+        if (this.query.brand !== "android")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/rest/plugins/messaging/private/send", {
                 scope: "device",
-                deviceNumber: this.query.serialNumber,
+                deviceNumber: this.query.applicationId,
                 groupId: "",
                 configurationId: "",
                 message: JSON.stringify({
@@ -201,10 +211,12 @@ class AndroidMDM {
         }
     }
     async setFactoryReset(enabled) {
+        if (this.query.brand !== "android")
+            throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/rest/plugins/messaging/private/send", {
                 scope: "device",
-                deviceNumber: this.query.serialNumber,
+                deviceNumber: this.query.applicationId,
                 groupId: "",
                 configurationId: "",
                 message: JSON.stringify({
