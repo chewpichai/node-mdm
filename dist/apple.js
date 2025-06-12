@@ -59,12 +59,12 @@ class AppleMDM {
             throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/mdm/saas/device/queryPage", {
-                possessor: "",
+                possessor: this.query.serialNumber ? "" : this.query.applicationId,
                 useStatusList: [],
                 assignStatusList: [],
                 deviceStatusList: [0, 1, 3, 4],
                 lastOnlineValueList: [],
-                searchContent: this.query.serialNumber,
+                searchContent: this.query.serialNumber ?? "",
                 limit: 10,
                 page: 1,
                 startDateValue: "",
