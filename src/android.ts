@@ -90,6 +90,7 @@ export class AndroidMDM implements IMDM {
         functionRestrictData: "",
         httpProxyStatus: 0,
         phoneModel: "",
+        commandContentList: null,
       };
     } catch {
       return undefined;
@@ -97,6 +98,10 @@ export class AndroidMDM implements IMDM {
   }
 
   async getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined> {
+    return;
+  }
+
+  async getEscrowKey(): Promise<string | undefined> {
     return;
   }
 

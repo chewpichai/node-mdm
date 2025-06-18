@@ -88,6 +88,16 @@ class AppleMDM {
         }
         catch { }
     }
+    async getEscrowKey() {
+        try {
+            const response = await this.sendCommand("/mdm/saas/device/getEscrowKey", {
+                id: this.query.mdmId,
+            });
+            const { data: { escrowKey }, } = await response.json();
+            return escrowKey;
+        }
+        catch { }
+    }
     async enableLostMode(phoneNumber, content) {
         try {
             const response = await this.sendCommand("/mdm/saas/device/setLose", {

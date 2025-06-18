@@ -22,6 +22,8 @@ export interface IMDM {
 
   getDeviceDetail: (id: number) => Promise<MDMDeviceDetail | undefined>;
 
+  getEscrowKey: () => Promise<string | undefined>;
+
   enableLostMode: (phoneNumber: string, content: string) => Promise<boolean>;
 
   disableLostMode: () => Promise<boolean>;

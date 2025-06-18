@@ -113,6 +113,18 @@ export class AppleMDM implements IMDM {
     } catch {}
   }
 
+  async getEscrowKey(): Promise<string | undefined> {
+    try {
+      const response = await this.sendCommand("/mdm/saas/device/getEscrowKey", {
+        id: this.query.mdmId,
+      });
+      const {
+        data: { escrowKey },
+      } = await response.json();
+      return escrowKey;
+    } catch {}
+  }
+
   async enableLostMode(phoneNumber: string, content: string) {
     try {
       const response = await this.sendCommand("/mdm/saas/device/setLose", {

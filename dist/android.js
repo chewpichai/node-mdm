@@ -75,6 +75,7 @@ class AndroidMDM {
                 functionRestrictData: "",
                 httpProxyStatus: 0,
                 phoneModel: "",
+                commandContentList: null,
             };
         }
         catch {
@@ -82,6 +83,9 @@ class AndroidMDM {
         }
     }
     async getDeviceDetail(id) {
+        return;
+    }
+    async getEscrowKey() {
         return;
     }
     async enableLostMode(phoneNumber, content) {

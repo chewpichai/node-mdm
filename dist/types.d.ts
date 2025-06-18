@@ -14,6 +14,7 @@ export type MDMDevice = {
     functionRestrictData: string;
     httpProxyStatus: 0 | 1;
     phoneModel: string;
+    commandContentList: string[] | null;
 };
 export type MDMDeviceDetail = {
     id: number;
