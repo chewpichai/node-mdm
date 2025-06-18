@@ -92,8 +92,10 @@ export class AppleMDM implements IMDM {
         },
       } = await response.json();
 
-      if (device.deviceStatus === DEVICE_STATUS.UNREGULATED)
+      if (device.deviceStatus === DEVICE_STATUS.UNREGULATED) {
         await this.enableSupervision();
+        device.deviceStatus = DEVICE_STATUS.SUPERVISED;
+      }
 
       return device;
     } catch {
@@ -157,15 +159,13 @@ export class AppleMDM implements IMDM {
 
   async enableSupervision() {
     try {
-      let resp = await this.sendCommand("/check/saas/mdm/order/verifyConfirm", {
+      await this.sendCommand("/check/saas/mdm/order/verifyConfirm", {
         deviceList: [this.query.mdmId],
       });
-      console.log(await resp.text());
-      await sleep(500);
-      resp = await this.sendCommand("/check/saas/mdm/order/payBalance", {
+      await sleep(1000);
+      await this.sendCommand("/check/saas/mdm/order/payBalance", {
         deviceList: [this.query.mdmId],
       });
-      console.log(await resp.text());
       await sleep(500);
       await this.setPermissions({
         forceAutomaticDateAndTime: "true",
