@@ -78,9 +78,15 @@ class AppleMDM {
             }
             return device;
         }
-        catch {
-            return undefined;
+        catch { }
+    }
+    async getDeviceDetail(id) {
+        try {
+            const response = await this.sendCommand("/mdm/saas/deviceInfo/getByDeviceId", { deviceId: id });
+            const { data } = await response.json();
+            return data;
         }
+        catch { }
     }
     async enableLostMode(phoneNumber, content) {
         try {

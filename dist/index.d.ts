@@ -1,11 +1,12 @@
-import { DeviceLocation, DevicePermissions, MDMDevice, MDMQuery } from "./types";
+import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery } from "./types";
 export interface IMDM {
     tokenKey: string;
     token: string | null;
     query: MDMQuery;
     sendCommand: (url: string, data: Record<string, unknown>) => Promise<Response>;
     init: () => Promise<void>;
-    getDevice: (serialNumber: string) => Promise<MDMDevice | undefined>;
+    getDevice: () => Promise<MDMDevice | undefined>;
+    getDeviceDetail: (id: number) => Promise<MDMDeviceDetail | undefined>;
     enableLostMode: (phoneNumber: string, content: string) => Promise<boolean>;
     disableLostMode: () => Promise<boolean>;
     refreshLocation: () => Promise<boolean>;

@@ -1,4 +1,5 @@
 import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
+import { MDMDeviceDetail } from "./types";
 export declare function sleep(ms: number): Promise<unknown>;
 export declare class AppleMDM implements IMDM {
     tokenKey: string;
@@ -9,6 +10,7 @@ export declare class AppleMDM implements IMDM {
     sendCommand(url: string, data: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
+    getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<boolean>;
     disableLostMode(): Promise<boolean>;
     refreshLocation(): Promise<boolean>;

@@ -14,6 +14,15 @@ export type MDMDevice = {
   activationLockStatus: 0 | 1;
   functionRestrictData: string;
   httpProxyStatus: 0 | 1;
+  phoneModel: string;
+};
+
+export type MDMDeviceDetail = {
+  id: number;
+  imei: string;
+  meid: string;
+  imei2: string;
+  meid2: string;
 };
 
 export type DeviceLocation = {

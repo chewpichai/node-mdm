@@ -7,6 +7,7 @@ import {
   MDMQuery,
 } from ".";
 import { getClient } from "./lib/redis";
+import { MDMDeviceDetail } from "./types";
 
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
@@ -98,9 +99,18 @@ export class AppleMDM implements IMDM {
       }
 
       return device;
-    } catch {
-      return undefined;
-    }
+    } catch {}
+  }
+
+  async getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined> {
+    try {
+      const response = await this.sendCommand(
+        "/mdm/saas/deviceInfo/getByDeviceId",
+        { deviceId: id }
+      );
+      const { data } = await response.json();
+      return data;
+    } catch {}
   }
 
   async enableLostMode(phoneNumber: string, content: string) {

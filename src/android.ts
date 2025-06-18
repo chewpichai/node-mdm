@@ -6,6 +6,7 @@ import {
   MDMQuery,
 } from ".";
 import { getClient } from "./lib/redis";
+import { MDMDeviceDetail } from "./types";
 
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
@@ -88,10 +89,15 @@ export class AndroidMDM implements IMDM {
         activationLockStatus: 1,
         functionRestrictData: "",
         httpProxyStatus: 0,
+        phoneModel: "",
       };
     } catch {
       return undefined;
     }
+  }
+
+  async getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined> {
+    return;
   }
 
   async enableLostMode(phoneNumber: string, content: string) {

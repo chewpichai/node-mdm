@@ -1,4 +1,5 @@
 import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
+import { MDMDeviceDetail } from "./types";
 export declare class AndroidMDM implements IMDM {
     tokenKey: string;
     token: string | null;
@@ -8,6 +9,7 @@ export declare class AndroidMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
+    getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<boolean>;
     disableLostMode(): Promise<boolean>;
     refreshLocation(): Promise<boolean>;

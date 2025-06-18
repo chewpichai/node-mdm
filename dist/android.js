@@ -74,11 +74,15 @@ class AndroidMDM {
                 activationLockStatus: 1,
                 functionRestrictData: "",
                 httpProxyStatus: 0,
+                phoneModel: "",
             };
         }
         catch {
             return undefined;
         }
+    }
+    async getDeviceDetail(id) {
+        return;
     }
     async enableLostMode(phoneNumber, content) {
         if (this.query.brand !== "android")
