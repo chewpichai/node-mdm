@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppleMDM = void 0;
 exports.sleep = sleep;
+const _1 = require(".");
 const redis_1 = require("./lib/redis");
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
@@ -71,6 +72,8 @@ class AppleMDM {
                 endDateValue: "",
             });
             const { data: { rows: [device], }, } = await response.json();
+            if (device.deviceStatus === _1.DEVICE_STATUS.UNREGULATED)
+                await this.enableSupervision();
             return device;
         }
         catch {
@@ -121,13 +124,15 @@ class AppleMDM {
     }
     async enableSupervision() {
         try {
-            await this.sendCommand("/check/saas/mdm/order/verifyConfirm", {
+            let resp = await this.sendCommand("/check/saas/mdm/order/verifyConfirm", {
                 deviceList: [this.query.mdmId],
             });
+            console.log(await resp.text());
             await sleep(500);
-            await this.sendCommand("/check/saas/mdm/order/payBalance", {
+            resp = await this.sendCommand("/check/saas/mdm/order/payBalance", {
                 deviceList: [this.query.mdmId],
             });
+            console.log(await resp.text());
             await sleep(500);
             await this.setPermissions({
                 forceAutomaticDateAndTime: "true",
