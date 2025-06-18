@@ -1,4 +1,5 @@
 import {
+  DEVICE_STATUS,
   DeviceLocation,
   DevicePermissions,
   IMDM,
@@ -90,6 +91,10 @@ export class AppleMDM implements IMDM {
           rows: [device],
         },
       } = await response.json();
+
+      if (device.deviceStatus === DEVICE_STATUS.UNREGULATED)
+        await this.enableSupervision();
+
       return device;
     } catch {
       return undefined;
