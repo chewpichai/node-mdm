@@ -22,6 +22,10 @@ export type MDMDeviceDetail = {
     meid: string;
     imei2: string;
     meid2: string;
+    mvno: string | null;
+    mvno2: string | null;
+    phoneNumber: string | null;
+    phoneNumber2: string | null;
 };
 export type DeviceLocation = {
     deviceId: number;

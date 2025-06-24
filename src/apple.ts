@@ -102,11 +102,11 @@ export class AppleMDM implements IMDM {
     } catch {}
   }
 
-  async getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined> {
+  async getDeviceDetail(): Promise<MDMDeviceDetail | undefined> {
     try {
       const response = await this.sendCommand(
         "/mdm/saas/deviceInfo/getByDeviceId",
-        { deviceId: id }
+        { deviceId: this.query.mdmId }
       );
       const { data } = await response.json();
       return data;

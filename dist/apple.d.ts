@@ -10,7 +10,7 @@ export declare class AppleMDM implements IMDM {
     sendCommand(url: string, data: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
-    getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined>;
+    getDeviceDetail(): Promise<MDMDeviceDetail | undefined>;
     getEscrowKey(): Promise<string | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<boolean>;
     disableLostMode(): Promise<boolean>;

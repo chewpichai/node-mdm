@@ -97,7 +97,7 @@ export class AndroidMDM implements IMDM {
     }
   }
 
-  async getDeviceDetail(id: number): Promise<MDMDeviceDetail | undefined> {
+  async getDeviceDetail(): Promise<MDMDeviceDetail | undefined> {
     return;
   }
 

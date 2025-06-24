@@ -6,7 +6,7 @@ export interface IMDM {
     sendCommand: (url: string, data: Record<string, unknown>) => Promise<Response>;
     init: () => Promise<void>;
     getDevice: () => Promise<MDMDevice | undefined>;
-    getDeviceDetail: (id: number) => Promise<MDMDeviceDetail | undefined>;
+    getDeviceDetail: () => Promise<MDMDeviceDetail | undefined>;
     getEscrowKey: () => Promise<string | undefined>;
     enableLostMode: (phoneNumber: string, content: string) => Promise<boolean>;
     disableLostMode: () => Promise<boolean>;
@@ -26,4 +26,4 @@ import { AndroidMDM } from "./android";
 import { AppleMDM } from "./apple";
 export declare function getMDM(query: MDMQuery): Promise<AppleMDM | AndroidMDM>;
 export { DEVICE_STATUS } from "./types";
-export { AndroidMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMQuery, };
+export { AndroidMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };

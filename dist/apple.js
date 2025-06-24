@@ -80,9 +80,9 @@ class AppleMDM {
         }
         catch { }
     }
-    async getDeviceDetail(id) {
+    async getDeviceDetail() {
         try {
-            const response = await this.sendCommand("/mdm/saas/deviceInfo/getByDeviceId", { deviceId: id });
+            const response = await this.sendCommand("/mdm/saas/deviceInfo/getByDeviceId", { deviceId: this.query.mdmId });
             const { data } = await response.json();
             return data;
         }
