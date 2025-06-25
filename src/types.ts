@@ -16,6 +16,7 @@ export type MDMDevice = {
   httpProxyStatus: 0 | 1;
   phoneModel: string;
   commandContentList: string[] | null;
+  deviceAssignedBy: string;
 };
 
 export type MDMDeviceDetail = {

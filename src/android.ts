@@ -91,6 +91,7 @@ export class AndroidMDM implements IMDM {
         httpProxyStatus: 0,
         phoneModel: "",
         commandContentList: null,
+        deviceAssignedBy: "",
       };
     } catch {
       return undefined;

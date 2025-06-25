@@ -76,6 +76,7 @@ class AndroidMDM {
                 httpProxyStatus: 0,
                 phoneModel: "",
                 commandContentList: null,
+                deviceAssignedBy: "",
             };
         }
         catch {
