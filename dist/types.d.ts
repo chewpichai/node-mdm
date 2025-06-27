@@ -19,10 +19,10 @@ export type MDMDevice = {
 };
 export type MDMDeviceDetail = {
     id: number;
-    imei: string;
-    meid: string;
-    imei2: string;
-    meid2: string;
+    imei: string | null;
+    meid: string | null;
+    imei2: string | null;
+    meid2: string | null;
     mvno: string | null;
     mvno2: string | null;
     phoneNumber: string | null;
