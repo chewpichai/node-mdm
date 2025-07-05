@@ -77,6 +77,7 @@ class AndroidMDM {
                 phoneModel: "",
                 commandContentList: null,
                 deviceAssignedBy: "",
+                color: null,
             };
         }
         catch {

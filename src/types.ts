@@ -17,6 +17,7 @@ export type MDMDevice = {
   phoneModel: string;
   commandContentList: string[] | null;
   deviceAssignedBy: string;
+  color: string | null;
 };
 
 export type MDMDeviceDetail = {
@@ -29,6 +30,7 @@ export type MDMDeviceDetail = {
   mvno2: string | null;
   phoneNumber: string | null;
   phoneNumber2: string | null;
+  deviceCapacity: string | null;
 };
 
 export type DeviceLocation = {

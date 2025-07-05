@@ -92,6 +92,7 @@ export class AndroidMDM implements IMDM {
         phoneModel: "",
         commandContentList: null,
         deviceAssignedBy: "",
+        color: null,
       };
     } catch {
       return undefined;
