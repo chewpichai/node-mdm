@@ -84,7 +84,7 @@ class AndroidMDM {
             return undefined;
         }
     }
-    async getDeviceDetail() {
+    async getDeviceDetail(deviceId) {
         return;
     }
     async getEscrowKey() {

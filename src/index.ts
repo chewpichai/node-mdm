@@ -20,7 +20,7 @@ export interface IMDM {
 
   getDevice: () => Promise<MDMDevice | undefined>;
 
-  getDeviceDetail: () => Promise<MDMDeviceDetail | undefined>;
+  getDeviceDetail: (deviceId?: number) => Promise<MDMDeviceDetail | undefined>;
 
   getEscrowKey: () => Promise<string | undefined>;
 

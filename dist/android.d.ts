@@ -9,7 +9,7 @@ export declare class AndroidMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
-    getDeviceDetail(): Promise<MDMDeviceDetail | undefined>;
+    getDeviceDetail(deviceId?: number): Promise<MDMDeviceDetail | undefined>;
     getEscrowKey(): Promise<string | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<boolean>;
     disableLostMode(): Promise<boolean>;
