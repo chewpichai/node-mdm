@@ -24,3 +24,9 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Upload dist folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist/
