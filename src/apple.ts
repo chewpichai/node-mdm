@@ -269,8 +269,9 @@ export class AppleMDM implements IMDM {
         "/mdm/saas/device/deleteHttpProxy",
         { id: this.query.mdmId }
       );
-      const { status } = await response.json();
-      return status === 200;
+      const data = await response.json();
+      console.log(data);
+      return data.status === 200;
     } catch (error) {
       console.log((error as Error).message);
       return false;
