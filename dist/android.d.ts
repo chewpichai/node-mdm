@@ -26,4 +26,7 @@ export declare class AndroidMDM implements IMDM {
     setWallpaper(): Promise<any>;
     setADB(enabled: boolean): Promise<any>;
     setFactoryReset(enabled: boolean): Promise<any>;
+    getCredit(): Promise<{
+        credit: number;
+    }>;
 }

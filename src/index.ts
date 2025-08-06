@@ -49,6 +49,8 @@ export interface IMDM {
   uploadWallpaper: (wallpaper: string) => Promise<boolean>;
 
   setWallpaper: (changeable: boolean) => Promise<boolean>;
+
+  getCredit: () => Promise<{ credit: number }>;
 }
 
 import { AndroidMDM } from "./android";

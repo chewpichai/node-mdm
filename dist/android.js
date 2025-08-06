@@ -244,5 +244,8 @@ class AndroidMDM {
             return false;
         }
     }
+    async getCredit() {
+        return { credit: 0 };
+    }
 }
 exports.AndroidMDM = AndroidMDM;

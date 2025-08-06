@@ -315,4 +315,20 @@ export class AppleMDM implements IMDM {
       return false;
     }
   }
+
+  async getCredit() {
+    let response = await this.sendCommand(
+      "/merchant/saas/merchant/getMerchantMdmPrice",
+      {}
+    );
+    const { data: price } = await response.json();
+    response = await this.sendCommand(
+      "/merchant/saas/mdmBalance/getByMerchantId",
+      {}
+    );
+    const {
+      data: { rechargeBalance },
+    } = await response.json();
+    return { credit: rechargeBalance / price };
+  }
 }

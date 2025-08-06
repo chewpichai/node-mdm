@@ -25,4 +25,7 @@ export declare class AppleMDM implements IMDM {
     getWallpaper(): Promise<any>;
     uploadWallpaper(wallpaper: string): Promise<any>;
     setWallpaper(changeable: boolean): Promise<any>;
+    getCredit(): Promise<{
+        credit: number;
+    }>;
 }

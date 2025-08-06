@@ -282,4 +282,8 @@ export class AndroidMDM implements IMDM {
       return false;
     }
   }
+
+  async getCredit() {
+    return { credit: 0 };
+  }
 }
