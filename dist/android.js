@@ -111,7 +111,7 @@ class AndroidMDM {
             return status === "OK";
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error);
             return false;
         }
     }
@@ -136,7 +136,7 @@ class AndroidMDM {
             return status === "OK";
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error);
             return false;
         }
     }
@@ -192,7 +192,7 @@ class AndroidMDM {
             return await response.json();
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error);
             return false;
         }
     }
@@ -216,7 +216,7 @@ class AndroidMDM {
             return await response.json();
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error);
             return false;
         }
     }
@@ -240,7 +240,7 @@ class AndroidMDM {
             return await response.json();
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error);
             return false;
         }
     }

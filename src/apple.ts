@@ -137,7 +137,7 @@ export class AppleMDM implements IMDM {
       const { status } = await response.json();
       return status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -151,7 +151,7 @@ export class AppleMDM implements IMDM {
       const { status } = await response.json();
       return status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -165,7 +165,7 @@ export class AppleMDM implements IMDM {
       const { status } = await response.json();
       return status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -190,7 +190,7 @@ export class AppleMDM implements IMDM {
       await this.sendCommand("/check/saas/mdm/order/payBalance", {
         deviceList: [this.query.mdmId],
       });
-      await sleep(500);
+      await sleep(1000);
       await this.setPermissions({
         forceAutomaticDateAndTime: "true",
         allowFindMyDevice: "false",
@@ -199,10 +199,10 @@ export class AppleMDM implements IMDM {
         allowVPNCreation: "true",
         forceWiFiPowerOn: "false",
       });
-      await sleep(500);
+      await sleep(1000);
       await this.disableProxy();
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
     }
   }
 
@@ -213,7 +213,7 @@ export class AppleMDM implements IMDM {
       });
       return true;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -227,7 +227,7 @@ export class AppleMDM implements IMDM {
       const { status } = await response.json();
       return status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -241,7 +241,7 @@ export class AppleMDM implements IMDM {
       const { status } = await response.json();
       return status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -258,7 +258,7 @@ export class AppleMDM implements IMDM {
       const { status } = await response.json();
       return status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -273,7 +273,7 @@ export class AppleMDM implements IMDM {
       console.log(data);
       return data.status === 200;
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -285,7 +285,7 @@ export class AppleMDM implements IMDM {
       });
       return await response.json();
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -298,7 +298,7 @@ export class AppleMDM implements IMDM {
       });
       return await response.json();
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
@@ -311,7 +311,7 @@ export class AppleMDM implements IMDM {
       });
       return await response.json();
     } catch (error) {
-      console.log((error as Error).message);
+      console.error(error);
       return false;
     }
   }
