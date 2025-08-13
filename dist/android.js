@@ -166,6 +166,9 @@ class AndroidMDM {
     async disableProxy() {
         return false;
     }
+    async enableProxy() {
+        return false;
+    }
     async getWallpaper() {
         throw new Error("method_not_implemented");
     }

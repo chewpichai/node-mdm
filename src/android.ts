@@ -197,6 +197,10 @@ export class AndroidMDM implements IMDM {
     return false;
   }
 
+  async enableProxy() {
+    return false;
+  }
+
   async getWallpaper() {
     throw new Error("method_not_implemented");
   }

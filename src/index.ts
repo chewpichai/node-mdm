@@ -44,6 +44,8 @@ export interface IMDM {
 
   disableProxy: () => Promise<boolean>;
 
+  enableProxy: () => Promise<boolean>;
+
   getWallpaper: () => Promise<unknown>;
 
   uploadWallpaper: (wallpaper: string) => Promise<boolean>;

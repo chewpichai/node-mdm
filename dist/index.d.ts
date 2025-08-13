@@ -18,6 +18,7 @@ export interface IMDM {
     hideApp: () => Promise<boolean>;
     setPermissions: (permissions: DevicePermissions) => Promise<boolean>;
     disableProxy: () => Promise<boolean>;
+    enableProxy: () => Promise<boolean>;
     getWallpaper: () => Promise<unknown>;
     uploadWallpaper: (wallpaper: string) => Promise<boolean>;
     setWallpaper: (changeable: boolean) => Promise<boolean>;

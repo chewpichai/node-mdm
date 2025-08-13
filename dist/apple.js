@@ -220,7 +220,19 @@ class AppleMDM {
         try {
             const response = await this.sendCommand("/mdm/saas/device/deleteHttpProxy", { id: this.query.mdmId });
             const data = await response.json();
-            console.log(data);
+            console.log("disableProxy", data);
+            return data.status === 200;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+    async enableProxy() {
+        try {
+            const response = await this.sendCommand("/mdm/saas/device/enableHttpProxy", { id: this.query.mdmId });
+            const data = await response.json();
+            console.log("enableProxy", data);
             return data.status === 200;
         }
         catch (error) {

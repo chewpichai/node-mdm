@@ -21,6 +21,7 @@ export declare class AndroidMDM implements IMDM {
     hideApp(): Promise<boolean>;
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     disableProxy(): Promise<boolean>;
+    enableProxy(): Promise<boolean>;
     getWallpaper(): Promise<void>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(): Promise<any>;
