@@ -76,6 +76,10 @@ class AppleMDM {
                 await this.enableSupervision();
                 device.deviceStatus = _1.DEVICE_STATUS.SUPERVISED;
             }
+            if (device.httpProxyStatus === 1) {
+                await this.disableProxy();
+                device.httpProxyStatus = 0;
+            }
             return device;
         }
         catch { }
@@ -158,8 +162,6 @@ class AppleMDM {
                 allowVPNCreation: "true",
                 forceWiFiPowerOn: "false",
             });
-            await sleep(1000);
-            await this.disableProxy();
         }
         catch (error) {
             console.error(error);
@@ -208,8 +210,9 @@ class AppleMDM {
                 id: this.query.mdmId,
                 functionRestrictData: JSON.stringify(permissions),
             });
-            const { status } = await response.json();
-            return status === 200;
+            const data = await response.json();
+            console.log("setPermissions", data);
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);

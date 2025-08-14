@@ -2,32 +2,32 @@ export declare function getClient(): Promise<import("@redis/client").RedisClient
     json: {
         ARRAPPEND: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("@redis/json/dist/lib/commands").RedisJSON, ...jsons: import("@redis/json/dist/lib/commands").RedisJSON[]) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("redis").RedisJSON, ...jsons: import("redis").RedisJSON[]) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NumberReply<number> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").NumberReply<number>>;
         };
         arrAppend: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("@redis/json/dist/lib/commands").RedisJSON, ...jsons: import("@redis/json/dist/lib/commands").RedisJSON[]) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("redis").RedisJSON, ...jsons: import("redis").RedisJSON[]) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NumberReply<number> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").NumberReply<number>>;
         };
         ARRINDEX: {
             readonly IS_READ_ONLY: true;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("@redis/json/dist/lib/commands").RedisJSON, options?: import("@redis/json/dist/lib/commands/ARRINDEX").JsonArrIndexOptions | undefined) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("redis").RedisJSON, options?: import("@redis/json/dist/lib/commands/ARRINDEX").JsonArrIndexOptions | undefined) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NumberReply<number> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").NumberReply<number>>;
         };
         arrIndex: {
             readonly IS_READ_ONLY: true;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("@redis/json/dist/lib/commands").RedisJSON, options?: import("@redis/json/dist/lib/commands/ARRINDEX").JsonArrIndexOptions | undefined) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("redis").RedisJSON, options?: import("@redis/json/dist/lib/commands/ARRINDEX").JsonArrIndexOptions | undefined) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NumberReply<number> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").NumberReply<number>>;
         };
         ARRINSERT: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, index: number, json: import("@redis/json/dist/lib/commands").RedisJSON, ...jsons: import("@redis/json/dist/lib/commands").RedisJSON[]) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, index: number, json: import("redis").RedisJSON, ...jsons: import("redis").RedisJSON[]) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NumberReply<number> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").NumberReply<number>>;
         };
         arrInsert: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, index: number, json: import("@redis/json/dist/lib/commands").RedisJSON, ...jsons: import("@redis/json/dist/lib/commands").RedisJSON[]) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, index: number, json: import("redis").RedisJSON, ...jsons: import("redis").RedisJSON[]) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NumberReply<number> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").NumberReply<number>>;
         };
         ARRLEN: {
@@ -44,16 +44,16 @@ export declare function getClient(): Promise<import("@redis/client").RedisClient
             readonly IS_READ_ONLY: false;
             readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, options?: import("@redis/json/dist/lib/commands/ARRPOP").RedisArrPopOptions | undefined) => void;
             readonly transformReply: (this: void, reply: import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>>) => string | number | boolean | Date | import("@redis/client/dist/lib/RESP/types").NullReply | {
-                [key: string]: import("@redis/json/dist/lib/commands").RedisJSON;
-                [key: number]: import("@redis/json/dist/lib/commands").RedisJSON;
-            } | (import("@redis/json/dist/lib/commands").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[] | null;
+                [key: string]: import("redis").RedisJSON;
+                [key: number]: import("redis").RedisJSON;
+            } | (import("redis").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[] | null;
         };
         arrPop: {
             readonly IS_READ_ONLY: false;
             readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, options?: import("@redis/json/dist/lib/commands/ARRPOP").RedisArrPopOptions | undefined) => void;
-            readonly transformReply: (this: void, reply: import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>>) => string | number | boolean | Date | import("@redis/client/dist/lib/RESP/types").NullReply | (import("@redis/json/dist/lib/commands").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[] | {
-                [key: string]: import("@redis/json/dist/lib/commands").RedisJSON;
-                [key: number]: import("@redis/json/dist/lib/commands").RedisJSON;
+            readonly transformReply: (this: void, reply: import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string> | import("@redis/client/dist/lib/RESP/types").ArrayReply<import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>>) => string | number | boolean | Date | import("@redis/client/dist/lib/RESP/types").NullReply | (import("redis").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[] | {
+                [key: string]: import("redis").RedisJSON;
+                [key: number]: import("redis").RedisJSON;
             } | null;
         };
         ARRTRIM: {
@@ -118,23 +118,23 @@ export declare function getClient(): Promise<import("@redis/client").RedisClient
         };
         MERGE: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, value: import("@redis/json/dist/lib/commands").RedisJSON) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, value: import("redis").RedisJSON) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").SimpleStringReply<"OK">;
         };
         merge: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, value: import("@redis/json/dist/lib/commands").RedisJSON) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, value: import("redis").RedisJSON) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").SimpleStringReply<"OK">;
         };
         MGET: {
             readonly IS_READ_ONLY: true;
             readonly parseCommand: (this: void, parser: import("redis").CommandParser, keys: import("redis").RedisArgument[], path: import("redis").RedisArgument) => void;
-            readonly transformReply: (this: void, reply: (import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>)[]) => (import("@redis/json/dist/lib/commands").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[];
+            readonly transformReply: (this: void, reply: (import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>)[]) => (import("redis").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[];
         };
         mGet: {
             readonly IS_READ_ONLY: true;
             readonly parseCommand: (this: void, parser: import("redis").CommandParser, keys: import("redis").RedisArgument[], path: import("redis").RedisArgument) => void;
-            readonly transformReply: (this: void, reply: (import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>)[]) => (import("@redis/json/dist/lib/commands").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[];
+            readonly transformReply: (this: void, reply: (import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").BlobStringReply<string>)[]) => (import("redis").RedisJSON | import("@redis/client/dist/lib/RESP/types").NullReply)[];
         };
         MSET: {
             readonly IS_READ_ONLY: false;
@@ -200,12 +200,12 @@ export declare function getClient(): Promise<import("@redis/client").RedisClient
         };
         SET: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("@redis/json/dist/lib/commands").RedisJSON, options?: import("@redis/json/dist/lib/commands/SET").JsonSetOptions | undefined) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("redis").RedisJSON, options?: import("@redis/json/dist/lib/commands/SET").JsonSetOptions | undefined) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").SimpleStringReply<"OK">;
         };
         set: {
             readonly IS_READ_ONLY: false;
-            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("@redis/json/dist/lib/commands").RedisJSON, options?: import("@redis/json/dist/lib/commands/SET").JsonSetOptions | undefined) => void;
+            readonly parseCommand: (this: void, parser: import("redis").CommandParser, key: import("redis").RedisArgument, path: import("redis").RedisArgument, json: import("redis").RedisJSON, options?: import("@redis/json/dist/lib/commands/SET").JsonSetOptions | undefined) => void;
             readonly transformReply: () => import("@redis/client/dist/lib/RESP/types").NullReply | import("@redis/client/dist/lib/RESP/types").SimpleStringReply<"OK">;
         };
         STRAPPEND: {
