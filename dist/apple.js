@@ -153,7 +153,7 @@ class AppleMDM {
             await this.sendCommand("/check/saas/mdm/order/payBalance", {
                 deviceList: [this.query.mdmId],
             });
-            await sleep(1000);
+            await sleep(3000);
             await this.setPermissions({
                 forceAutomaticDateAndTime: "true",
                 allowFindMyDevice: "false",
