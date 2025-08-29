@@ -8,7 +8,7 @@ import {
 
 export interface IMDM {
   tokenKey: string;
-  token: string | null;
+  token: string | null | undefined;
   query: MDMQuery;
 
   sendCommand: (

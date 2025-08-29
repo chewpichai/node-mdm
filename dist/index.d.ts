@@ -1,7 +1,7 @@
 import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery } from "./types";
 export interface IMDM {
     tokenKey: string;
-    token: string | null;
+    token: string | null | undefined;
     query: MDMQuery;
     sendCommand: (url: string, data: Record<string, unknown>) => Promise<Response>;
     init: () => Promise<void>;

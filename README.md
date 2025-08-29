@@ -2,9 +2,33 @@
 
     $ yarn add chewpichai/node-mdm
 
-## Environment Variables
+A lightweight Node.js SDK to interact with internal MDM services (Ishalou + Android) with Redis-backed caching for performance and credential-based authentication helpers.
 
-**REDIS_URL** - URL for redis server.
+## Features
+
+- Unified client for Ishalou and Android MDM endpoints
+- Promise-based API
+- Pluggable Redis cache
+- Centralized auth handling
+- Typed responses (if using TypeScript consumers)
+- Minimal external dependencies
+
+## Requirements
+
+- Node.js >= 16
+
+## Installation
+
+```bash
+# Yarn
+yarn add chewpichai/node-mdm
+# NPM
+npm install chewpichai/node-mdm
+# PNPM
+pnpm add chewpichai/node-mdm
+```
+
+## Environment Variables
 
 **MDM_ISHALOU_URL** - URL for ishalou server.
 
@@ -17,3 +41,132 @@
 **MDM_ANDROID_USERNAME** - Username for android server.
 
 **MDM_ANDROID_PASSWORD** - Password for android server.
+
+### Example .env
+
+```env
+MDM_ISHALOU_URL=https://ishalou.internal
+MDM_ISHALOU_USERNAME=service_user
+MDM_ISHALOU_PASSWORD=secret
+MDM_ANDROID_URL=https://android.internal
+MDM_ANDROID_USERNAME=service_user
+MDM_ANDROID_PASSWORD=secret
+```
+
+## Configuration
+
+Load environment variables early (dotenv or platform-specific).
+
+```js
+require("dotenv").config();
+const { getMDM } = require("chewpichai/node-mdm");
+// ... usage below ...
+```
+
+## Quick Usage
+
+```js
+const { getMDM } = require("chewpichai/node-mdm");
+
+(async () => {
+  const mdm = await getMDM({
+    applicationId,
+    serialNumber,
+    mdmId,
+    brand: "apple" | "android",
+  });
+
+  // Example calls (placeholder)
+  const device = await mdm.getDevice();
+  console.log("Device", device);
+})();
+```
+
+## API Overview (Placeholder)
+
+```text
+getMDM(options)
+  -> returns Promise<AppleMDM | AndroidMDM>
+
+AppleMDM
+  - getDevice()
+  - getDeviceDetail()
+  - getEscrowKey()
+  - enableLostMode(phoneNumber, content)
+  - disableLostMode()
+  - refreshLocation()
+  - getLocations()
+  - enableSupervision()
+  - removeMDM()
+  - removePassword()
+  - hideApp()
+  - setPermissions(permissions)
+  - disableProxy()
+  - enableProxy()
+  - getWallpaper()
+  - uploadWallpaper(wallpaper)
+  - setWallpaper(changeable)
+  - getCredit()
+
+AndroidMDM
+  - getDevice()
+  - enableLostMode(phoneNumber, content)
+  - disableLostMode()
+  - getLocations()
+  - removeMDM()
+  - setWallpaper(changeable)
+  - setADB(enabled)
+  - setFactoryReset(enabled)
+```
+
+(Adjust to actual implemented methods.)
+
+## TypeScript
+
+Type definitions are bundled. Import using ES Module syntax if preferred:
+
+```ts
+import { getMDM } from "chewpichai/node-mdm";
+```
+
+## Common Patterns
+
+Batch device fetch:
+
+```js
+const ids = ["a", "b", "c"];
+const results = await Promise.all(ids.map((id) => mdm.getDevice(id)));
+```
+
+## Testing (Local)
+
+```bash
+# Lint
+yarn lint
+# Unit tests
+yarn test
+```
+
+Use a local Redis or a test container.
+
+## Development (Repository)
+
+Scripts (may vary):
+
+```bash
+yarn build
+yarn dev
+yarn test
+```
+
+## Security
+
+Report vulnerabilities privately via security advisory channel (do not open public issue).
+
+## License
+
+MIT (adjust if different)
+
+## Support
+
+Open an issue with reproduction steps and environment details.

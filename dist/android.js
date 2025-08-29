@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidMDM = void 0;
-const redis_1 = require("./lib/redis");
+const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
 const MDM_PASSWORD = process.env.MDM_ANDROID_PASSWORD;
@@ -31,8 +31,8 @@ class AndroidMDM {
     async init() {
         if (this.token)
             return;
-        const redis = await (0, redis_1.getClient)();
-        this.token = await redis.get(this.tokenKey);
+        const cache = (0, cache_1.getCache)();
+        this.token = cache.get(this.tokenKey);
         if (!this.token) {
             try {
                 const response = await fetch(`${MDM_URL}/rest/public/jwt/login`, {
@@ -42,7 +42,7 @@ class AndroidMDM {
                 });
                 const { id_token: data } = await response.json();
                 this.token = data;
-                await redis.setEx(this.tokenKey, 60 * 60, data);
+                cache.set(this.tokenKey, data, 60 * 60);
             }
             catch {
                 this.token = "error";

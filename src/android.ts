@@ -5,7 +5,7 @@ import {
   MDMDevice,
   MDMQuery,
 } from ".";
-import { getClient } from "./lib/redis";
+import { getCache } from "./lib/cache";
 import { MDMDeviceDetail } from "./types";
 
 const MDM_URL = process.env.MDM_ANDROID_URL;
@@ -14,7 +14,7 @@ const MDM_PASSWORD = process.env.MDM_ANDROID_PASSWORD;
 
 export class AndroidMDM implements IMDM {
   tokenKey: string;
-  token: string | null;
+  token: string | null | undefined;
   query: MDMQuery;
 
   static async getInstance(query: MDMQuery) {
@@ -45,8 +45,8 @@ export class AndroidMDM implements IMDM {
   async init() {
     if (this.token) return;
 
-    const redis = await getClient();
-    this.token = await redis.get(this.tokenKey);
+    const cache = getCache();
+    this.token = cache.get(this.tokenKey);
 
     if (!this.token) {
       try {
@@ -57,7 +57,7 @@ export class AndroidMDM implements IMDM {
         });
         const { id_token: data } = await response.json();
         this.token = data;
-        await redis.setEx(this.tokenKey, 60 * 60, data);
+        cache.set(this.tokenKey, data, 60 * 60);
       } catch {
         this.token = "error";
       }

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppleMDM = void 0;
 exports.sleep = sleep;
 const _1 = require(".");
-const redis_1 = require("./lib/redis");
+const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
 const MDM_PASSWORD = process.env.MDM_ISHALOU_PASSWORD;
@@ -36,8 +36,8 @@ class AppleMDM {
     async init() {
         if (this.token)
             return;
-        const redis = await (0, redis_1.getClient)();
-        this.token = await redis.get(this.tokenKey);
+        const cache = (0, cache_1.getCache)();
+        this.token = cache.get(this.tokenKey);
         if (!this.token) {
             try {
                 await fetch(`${MDM_URL}/auth/jwt/app/login/mobileCode?type=1&mobile=${MDM_USERNAME}`);
@@ -48,7 +48,7 @@ class AppleMDM {
                 });
                 const { data } = await response.json();
                 this.token = data;
-                await redis.setEx(this.tokenKey, 60 * 60, data);
+                cache.set(this.tokenKey, data, 60 * 60);
             }
             catch {
                 this.token = "error";

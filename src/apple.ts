@@ -6,7 +6,7 @@ import {
   MDMDevice,
   MDMQuery,
 } from ".";
-import { getClient } from "./lib/redis";
+import { getCache } from "./lib/cache";
 import { MDMDeviceDetail } from "./types";
 
 const MDM_URL = process.env.MDM_ISHALOU_URL;
@@ -19,7 +19,7 @@ export async function sleep(ms: number) {
 
 export class AppleMDM implements IMDM {
   tokenKey: string;
-  token: string | null;
+  token: string | null | undefined;
   query: MDMQuery;
 
   static async getInstance(query: MDMQuery) {
@@ -50,8 +50,8 @@ export class AppleMDM implements IMDM {
   async init() {
     if (this.token) return;
 
-    const redis = await getClient();
-    this.token = await redis.get(this.tokenKey);
+    const cache = getCache();
+    this.token = cache.get(this.tokenKey);
 
     if (!this.token) {
       try {
@@ -65,7 +65,7 @@ export class AppleMDM implements IMDM {
         });
         const { data } = await response.json();
         this.token = data;
-        await redis.setEx(this.tokenKey, 60 * 60, data);
+        cache.set(this.tokenKey, data, 60 * 60);
       } catch {
         this.token = "error";
       }

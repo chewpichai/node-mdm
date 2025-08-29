@@ -3,7 +3,7 @@ import { MDMDeviceDetail } from "./types";
 export declare function sleep(ms: number): Promise<unknown>;
 export declare class AppleMDM implements IMDM {
     tokenKey: string;
-    token: string | null;
+    token: string | null | undefined;
     query: MDMQuery;
     static getInstance(query: MDMQuery): Promise<AppleMDM>;
     constructor(query: MDMQuery);
