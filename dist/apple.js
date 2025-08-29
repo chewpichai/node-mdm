@@ -85,6 +85,8 @@ class AppleMDM {
         catch { }
     }
     async getDeviceDetail(deviceId) {
+        if (!deviceId && !this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/deviceInfo/getByDeviceId", { deviceId: deviceId || this.query.mdmId });
             const { data } = await response.json();
@@ -93,6 +95,8 @@ class AppleMDM {
         catch { }
     }
     async getEscrowKey() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/getEscrowKey", {
                 id: this.query.mdmId,
@@ -103,6 +107,8 @@ class AppleMDM {
         catch { }
     }
     async enableLostMode(phoneNumber, content) {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/setLose", {
                 losePhone: phoneNumber,
@@ -118,6 +124,8 @@ class AppleMDM {
         }
     }
     async disableLostMode() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/renewRegulation", { id: this.query.mdmId });
             const { status } = await response.json();
@@ -129,6 +137,8 @@ class AppleMDM {
         }
     }
     async refreshLocation() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/deviceLocationNewest/deviceLocationSync", { deviceId: this.query.mdmId });
             const { status } = await response.json();
@@ -140,11 +150,15 @@ class AppleMDM {
         }
     }
     async getLocations() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         const response = await this.sendCommand("/mdm/saas/deviceLocationRecord/queryPage", { limit: 10, page: 1, deviceId: this.query.mdmId });
         const { data: { rows }, } = await response.json();
         return rows;
     }
     async enableSupervision() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             await this.sendCommand("/check/saas/mdm/order/verifyConfirm", {
                 deviceList: [this.query.mdmId],
@@ -168,6 +182,8 @@ class AppleMDM {
         }
     }
     async removeMDM() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             await this.sendCommand("/mdm/saas/device/deviceUnLock", {
                 id: this.query.mdmId,
@@ -180,6 +196,8 @@ class AppleMDM {
         }
     }
     async removePassword() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/setClearPasscode", { id: this.query.mdmId });
             const { status } = await response.json();
@@ -191,6 +209,8 @@ class AppleMDM {
         }
     }
     async hideApp() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/setRent", {
                 id: this.query.mdmId,
@@ -205,6 +225,8 @@ class AppleMDM {
         }
     }
     async setPermissions(permissions) {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/setFunctionRestrict", {
                 id: this.query.mdmId,
@@ -220,6 +242,8 @@ class AppleMDM {
         }
     }
     async disableProxy() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/deleteHttpProxy", { id: this.query.mdmId });
             const data = await response.json();
@@ -232,6 +256,8 @@ class AppleMDM {
         }
     }
     async enableProxy() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/enableHttpProxy", { id: this.query.mdmId });
             const data = await response.json();
@@ -244,6 +270,8 @@ class AppleMDM {
         }
     }
     async getWallpaper() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/wallpager/search", {
                 deviceId: this.query.mdmId,
@@ -256,6 +284,8 @@ class AppleMDM {
         }
     }
     async uploadWallpaper(wallpaper) {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/wallpager/save", {
                 deviceId: this.query.mdmId,
@@ -269,6 +299,8 @@ class AppleMDM {
         }
     }
     async setWallpaper(changeable) {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/wallpager/change", {
                 deviceId: this.query.mdmId,

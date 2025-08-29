@@ -144,6 +144,8 @@ class AndroidMDM {
         return false;
     }
     async getLocations() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
         const response = await this.sendCommand(`/location/${this.query.mdmId}`);
         const { data } = await response.json();
         return [{ lat: data.lat, lng: data.lon }];

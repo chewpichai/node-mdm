@@ -110,6 +110,8 @@ export class AppleMDM implements IMDM {
   async getDeviceDetail(
     deviceId?: number
   ): Promise<MDMDeviceDetail | undefined> {
+    if (!deviceId && !this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/deviceInfo/getByDeviceId",
@@ -121,6 +123,8 @@ export class AppleMDM implements IMDM {
   }
 
   async getEscrowKey(): Promise<string | undefined> {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand("/mdm/saas/device/getEscrowKey", {
         id: this.query.mdmId,
@@ -133,6 +137,8 @@ export class AppleMDM implements IMDM {
   }
 
   async enableLostMode(phoneNumber: string, content: string) {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand("/mdm/saas/device/setLose", {
         losePhone: phoneNumber,
@@ -148,6 +154,8 @@ export class AppleMDM implements IMDM {
   }
 
   async disableLostMode() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/device/renewRegulation",
@@ -162,6 +170,8 @@ export class AppleMDM implements IMDM {
   }
 
   async refreshLocation() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/deviceLocationNewest/deviceLocationSync",
@@ -176,6 +186,8 @@ export class AppleMDM implements IMDM {
   }
 
   async getLocations() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     const response = await this.sendCommand(
       "/mdm/saas/deviceLocationRecord/queryPage",
       { limit: 10, page: 1, deviceId: this.query.mdmId }
@@ -187,6 +199,8 @@ export class AppleMDM implements IMDM {
   }
 
   async enableSupervision() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       await this.sendCommand("/check/saas/mdm/order/verifyConfirm", {
         deviceList: [this.query.mdmId],
@@ -210,6 +224,8 @@ export class AppleMDM implements IMDM {
   }
 
   async removeMDM() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       await this.sendCommand("/mdm/saas/device/deviceUnLock", {
         id: this.query.mdmId,
@@ -222,6 +238,8 @@ export class AppleMDM implements IMDM {
   }
 
   async removePassword() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/device/setClearPasscode",
@@ -236,6 +254,8 @@ export class AppleMDM implements IMDM {
   }
 
   async hideApp() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand("/mdm/saas/device/setRent", {
         id: this.query.mdmId,
@@ -250,6 +270,8 @@ export class AppleMDM implements IMDM {
   }
 
   async setPermissions(permissions: DevicePermissions) {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/device/setFunctionRestrict",
@@ -268,6 +290,8 @@ export class AppleMDM implements IMDM {
   }
 
   async disableProxy() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/device/deleteHttpProxy",
@@ -283,6 +307,8 @@ export class AppleMDM implements IMDM {
   }
 
   async enableProxy() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand(
         "/mdm/saas/device/enableHttpProxy",
@@ -298,6 +324,8 @@ export class AppleMDM implements IMDM {
   }
 
   async getWallpaper() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand("/mdm/saas/wallpager/search", {
         deviceId: this.query.mdmId,
@@ -310,6 +338,8 @@ export class AppleMDM implements IMDM {
   }
 
   async uploadWallpaper(wallpaper: string) {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand("/mdm/saas/wallpager/save", {
         deviceId: this.query.mdmId,
@@ -323,6 +353,8 @@ export class AppleMDM implements IMDM {
   }
 
   async setWallpaper(changeable: boolean) {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
     try {
       const response = await this.sendCommand("/mdm/saas/wallpager/change", {
         deviceId: this.query.mdmId,
