@@ -72,11 +72,10 @@ const { getMDM } = require("chewpichai/node-mdm");
   const mdm = await getMDM({
     applicationId,
     serialNumber,
-    mdmId,
     brand: "apple" | "android",
   });
 
-  // Example calls (placeholder)
+  // Get mdmId from device.
   const device = await mdm.getDevice();
   console.log("Device", device);
 })();
@@ -85,14 +84,20 @@ const { getMDM } = require("chewpichai/node-mdm");
 ## API Overview (Placeholder)
 
 ```text
-getMDM(options)
+getMDM(options: MDMQuery)
   -> returns Promise<AppleMDM | AndroidMDM>
+
+MDMQuery
+  - applicationId: string
+  - serialNumber: string
+  - mdmId: string | undefined
+  - brand: "apple" | "android"
 
 AppleMDM
   - getDevice()
   - getDeviceDetail()
   - getEscrowKey()
-  - enableLostMode(phoneNumber, content)
+  - enableLostMode(phoneNumber: string, content: string)
   - disableLostMode()
   - refreshLocation()
   - getLocations()
@@ -100,23 +105,23 @@ AppleMDM
   - removeMDM()
   - removePassword()
   - hideApp()
-  - setPermissions(permissions)
+  - setPermissions(permissions: DevicePermissions)
   - disableProxy()
   - enableProxy()
   - getWallpaper()
-  - uploadWallpaper(wallpaper)
-  - setWallpaper(changeable)
+  - uploadWallpaper(imageBase64: string)
+  - setWallpaper(changeable: boolean)
   - getCredit()
 
 AndroidMDM
   - getDevice()
-  - enableLostMode(phoneNumber, content)
+  - enableLostMode(phoneNumber: string, content: string)
   - disableLostMode()
   - getLocations()
   - removeMDM()
-  - setWallpaper(changeable)
+  - setWallpaper(changeable: boolean)
   - setADB(enabled)
-  - setFactoryReset(enabled)
+  - setFactoryReset(enabled: boolean)
 ```
 
 (Adjust to actual implemented methods.)
@@ -141,8 +146,6 @@ const results = await Promise.all(ids.map((id) => mdm.getDevice(id)));
 ## Testing (Local)
 
 ```bash
-# Lint
-yarn lint
 # Unit tests
 yarn test
 ```
@@ -155,7 +158,6 @@ Scripts (may vary):
 
 ```bash
 yarn build
-yarn dev
 yarn test
 ```
 
