@@ -58,14 +58,14 @@ Load environment variables early (dotenv or platform-specific).
 
 ```js
 require("dotenv").config();
-const { getMDM } = require("chewpichai/node-mdm");
+const { getMDM } = require("node-mdm");
 // ... usage below ...
 ```
 
 ## Quick Usage
 
 ```js
-const { getMDM } = require("chewpichai/node-mdm");
+const { getMDM } = require("node-mdm");
 
 (async () => {
   const mdm = await getMDM({
@@ -130,7 +130,7 @@ AndroidMDM
 Type definitions are bundled. Import using ES Module syntax if preferred:
 
 ```ts
-import { getMDM } from "chewpichai/node-mdm";
+import { getMDM } from "node-mdm";
 ```
 
 ## Common Patterns
