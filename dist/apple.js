@@ -72,6 +72,7 @@ class AppleMDM {
                 endDateValue: "",
             });
             const { data: { rows: [device], }, } = await response.json();
+            this.query.mdmId = device.id;
             if (device.deviceStatus === _1.DEVICE_STATUS.UNREGULATED) {
                 await this.enableSupervision();
                 device.deviceStatus = _1.DEVICE_STATUS.SUPERVISED;
@@ -82,7 +83,9 @@ class AppleMDM {
             }
             return device;
         }
-        catch { }
+        catch (error) {
+            console.error(error);
+        }
     }
     async getDeviceDetail(deviceId) {
         if (!deviceId && !this.query.mdmId)
@@ -92,7 +95,9 @@ class AppleMDM {
             const { data } = await response.json();
             return data;
         }
-        catch { }
+        catch (error) {
+            console.error(error);
+        }
     }
     async getEscrowKey() {
         if (!this.query.mdmId)
@@ -104,7 +109,9 @@ class AppleMDM {
             const { data: { escrowKey }, } = await response.json();
             return escrowKey;
         }
-        catch { }
+        catch (error) {
+            console.error(error);
+        }
     }
     async enableLostMode(phoneNumber, content) {
         if (!this.query.mdmId)

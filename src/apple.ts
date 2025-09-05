@@ -92,6 +92,7 @@ export class AppleMDM implements IMDM {
           rows: [device],
         },
       } = await response.json();
+      this.query.mdmId = device.id;
 
       if (device.deviceStatus === DEVICE_STATUS.UNREGULATED) {
         await this.enableSupervision();
@@ -104,7 +105,9 @@ export class AppleMDM implements IMDM {
       }
 
       return device;
-    } catch {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async getDeviceDetail(
@@ -119,7 +122,9 @@ export class AppleMDM implements IMDM {
       );
       const { data } = await response.json();
       return data;
-    } catch {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async getEscrowKey(): Promise<string | undefined> {
@@ -133,7 +138,9 @@ export class AppleMDM implements IMDM {
         data: { escrowKey },
       } = await response.json();
       return escrowKey;
-    } catch {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async enableLostMode(phoneNumber: string, content: string) {

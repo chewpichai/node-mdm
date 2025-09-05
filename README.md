@@ -8,7 +8,6 @@ A lightweight Node.js SDK to interact with internal MDM services (Ishalou + Andr
 
 - Unified client for Ishalou and Android MDM endpoints
 - Promise-based API
-- Pluggable Redis cache
 - Centralized auth handling
 - Typed responses (if using TypeScript consumers)
 - Minimal external dependencies
