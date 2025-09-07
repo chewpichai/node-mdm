@@ -92,7 +92,7 @@ export class AppleMDM implements IMDM {
           rows: [device],
         },
       } = await response.json();
-      this.query.mdmId = device.id;
+      this.query.mdmId = device?.id;
 
       if (device.deviceStatus === DEVICE_STATUS.UNREGULATED) {
         await this.enableSupervision();

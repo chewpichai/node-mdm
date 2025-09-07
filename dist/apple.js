@@ -72,7 +72,7 @@ class AppleMDM {
                 endDateValue: "",
             });
             const { data: { rows: [device], }, } = await response.json();
-            this.query.mdmId = device.id;
+            this.query.mdmId = device?.id;
             if (device.deviceStatus === _1.DEVICE_STATUS.UNREGULATED) {
                 await this.enableSupervision();
                 device.deviceStatus = _1.DEVICE_STATUS.SUPERVISED;
