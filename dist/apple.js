@@ -73,11 +73,11 @@ class AppleMDM {
             });
             const { data: { rows: [device], }, } = await response.json();
             this.query.mdmId = device?.id;
-            if (device.deviceStatus === _1.DEVICE_STATUS.UNREGULATED) {
+            if (device?.deviceStatus === _1.DEVICE_STATUS.UNREGULATED) {
                 await this.enableSupervision();
                 device.deviceStatus = _1.DEVICE_STATUS.SUPERVISED;
             }
-            if (device.httpProxyStatus === 1) {
+            if (device?.httpProxyStatus === 1) {
                 await this.disableProxy();
                 device.httpProxyStatus = 0;
             }
