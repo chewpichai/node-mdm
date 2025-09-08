@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidMDM = void 0;
+const dayjs_1 = __importDefault(require("dayjs"));
 const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
@@ -78,6 +82,7 @@ class AndroidMDM {
                 commandContentList: null,
                 deviceAssignedBy: "",
                 color: null,
+                createTime: (0, dayjs_1.default)(device.enrollTime).format("YYYYMMDDHHmmss"),
             };
         }
         catch {

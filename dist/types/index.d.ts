@@ -17,6 +17,7 @@ export type MDMDevice = {
     commandContentList: string[] | null;
     deviceAssignedBy: string;
     color: string | null;
+    createTime: string;
 };
 export type MDMDeviceDetail = {
     id: number;

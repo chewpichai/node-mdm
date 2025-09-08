@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
   DeviceLocation,
   DevicePermissions,
@@ -93,6 +94,7 @@ export class AndroidMDM implements IMDM {
         commandContentList: null,
         deviceAssignedBy: "",
         color: null,
+        createTime: dayjs(device.enrollTime).format("YYYYMMDDHHmmss"),
       };
     } catch {
       return undefined;
