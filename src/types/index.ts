@@ -48,7 +48,7 @@ export type DevicePermissions = {
   allowEnterpriseAppTrust: "true" | "false";
   allowVPNCreation: "true" | "false";
   forceWiFiPowerOn: "true" | "false";
-  allowAccountModification: "true" | "false";
+  allowAccountModification?: "true" | "false";
 };
 
 export type MDMQuery = {
