@@ -182,6 +182,7 @@ class AppleMDM {
                 allowEnterpriseAppTrust: "false",
                 allowVPNCreation: "true",
                 forceWiFiPowerOn: "false",
+                allowAccountModification: "true",
             });
         }
         catch (error) {

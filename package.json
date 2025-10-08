@@ -11,11 +11,13 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "prepublish": "npm run build",
-    "test": "ts-node test/index.ts"
+    "test": "ts-node test/index.ts",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^22.15.30",
     "dotenv": "^17.2.2",
+    "husky": "^9.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
