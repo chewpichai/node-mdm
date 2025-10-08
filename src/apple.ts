@@ -224,6 +224,7 @@ export class AppleMDM implements IMDM {
         allowEnterpriseAppTrust: "false",
         allowVPNCreation: "true",
         forceWiFiPowerOn: "false",
+        allowAccountModification: "true",
       });
     } catch (error) {
       console.error(error);
