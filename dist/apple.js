@@ -176,13 +176,13 @@ class AppleMDM {
             });
             await sleep(3000);
             await this.setPermissions({
-                forceAutomaticDateAndTime: "true",
-                allowFindMyDevice: "false",
+                allowEnterpriseAppTrust: "true",
                 allowUIConfigurationProfileInstallation: "true",
-                allowEnterpriseAppTrust: "false",
-                allowVPNCreation: "true",
+                forceAutomaticDateAndTime: "true",
                 forceWiFiPowerOn: "false",
-                allowAccountModification: "true",
+                allowFindMyDevice: "true",
+                allowVPNCreation: "true",
+                allowAccountModification: "false",
             });
         }
         catch (error) {

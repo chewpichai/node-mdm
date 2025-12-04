@@ -7,6 +7,10 @@ declare global {
       MDM_ANDROID_URL: string;
       MDM_ANDROID_USERNAME: string;
       MDM_ANDROID_PASSWORD: string;
+      MDM_SEEKDREAM_USERNAME: string;
+      MDM_SEEKDREAM_URL: string;
+      MDM_SEEKDREAM_PASSWORD: string;
+      MDM_SEEKDREAM_API_KEY: string;
     }
   }
 }
