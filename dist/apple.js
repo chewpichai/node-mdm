@@ -122,8 +122,9 @@ class AppleMDM {
                 loseContent: content,
                 id: this.query.mdmId,
             });
-            const { status } = await response.json();
-            return status === 200;
+            const data = await response.json();
+            console.log("enableLostMode", data);
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);
@@ -224,8 +225,9 @@ class AppleMDM {
                 id: this.query.mdmId,
                 rentIdentifierId: 1,
             });
-            const { status } = await response.json();
-            return status === 200;
+            const data = await response.json();
+            console.log("hideApp", data);
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);

@@ -11,6 +11,7 @@ const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
+const MDM_SEEKDREAM_SECOND_PASSWORD = process.env.MDM_SEEKDREAM_SECOND_PASSWORD;
 class AndroidMDM {
     static async getInstance(query) {
         const instance = new AndroidMDM(query);
@@ -76,24 +77,26 @@ class AndroidMDM {
         try {
             const params = new URLSearchParams();
             params.append("serial", this.query.serialNumber);
-            params.append("lang", "en-US");
-            const response = await this.sendCommand(`/google/getDeviceDetail?${params}`);
-            const { data: device } = await response.json();
+            params.append("current", "1");
+            params.append("pageSize", "20");
+            const response = await this.sendCommand(`/google/getDeviceList?${params}`);
+            const { data: { lists: [device], }, } = await response.json();
             if (!device)
                 return undefined;
             return {
                 id: device.device_id,
-                deviceStatus: 1,
+                deviceStatus: device.status_flag,
                 description: "",
-                serialNumber: device.serial,
+                serialNumber: device.dc_info.hardwareInfo.serial,
                 activationLockStatus: 1,
                 functionRestrictData: "",
                 httpProxyStatus: 0,
-                phoneModel: device.hardwareInfo.model,
+                phoneModel: device.dc_info.hardwareInfo.model,
                 commandContentList: null,
                 deviceAssignedBy: "",
                 color: null,
                 createTime: (0, dayjs_1.default)(device.add_time).format("YYYYMMDDHHmmss"),
+                merchantId: device.merchant_id,
             };
         }
         catch {
@@ -112,6 +115,7 @@ class AndroidMDM {
         try {
             const response = await this.sendCommand("/google/lock", {
                 serial: this.query.serialNumber,
+                merchantId: this.query.merchantId,
                 phone: phoneNumber,
                 content,
             });
@@ -129,6 +133,7 @@ class AndroidMDM {
         try {
             const response = await this.sendCommand("/google/unlock", {
                 serial: this.query.serialNumber,
+                merchant_id: this.query.merchantId,
             });
             const { status } = await response.json();
             return status === "OK";
@@ -142,12 +147,13 @@ class AndroidMDM {
         return false;
     }
     async getLocations() {
-        if (!this.query.mdmId)
-            throw new Error("mdm_id_not_found");
+        if (!this.query.merchantId)
+            throw new Error("merchant_id_not_found");
         const params = new URLSearchParams();
         params.append("serial", this.query.serialNumber);
         params.append("current", "1");
         params.append("pageSize", "20");
+        params.append("merchant_id", this.query.merchantId);
         const response = await this.sendCommand(`/google/getLocations?${params}`);
         const { data } = await response.json();
         return data.list.map(({ location: { lat, lng }, }) => ({ lat, lng }));
@@ -161,7 +167,8 @@ class AndroidMDM {
         try {
             const response = await this.sendCommand("/google/disown", {
                 serial: this.query.serialNumber,
-                secondPassword: "123456",
+                secondPassword: MDM_SEEKDREAM_SECOND_PASSWORD,
+                merchant_id: this.query.merchantId,
             });
             return response.ok;
         }
@@ -199,7 +206,8 @@ class AndroidMDM {
                 serial: this.query.serialNumber,
                 wp_type: "3",
                 wp_id: "1",
-                allowed: "0",
+                allowed: "1",
+                merchant_id: this.query.merchantId,
             });
             return response.ok;
         }

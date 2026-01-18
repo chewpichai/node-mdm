@@ -19,6 +19,7 @@ export type MDMDevice = {
   deviceAssignedBy: string;
   color: string | null;
   createTime: string;
+  merchantId?: string;
 };
 
 export type MDMDeviceDetail = {
@@ -56,4 +57,5 @@ export type MDMQuery = {
   mdmId?: number;
   serialNumber: string;
   applicationId: string;
+  merchantId?: string;
 };
