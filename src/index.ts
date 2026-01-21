@@ -56,16 +56,24 @@ export interface IMDM {
 }
 
 import { AndroidMDM } from "./android";
+import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
 
+const CLASSES = {
+  apple: AppleMDM,
+  android: AndroidMDM,
+  "android-seekdream": AndroidSeekDreamMDM,
+};
+
 export async function getMDM(query: MDMQuery) {
-  const clz = query.brand === "apple" ? AppleMDM : AndroidMDM;
+  const clz = CLASSES[query.brand];
   return await clz.getInstance(query);
 }
 
 export { DEVICE_STATUS } from "./types";
 export {
   AndroidMDM,
+  AndroidSeekDreamMDM,
   AppleMDM,
   DeviceLocation,
   DevicePermissions,

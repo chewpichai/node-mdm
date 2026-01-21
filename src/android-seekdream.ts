@@ -16,19 +16,19 @@ const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
 const MDM_SEEKDREAM_SECOND_PASSWORD = process.env.MDM_SEEKDREAM_SECOND_PASSWORD;
 
-export class AndroidMDM implements IMDM {
+export class AndroidSeekDreamMDM implements IMDM {
   tokenKey: string;
   token: string | null | undefined;
   query: MDMQuery;
 
   static async getInstance(query: MDMQuery) {
-    const instance = new AndroidMDM(query);
+    const instance = new AndroidSeekDreamMDM(query);
     await instance.init();
     return instance;
   }
 
   constructor(query: MDMQuery) {
-    this.tokenKey = "androidMDMToken";
+    this.tokenKey = "androidSeekDreamMDMToken";
     this.token = null;
     this.query = query;
   }
@@ -67,7 +67,7 @@ export class AndroidMDM implements IMDM {
           },
           body: JSON.stringify({
             role: "agent",
-            login: MDM_USERNAME,
+            username: MDM_USERNAME,
             password: crypto
               .createHash("md5")
               .update(hash.slice(7, -7))
@@ -84,7 +84,8 @@ export class AndroidMDM implements IMDM {
   }
 
   async getDevice(): Promise<MDMDevice | undefined> {
-    if (this.query.brand !== "android") throw new Error("invalid_brand");
+    if (this.query.brand !== "android-seekdream")
+      throw new Error("invalid_brand");
 
     try {
       const params = new URLSearchParams();
@@ -134,7 +135,8 @@ export class AndroidMDM implements IMDM {
   }
 
   async enableLostMode(phoneNumber: string, content: string) {
-    if (this.query.brand !== "android") throw new Error("invalid_brand");
+    if (this.query.brand !== "android-seekdream")
+      throw new Error("invalid_brand");
 
     try {
       const response = await this.sendCommand("/google/lock", {
@@ -152,7 +154,8 @@ export class AndroidMDM implements IMDM {
   }
 
   async disableLostMode() {
-    if (this.query.brand !== "android") throw new Error("invalid_brand");
+    if (this.query.brand !== "android-seekdream")
+      throw new Error("invalid_brand");
 
     try {
       const response = await this.sendCommand("/google/unlock", {
@@ -196,7 +199,8 @@ export class AndroidMDM implements IMDM {
   }
 
   async removeMDM() {
-    if (this.query.brand !== "android") throw new Error("invalid_brand");
+    if (this.query.brand !== "android-seekdream")
+      throw new Error("invalid_brand");
 
     try {
       const response = await this.sendCommand("/google/disown", {
@@ -240,7 +244,8 @@ export class AndroidMDM implements IMDM {
   }
 
   async setWallpaper() {
-    if (this.query.brand !== "android") throw new Error("invalid_brand");
+    if (this.query.brand !== "android-seekdream")
+      throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand("/google/pushWallpaper", {
         serial: this.query.serialNumber,

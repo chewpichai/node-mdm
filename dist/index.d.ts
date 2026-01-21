@@ -27,7 +27,8 @@ export interface IMDM {
     }>;
 }
 import { AndroidMDM } from "./android";
+import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
 export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleMDM>;
 export { DEVICE_STATUS } from "./types";
-export { AndroidMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };
+export { AndroidMDM, AndroidSeekDreamMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };

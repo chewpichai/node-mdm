@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AndroidMDM = void 0;
+exports.AndroidSeekDreamMDM = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const cache_1 = require("./lib/cache");
@@ -12,14 +12,14 @@ const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
 const MDM_SEEKDREAM_SECOND_PASSWORD = process.env.MDM_SEEKDREAM_SECOND_PASSWORD;
-class AndroidMDM {
+class AndroidSeekDreamMDM {
     static async getInstance(query) {
-        const instance = new AndroidMDM(query);
+        const instance = new AndroidSeekDreamMDM(query);
         await instance.init();
         return instance;
     }
     constructor(query) {
-        this.tokenKey = "androidMDMToken";
+        this.tokenKey = "androidSeekDreamMDMToken";
         this.token = null;
         this.query = query;
     }
@@ -55,7 +55,7 @@ class AndroidMDM {
                     },
                     body: JSON.stringify({
                         role: "agent",
-                        login: MDM_USERNAME,
+                        username: MDM_USERNAME,
                         password: crypto_1.default
                             .createHash("md5")
                             .update(hash.slice(7, -7))
@@ -72,7 +72,7 @@ class AndroidMDM {
         }
     }
     async getDevice() {
-        if (this.query.brand !== "android")
+        if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         try {
             const params = new URLSearchParams();
@@ -110,7 +110,7 @@ class AndroidMDM {
         return;
     }
     async enableLostMode(phoneNumber, content) {
-        if (this.query.brand !== "android")
+        if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/google/lock", {
@@ -128,7 +128,7 @@ class AndroidMDM {
         }
     }
     async disableLostMode() {
-        if (this.query.brand !== "android")
+        if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/google/unlock", {
@@ -162,7 +162,7 @@ class AndroidMDM {
         return;
     }
     async removeMDM() {
-        if (this.query.brand !== "android")
+        if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/google/disown", {
@@ -199,7 +199,7 @@ class AndroidMDM {
         return false;
     }
     async setWallpaper() {
-        if (this.query.brand !== "android")
+        if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         try {
             const response = await this.sendCommand("/google/pushWallpaper", {
@@ -226,4 +226,4 @@ class AndroidMDM {
         return { credit: 0 };
     }
 }
-exports.AndroidMDM = AndroidMDM;
+exports.AndroidSeekDreamMDM = AndroidSeekDreamMDM;

@@ -1,10 +1,10 @@
 import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
 import { MDMDeviceDetail } from "./types";
-export declare class AndroidMDM implements IMDM {
+export declare class AndroidSeekDreamMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
     query: MDMQuery;
-    static getInstance(query: MDMQuery): Promise<AndroidMDM>;
+    static getInstance(query: MDMQuery): Promise<AndroidSeekDreamMDM>;
     constructor(query: MDMQuery);
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;

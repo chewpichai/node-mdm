@@ -1,7 +1,7 @@
 require("dotenv").config();
 import { getMDM } from "../dist";
 
-(async () => {
+async () => {
   const mdm = await getMDM({
     applicationId: "",
     serialNumber: "LY4WN2H5KK",
@@ -12,13 +12,26 @@ import { getMDM } from "../dist";
   // Get mdmId from device.
   const device = await mdm.getDevice();
   console.log("Device", device);
-})();
+};
 
-(async () => {
+async () => {
   const mdm = await getMDM({
     applicationId: "BD0222",
     serialNumber: "",
     brand: "android",
+  });
+  console.log(mdm);
+
+  // Get mdmId from device.
+  const device = await mdm.getDevice();
+  console.log("Device", device);
+};
+
+(async () => {
+  const mdm = await getMDM({
+    applicationId: "",
+    serialNumber: "13012704B6004299",
+    brand: "android-seekdream",
   });
   console.log(mdm);
 

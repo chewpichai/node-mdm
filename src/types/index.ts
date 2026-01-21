@@ -53,7 +53,7 @@ export type DevicePermissions = {
 };
 
 export type MDMQuery = {
-  brand: "apple" | "android";
+  brand: "apple" | "android" | "android-seekdream";
   mdmId?: number;
   serialNumber: string;
   applicationId: string;
