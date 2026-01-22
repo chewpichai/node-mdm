@@ -143,7 +143,7 @@ export class AndroidSeekDreamMDM implements IMDM {
     try {
       const response = await this.sendCommand("/google/lock", {
         serial: this.query.serialNumber,
-        merchantId: this.query.merchantId,
+        merchant_id: this.query.merchantId,
         phone: phoneNumber,
         content,
       });
