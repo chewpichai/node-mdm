@@ -138,6 +138,8 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
+    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
+
     try {
       const response = await this.sendCommand("/google/lock", {
         serial: this.query.serialNumber,
@@ -156,6 +158,8 @@ export class AndroidSeekDreamMDM implements IMDM {
   async disableLostMode() {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
+
+    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
 
     try {
       const response = await this.sendCommand("/google/unlock", {
@@ -202,6 +206,8 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
+    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
+
     try {
       const response = await this.sendCommand("/google/disown", {
         serial: this.query.serialNumber,
@@ -246,6 +252,9 @@ export class AndroidSeekDreamMDM implements IMDM {
   async setWallpaper() {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
+
+    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
+
     try {
       const response = await this.sendCommand("/google/pushWallpaper", {
         serial: this.query.serialNumber,
