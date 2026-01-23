@@ -268,7 +268,7 @@ export class AppleMDM implements IMDM {
     try {
       const response = await this.sendCommand("/mdm/saas/device/setRent", {
         id: this.query.mdmId,
-        rentIdentifierId: 1,
+        rentIdentifierId: 81,
       });
       const data = await response.json();
       console.log("hideApp", data);
