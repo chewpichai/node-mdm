@@ -23,9 +23,9 @@ export declare class AppleMDM implements IMDM {
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     disableProxy(): Promise<boolean>;
     enableProxy(): Promise<boolean>;
-    getWallpaper(): Promise<any>;
-    uploadWallpaper(wallpaper: string): Promise<any>;
-    setWallpaper(changeable: boolean): Promise<any>;
+    getWallpaper(): Promise<boolean>;
+    uploadWallpaper(wallpaper: string): Promise<boolean>;
+    setWallpaper(changeable: boolean): Promise<boolean>;
     getCredit(): Promise<{
         credit: number;
     }>;

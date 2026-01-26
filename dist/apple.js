@@ -286,7 +286,9 @@ class AppleMDM {
             const response = await this.sendCommand("/mdm/saas/wallpager/search", {
                 deviceId: this.query.mdmId,
             });
-            return await response.json();
+            const data = await response.json();
+            console.log("getWallpaper", data);
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);
@@ -301,7 +303,9 @@ class AppleMDM {
                 deviceId: this.query.mdmId,
                 wallpager: wallpaper,
             });
-            return await response.json();
+            const data = await response.json();
+            console.log("uploadWallpaper", data);
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);
@@ -316,7 +320,9 @@ class AppleMDM {
                 deviceId: this.query.mdmId,
                 wallgerStatus: changeable,
             });
-            return await response.json();
+            const data = await response.json();
+            console.log("setWallpaper", data);
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);
