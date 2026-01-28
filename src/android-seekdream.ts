@@ -271,7 +271,7 @@ export class AndroidSeekDreamMDM implements IMDM {
     return false;
   }
 
-  async setWallpaper() {
+  async setWallpaper(changeable: boolean, wallpaperId?: number) {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
@@ -281,10 +281,12 @@ export class AndroidSeekDreamMDM implements IMDM {
       const response = await this.sendCommand("/google/pushWallpaper", {
         serial: this.query.serialNumber,
         wp_type: "3",
-        wp_id: "1",
-        allowed: "1",
+        wp_id: wallpaperId,
+        allowed: changeable ? "1" : "0",
         merchant_id: this.query.merchantId,
       });
+      const data = await response.json();
+      console.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
       return response.ok;
     } catch (error) {
       console.error(error);

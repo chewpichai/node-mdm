@@ -21,7 +21,7 @@ export interface IMDM {
     enableProxy: () => Promise<boolean>;
     getWallpapers: () => Promise<Wallpaper[]>;
     uploadWallpaper: (wallpaper: string) => Promise<boolean>;
-    setWallpaper: (changeable: boolean) => Promise<boolean>;
+    setWallpaper: (changeable: boolean, wallpaperId?: number) => Promise<boolean>;
     getCredit: () => Promise<{
         credit: number;
     }>;

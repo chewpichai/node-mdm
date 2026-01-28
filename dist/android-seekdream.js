@@ -223,7 +223,7 @@ class AndroidSeekDreamMDM {
     async uploadWallpaper(wallpaper) {
         return false;
     }
-    async setWallpaper() {
+    async setWallpaper(changeable, wallpaperId) {
         if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         if (!this.query.merchantId)
@@ -232,10 +232,12 @@ class AndroidSeekDreamMDM {
             const response = await this.sendCommand("/google/pushWallpaper", {
                 serial: this.query.serialNumber,
                 wp_type: "3",
-                wp_id: "1",
-                allowed: "1",
+                wp_id: wallpaperId,
+                allowed: changeable ? "1" : "0",
                 merchant_id: this.query.merchantId,
             });
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
             return response.ok;
         }
         catch (error) {

@@ -51,7 +51,7 @@ export interface IMDM {
 
   uploadWallpaper: (wallpaper: string) => Promise<boolean>;
 
-  setWallpaper: (changeable: boolean) => Promise<boolean>;
+  setWallpaper: (changeable: boolean, wallpaperId?: number) => Promise<boolean>;
 
   getCredit: () => Promise<{ credit: number }>;
 }
