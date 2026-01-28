@@ -1,5 +1,5 @@
 import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
-import { MDMDeviceDetail } from "./types";
+import { MDMDeviceDetail, Wallpaper } from "./types";
 export declare class AndroidSeekDreamMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -22,7 +22,7 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     disableProxy(): Promise<boolean>;
     enableProxy(): Promise<boolean>;
-    getWallpaper(): Promise<void>;
+    getWallpapers(): Promise<Wallpaper[]>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(): Promise<boolean>;
     setADB(enabled: boolean): Promise<void>;

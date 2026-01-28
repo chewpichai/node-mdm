@@ -198,8 +198,27 @@ class AndroidSeekDreamMDM {
     async enableProxy() {
         return false;
     }
-    async getWallpaper() {
-        throw new Error("method_not_implemented");
+    async getWallpapers() {
+        if (this.query.brand !== "android-seekdream")
+            throw new Error("invalid_brand");
+        if (!this.query.merchantId)
+            throw new Error("merchant_id_not_found");
+        try {
+            const params = new URLSearchParams();
+            params.append("current", "1");
+            params.append("pageSize", "8");
+            params.append("merchant_id", this.query.merchantId);
+            const response = await this.sendCommand(`/user/wallpaper?${params}`);
+            const { data } = await response.json();
+            return data.list.map(({ wp_id, wp_url }) => ({
+                id: wp_id,
+                url: wp_url,
+            }));
+        }
+        catch (error) {
+            console.error(error);
+            return [];
+        }
     }
     async uploadWallpaper(wallpaper) {
         return false;

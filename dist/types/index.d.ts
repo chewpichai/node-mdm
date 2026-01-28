@@ -54,3 +54,7 @@ export type MDMQuery = {
     applicationId: string;
     merchantId?: string;
 };
+export type Wallpaper = {
+    id: number;
+    url: string;
+};

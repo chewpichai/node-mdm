@@ -1,4 +1,4 @@
-import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery } from "./types";
+import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, Wallpaper } from "./types";
 export interface IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -19,7 +19,7 @@ export interface IMDM {
     setPermissions: (permissions: DevicePermissions) => Promise<boolean>;
     disableProxy: () => Promise<boolean>;
     enableProxy: () => Promise<boolean>;
-    getWallpaper: () => Promise<unknown>;
+    getWallpapers: () => Promise<Wallpaper[]>;
     uploadWallpaper: (wallpaper: string) => Promise<boolean>;
     setWallpaper: (changeable: boolean) => Promise<boolean>;
     getCredit: () => Promise<{
@@ -29,6 +29,6 @@ export interface IMDM {
 import { AndroidMDM } from "./android";
 import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
-export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleMDM>;
+export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleMDM | AndroidSeekDreamMDM>;
 export { DEVICE_STATUS } from "./types";
 export { AndroidMDM, AndroidSeekDreamMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };

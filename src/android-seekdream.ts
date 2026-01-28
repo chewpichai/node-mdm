@@ -8,7 +8,7 @@ import {
   MDMQuery,
 } from ".";
 import { getCache } from "./lib/cache";
-import { MDMDeviceDetail } from "./types";
+import { MDMDeviceDetail, Wallpaper } from "./types";
 
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
@@ -241,8 +241,30 @@ export class AndroidSeekDreamMDM implements IMDM {
     return false;
   }
 
-  async getWallpaper() {
-    throw new Error("method_not_implemented");
+  async getWallpapers() {
+    if (this.query.brand !== "android-seekdream")
+      throw new Error("invalid_brand");
+
+    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
+
+    try {
+      const params = new URLSearchParams();
+      params.append("current", "1");
+      params.append("pageSize", "8");
+      params.append("merchant_id", this.query.merchantId);
+
+      const response = await this.sendCommand(`/user/wallpaper?${params}`);
+      const { data } = await response.json();
+      return data.list.map(
+        ({ wp_id, wp_url }: { wp_id: number; wp_url: string }) => ({
+          id: wp_id,
+          url: wp_url,
+        })
+      ) as Wallpaper[];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 
   async uploadWallpaper(wallpaper: string) {

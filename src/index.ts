@@ -4,6 +4,7 @@ import {
   MDMDevice,
   MDMDeviceDetail,
   MDMQuery,
+  Wallpaper,
 } from "./types";
 
 export interface IMDM {
@@ -46,7 +47,7 @@ export interface IMDM {
 
   enableProxy: () => Promise<boolean>;
 
-  getWallpaper: () => Promise<unknown>;
+  getWallpapers: () => Promise<Wallpaper[]>;
 
   uploadWallpaper: (wallpaper: string) => Promise<boolean>;
 

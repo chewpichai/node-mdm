@@ -333,20 +333,8 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async getWallpaper() {
-    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
-
-    try {
-      const response = await this.sendCommand("/mdm/saas/wallpager/search", {
-        deviceId: this.query.mdmId,
-      });
-      const data = await response.json();
-      console.log("getWallpaper", data);
-      return data.status === 200;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+  async getWallpapers() {
+    return [];
   }
 
   async uploadWallpaper(wallpaper: string) {
