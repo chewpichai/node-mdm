@@ -16,7 +16,7 @@ export declare class AndroidMDM implements IMDM {
     refreshLocation(): Promise<boolean>;
     getLocations(): Promise<DeviceLocation[]>;
     enableSupervision(): Promise<void>;
-    removeMDM(): Promise<any>;
+    removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
     hideApp(): Promise<boolean>;
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
@@ -25,8 +25,8 @@ export declare class AndroidMDM implements IMDM {
     getWallpapers(): Promise<never[]>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(): Promise<any>;
-    setADB(enabled: boolean): Promise<any>;
-    setFactoryReset(enabled: boolean): Promise<any>;
+    setADB(enabled: boolean): Promise<boolean>;
+    setFactoryReset(enabled: boolean): Promise<boolean>;
     getCredit(): Promise<{
         credit: number;
     }>;

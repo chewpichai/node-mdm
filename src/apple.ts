@@ -232,7 +232,7 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async removeMDM() {
+  async removeMDM(password: string) {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {

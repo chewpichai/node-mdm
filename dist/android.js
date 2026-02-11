@@ -158,7 +158,7 @@ class AndroidMDM {
     async enableSupervision() {
         return;
     }
-    async removeMDM() {
+    async removeMDM(password) {
         return this.setFactoryReset(false);
     }
     async removePassword() {
@@ -223,7 +223,7 @@ class AndroidMDM {
                 }),
                 messageType: "1",
             });
-            return await response.json();
+            return response.ok;
         }
         catch (error) {
             console.error(error);
@@ -247,7 +247,7 @@ class AndroidMDM {
                 }),
                 messageType: "1",
             });
-            return await response.json();
+            return response.ok;
         }
         catch (error) {
             console.error(error);

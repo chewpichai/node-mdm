@@ -190,7 +190,7 @@ class AppleMDM {
             console.error(error);
         }
     }
-    async removeMDM() {
+    async removeMDM(password) {
         if (!this.query.mdmId)
             throw new Error("mdm_id_not_found");
         try {

@@ -13,7 +13,7 @@ export interface IMDM {
     refreshLocation: () => Promise<boolean>;
     getLocations: () => Promise<DeviceLocation[]>;
     enableSupervision: () => Promise<void>;
-    removeMDM: () => Promise<boolean>;
+    removeMDM: (password: string) => Promise<boolean>;
     removePassword: () => Promise<boolean>;
     hideApp: () => Promise<boolean>;
     setPermissions: (permissions: DevicePermissions) => Promise<boolean>;

@@ -181,7 +181,7 @@ export class AndroidMDM implements IMDM {
     return;
   }
 
-  async removeMDM() {
+  async removeMDM(password: string) {
     return this.setFactoryReset(false);
   }
 
@@ -258,7 +258,7 @@ export class AndroidMDM implements IMDM {
           messageType: "1",
         }
       );
-      return await response.json();
+      return response.ok;
     } catch (error) {
       console.error(error);
       return false;
@@ -284,7 +284,7 @@ export class AndroidMDM implements IMDM {
           messageType: "1",
         }
       );
-      return await response.json();
+      return response.ok;
     } catch (error) {
       console.error(error);
       return false;

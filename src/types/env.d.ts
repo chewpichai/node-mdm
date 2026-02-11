@@ -11,7 +11,6 @@ declare global {
       MDM_SEEKDREAM_URL: string;
       MDM_SEEKDREAM_PASSWORD: string;
       MDM_SEEKDREAM_API_KEY: string;
-      MDM_SEEKDREAM_SECOND_PASSWORD: string;
     }
   }
 }

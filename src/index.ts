@@ -35,7 +35,7 @@ export interface IMDM {
 
   enableSupervision: () => Promise<void>;
 
-  removeMDM: () => Promise<boolean>;
+  removeMDM: (password: string) => Promise<boolean>;
 
   removePassword: () => Promise<boolean>;
 

@@ -166,7 +166,7 @@ class AndroidSeekDreamMDM {
     async enableSupervision() {
         return;
     }
-    async removeMDM() {
+    async removeMDM(password) {
         if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
         if (!this.query.merchantId)
@@ -174,7 +174,7 @@ class AndroidSeekDreamMDM {
         try {
             const response = await this.sendCommand("/google/disown", {
                 serial: this.query.serialNumber,
-                secondPassword: MDM_SEEKDREAM_SECOND_PASSWORD,
+                secondPassword: password,
                 merchant_id: this.query.merchantId,
             });
             return response.ok;
@@ -185,7 +185,23 @@ class AndroidSeekDreamMDM {
         }
     }
     async removePassword() {
-        return false;
+        if (this.query.brand !== "android-seekdream")
+            throw new Error("invalid_brand");
+        if (!this.query.merchantId)
+            throw new Error("merchant_id_not_found");
+        try {
+            const response = await this.sendCommand("/google/clearPassword", {
+                serial: this.query.serialNumber,
+                merchant_id: this.query.merchantId,
+            });
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
+            return response.ok;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
     }
     async hideApp() {
         return false;
@@ -280,25 +296,6 @@ class AndroidSeekDreamMDM {
             });
             const data = await response.json();
             console.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
-            return response.ok;
-        }
-        catch (error) {
-            console.error(error);
-            return false;
-        }
-    }
-    async clearPassword() {
-        if (this.query.brand !== "android-seekdream")
-            throw new Error("invalid_brand");
-        if (!this.query.merchantId)
-            throw new Error("merchant_id_not_found");
-        try {
-            const response = await this.sendCommand("/google/clearPassword", {
-                serial: this.query.serialNumber,
-                merchant_id: this.query.merchantId,
-            });
-            const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
             return response.ok;
         }
         catch (error) {
