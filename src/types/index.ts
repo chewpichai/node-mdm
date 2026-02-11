@@ -20,6 +20,7 @@ export type MDMDevice = {
   color: string | null;
   createTime: string;
   merchantId?: string;
+  imei?: string;
 };
 
 export type MDMDeviceDetail = {

@@ -25,9 +25,10 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     getWallpapers(): Promise<Wallpaper[]>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(changeable: boolean, wallpaperId?: number): Promise<boolean>;
-    setADB(enabled: boolean): Promise<void>;
-    setFactoryReset(enabled: boolean): Promise<void>;
     getCredit(): Promise<{
         credit: number;
     }>;
+    reboot(): Promise<boolean>;
+    playSound(): Promise<boolean>;
+    clearPassword(): Promise<boolean>;
 }

@@ -97,6 +97,7 @@ class AndroidSeekDreamMDM {
                 color: null,
                 createTime: (0, dayjs_1.default)(device.add_time).format("YYYYMMDDHHmmss"),
                 merchantId: device.merchant_id,
+                imei: device.imei,
             };
         }
         catch {
@@ -245,14 +246,65 @@ class AndroidSeekDreamMDM {
             return false;
         }
     }
-    async setADB(enabled) {
-        throw new Error("method_not_implemented");
-    }
-    async setFactoryReset(enabled) {
-        throw new Error("method_not_implemented");
-    }
     async getCredit() {
         return { credit: 0 };
+    }
+    async reboot() {
+        if (this.query.brand !== "android-seekdream")
+            throw new Error("invalid_brand");
+        if (!this.query.merchantId)
+            throw new Error("merchant_id_not_found");
+        try {
+            const response = await this.sendCommand("/google/reboot", {
+                serial: this.query.serialNumber,
+                merchant_id: this.query.merchantId,
+            });
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
+            return response.ok;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+    async playSound() {
+        if (this.query.brand !== "android-seekdream")
+            throw new Error("invalid_brand");
+        if (!this.query.merchantId)
+            throw new Error("merchant_id_not_found");
+        try {
+            const response = await this.sendCommand("/google/playSound", {
+                serial: this.query.serialNumber,
+                merchant_id: this.query.merchantId,
+            });
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
+            return response.ok;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+    async clearPassword() {
+        if (this.query.brand !== "android-seekdream")
+            throw new Error("invalid_brand");
+        if (!this.query.merchantId)
+            throw new Error("merchant_id_not_found");
+        try {
+            const response = await this.sendCommand("/google/clearPassword", {
+                serial: this.query.serialNumber,
+                merchant_id: this.query.merchantId,
+            });
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
+            return response.ok;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
     }
 }
 exports.AndroidSeekDreamMDM = AndroidSeekDreamMDM;
