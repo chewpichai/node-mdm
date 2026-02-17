@@ -124,11 +124,11 @@ class AppleMDM {
             });
             const data = await response.json();
             console.log("enableLostMode", data);
-            return data.status === 200;
+            return [data.status === 200, data.data.commandId];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
     }
     async disableLostMode() {
@@ -136,12 +136,13 @@ class AppleMDM {
             throw new Error("mdm_id_not_found");
         try {
             const response = await this.sendCommand("/mdm/saas/device/renewRegulation", { id: this.query.mdmId });
-            const { status } = await response.json();
-            return status === 200;
+            const data = await response.json();
+            console.log("disableLostMode", data);
+            return [data.status === 200, data.data.commandId];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
     }
     async refreshLocation() {
@@ -227,11 +228,11 @@ class AppleMDM {
             });
             const data = await response.json();
             console.log("hideApp", data);
-            return data.status === 200;
+            return [data.status === 200, data.data.commandId];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
     }
     async setPermissions(permissions) {
@@ -279,9 +280,6 @@ class AppleMDM {
             return false;
         }
     }
-    async getWallpapers() {
-        return [];
-    }
     async uploadWallpaper(wallpaper) {
         if (!this.query.mdmId)
             throw new Error("mdm_id_not_found");
@@ -322,6 +320,22 @@ class AppleMDM {
         response = await this.sendCommand("/merchant/saas/mdmBalance/getByMerchantId", {});
         const { data: { rechargeBalance }, } = await response.json();
         return { credit: rechargeBalance / price };
+    }
+    async getOperationHistory() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
+        const response = await this.sendCommand("/mdm/saas/deviceOperationLog/getDeviceOperationLogList", { limit: 10, page: 1, deviceId: this.query.mdmId });
+        const { data: { rows }, } = await response.json();
+        const tasks = rows.filter((row) => row.commandId !== null);
+        const commands = await Promise.all(tasks.map((task) => this.getCommand(task.commandId)));
+        return commands;
+    }
+    async getCommand(commandId) {
+        const response = await this.sendCommand("/mdm/saas/command/getCommand", {
+            id: commandId,
+        });
+        const { data } = await response.json();
+        return data;
     }
 }
 exports.AppleMDM = AppleMDM;

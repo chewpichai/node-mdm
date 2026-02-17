@@ -1,14 +1,8 @@
 import crypto from "crypto";
 import dayjs from "dayjs";
-import {
-  DeviceLocation,
-  DevicePermissions,
-  IMDM,
-  MDMDevice,
-  MDMQuery,
-} from ".";
+import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
 import { getCache } from "./lib/cache";
-import { MDMDeviceDetail, Wallpaper } from "./types";
+import { Wallpaper } from "./types";
 
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
@@ -125,17 +119,10 @@ export class AndroidSeekDreamMDM implements IMDM {
     }
   }
 
-  async getDeviceDetail(
-    deviceId?: number
-  ): Promise<MDMDeviceDetail | undefined> {
-    return;
-  }
-
-  async getEscrowKey(): Promise<string | undefined> {
-    return;
-  }
-
-  async enableLostMode(phoneNumber: string, content: string) {
+  async enableLostMode(
+    phoneNumber: string,
+    content: string
+  ): Promise<[boolean, number | null]> {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
@@ -148,15 +135,15 @@ export class AndroidSeekDreamMDM implements IMDM {
         phone: phoneNumber,
         content,
       });
-      const { status } = await response.json();
-      return status === "OK";
+      const { code } = await response.json();
+      return [code === 200, null];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
   }
 
-  async disableLostMode() {
+  async disableLostMode(): Promise<[boolean, number | null]> {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
@@ -167,16 +154,12 @@ export class AndroidSeekDreamMDM implements IMDM {
         serial: this.query.serialNumber,
         merchant_id: this.query.merchantId,
       });
-      const { status } = await response.json();
-      return status === "OK";
+      const { code } = await response.json();
+      return [code === 200, null];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
-  }
-
-  async refreshLocation() {
-    return false;
   }
 
   async getLocations() {
@@ -197,10 +180,6 @@ export class AndroidSeekDreamMDM implements IMDM {
         location: { lat: string; lng: string };
       }) => ({ lat, lng })
     ) as DeviceLocation[];
-  }
-
-  async enableSupervision() {
-    return;
   }
 
   async removeMDM(password: string) {
@@ -242,20 +221,8 @@ export class AndroidSeekDreamMDM implements IMDM {
     }
   }
 
-  async hideApp() {
-    return false;
-  }
-
-  async setPermissions(permissions: DevicePermissions) {
-    return false;
-  }
-
-  async disableProxy() {
-    return false;
-  }
-
-  async enableProxy() {
-    return false;
+  async hideApp(): Promise<[boolean, number | null]> {
+    return [false, null];
   }
 
   async getWallpapers() {
@@ -282,10 +249,6 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.error(error);
       return [];
     }
-  }
-
-  async uploadWallpaper(wallpaper: string) {
-    return false;
   }
 
   async setWallpaper(changeable: boolean, wallpaperId?: number) {

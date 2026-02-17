@@ -1,5 +1,5 @@
-import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
-import { MDMDeviceDetail, Wallpaper } from "./types";
+import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
+import { Wallpaper } from "./types";
 export declare class AndroidSeekDreamMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -9,21 +9,13 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
-    getDeviceDetail(deviceId?: number): Promise<MDMDeviceDetail | undefined>;
-    getEscrowKey(): Promise<string | undefined>;
-    enableLostMode(phoneNumber: string, content: string): Promise<boolean>;
-    disableLostMode(): Promise<boolean>;
-    refreshLocation(): Promise<boolean>;
+    enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | null]>;
+    disableLostMode(): Promise<[boolean, number | null]>;
     getLocations(): Promise<DeviceLocation[]>;
-    enableSupervision(): Promise<void>;
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
-    hideApp(): Promise<boolean>;
-    setPermissions(permissions: DevicePermissions): Promise<boolean>;
-    disableProxy(): Promise<boolean>;
-    enableProxy(): Promise<boolean>;
+    hideApp(): Promise<[boolean, number | null]>;
     getWallpapers(): Promise<Wallpaper[]>;
-    uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(changeable: boolean, wallpaperId?: number): Promise<boolean>;
     getCredit(): Promise<{
         credit: number;

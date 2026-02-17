@@ -4,7 +4,6 @@ import {
   MDMDevice,
   MDMDeviceDetail,
   MDMQuery,
-  Wallpaper,
 } from "./types";
 
 export interface IMDM {
@@ -21,35 +20,20 @@ export interface IMDM {
 
   getDevice: () => Promise<MDMDevice | undefined>;
 
-  getDeviceDetail: (deviceId?: number) => Promise<MDMDeviceDetail | undefined>;
+  enableLostMode: (
+    phoneNumber: string,
+    content: string
+  ) => Promise<[boolean, number | null]>;
 
-  getEscrowKey: () => Promise<string | undefined>;
-
-  enableLostMode: (phoneNumber: string, content: string) => Promise<boolean>;
-
-  disableLostMode: () => Promise<boolean>;
-
-  refreshLocation: () => Promise<boolean>;
+  disableLostMode: () => Promise<[boolean, number | null]>;
 
   getLocations: () => Promise<DeviceLocation[]>;
-
-  enableSupervision: () => Promise<void>;
 
   removeMDM: (password: string) => Promise<boolean>;
 
   removePassword: () => Promise<boolean>;
 
-  hideApp: () => Promise<boolean>;
-
-  setPermissions: (permissions: DevicePermissions) => Promise<boolean>;
-
-  disableProxy: () => Promise<boolean>;
-
-  enableProxy: () => Promise<boolean>;
-
-  getWallpapers: () => Promise<Wallpaper[]>;
-
-  uploadWallpaper: (wallpaper: string) => Promise<boolean>;
+  hideApp: () => Promise<[boolean, number | null]>;
 
   setWallpaper: (changeable: boolean, wallpaperId?: number) => Promise<boolean>;
 

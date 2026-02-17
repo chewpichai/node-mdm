@@ -1,20 +1,23 @@
 require("dotenv").config();
-import { getMDM } from "../dist";
+import { AppleMDM, getMDM } from "../dist";
 
-async () => {
-  const mdm = await getMDM({
+const testAppleMDM = async () => {
+  const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "LY4WN2H5KK",
+    serialNumber: "F6WJ25D7LT",
     brand: "apple",
-  });
+  })) as AppleMDM;
   console.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
   console.log("Device", device);
+
+  const commands = await mdm.getOperationHistory();
+  console.log("Commands", commands);
 };
 
-async () => {
+const testAndroidMDM = async () => {
   const mdm = await getMDM({
     applicationId: "BD0222",
     serialNumber: "",
@@ -27,7 +30,7 @@ async () => {
   console.log("Device", device);
 };
 
-(async () => {
+const testAndroidSeekdreamMDM = async () => {
   const mdm = await getMDM({
     applicationId: "",
     serialNumber: "13012704B6004299",
@@ -38,4 +41,10 @@ async () => {
   // Get mdmId from device.
   const device = await mdm.getDevice();
   console.log("Device", device);
+};
+
+(async () => {
+  await testAppleMDM();
+  // await testAndroidMDM();
+  // await testAndroidSeekdreamMDM();
 })();

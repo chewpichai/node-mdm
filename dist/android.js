@@ -89,12 +89,6 @@ class AndroidMDM {
             return undefined;
         }
     }
-    async getDeviceDetail(deviceId) {
-        return;
-    }
-    async getEscrowKey() {
-        return;
-    }
     async enableLostMode(phoneNumber, content) {
         if (this.query.brand !== "android")
             throw new Error("invalid_brand");
@@ -113,11 +107,11 @@ class AndroidMDM {
                 messageType: "1",
             });
             const { status } = await response.json();
-            return status === "OK";
+            return [status === "OK", null];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
     }
     async disableLostMode() {
@@ -138,15 +132,12 @@ class AndroidMDM {
                 messageType: "1",
             });
             const { status } = await response.json();
-            return status === "OK";
+            return [status === "OK", null];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
-    }
-    async refreshLocation() {
-        return false;
     }
     async getLocations() {
         if (!this.query.mdmId)
@@ -155,9 +146,6 @@ class AndroidMDM {
         const { data } = await response.json();
         return [{ lat: data.lat, lng: data.lon }];
     }
-    async enableSupervision() {
-        return;
-    }
     async removeMDM(password) {
         return this.setFactoryReset(false);
     }
@@ -165,22 +153,7 @@ class AndroidMDM {
         return false;
     }
     async hideApp() {
-        return false;
-    }
-    async setPermissions(permissions) {
-        return false;
-    }
-    async disableProxy() {
-        return false;
-    }
-    async enableProxy() {
-        return false;
-    }
-    async getWallpapers() {
-        return [];
-    }
-    async uploadWallpaper(wallpaper) {
-        return false;
+        return [false, null];
     }
     async setWallpaper() {
         if (this.query.brand !== "android")

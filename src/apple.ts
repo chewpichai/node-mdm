@@ -7,7 +7,7 @@ import {
   MDMQuery,
 } from ".";
 import { getCache } from "./lib/cache";
-import { MDMDeviceDetail } from "./types";
+import { MDMDeviceDetail, OperationHistory } from "./types";
 
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
@@ -143,7 +143,10 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async enableLostMode(phoneNumber: string, content: string) {
+  async enableLostMode(
+    phoneNumber: string,
+    content: string
+  ): Promise<[boolean, number | null]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -154,14 +157,14 @@ export class AppleMDM implements IMDM {
       });
       const data = await response.json();
       console.log("enableLostMode", data);
-      return data.status === 200;
+      return [data.status === 200, data.data.commandId];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
   }
 
-  async disableLostMode() {
+  async disableLostMode(): Promise<[boolean, number | null]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -169,11 +172,12 @@ export class AppleMDM implements IMDM {
         "/mdm/saas/device/renewRegulation",
         { id: this.query.mdmId }
       );
-      const { status } = await response.json();
-      return status === 200;
+      const data = await response.json();
+      console.log("disableLostMode", data);
+      return [data.status === 200, data.data.commandId];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
   }
 
@@ -262,7 +266,7 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async hideApp() {
+  async hideApp(): Promise<[boolean, number | null]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -272,10 +276,10 @@ export class AppleMDM implements IMDM {
       });
       const data = await response.json();
       console.log("hideApp", data);
-      return data.status === 200;
+      return [data.status === 200, data.data.commandId];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
   }
 
@@ -333,10 +337,6 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async getWallpapers() {
-    return [];
-  }
-
   async uploadWallpaper(wallpaper: string) {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
@@ -385,5 +385,34 @@ export class AppleMDM implements IMDM {
       data: { rechargeBalance },
     } = await response.json();
     return { credit: rechargeBalance / price };
+  }
+
+  async getOperationHistory() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
+    const response = await this.sendCommand(
+      "/mdm/saas/deviceOperationLog/getDeviceOperationLogList",
+      { limit: 10, page: 1, deviceId: this.query.mdmId }
+    );
+    const {
+      data: { rows },
+    } = await response.json();
+    const tasks = rows.filter(
+      (row: OperationHistory) => row.commandId !== null
+    );
+    const commands = await Promise.all(
+      tasks.map((task: { commandId: number }) =>
+        this.getCommand(task.commandId)
+      )
+    );
+    return commands;
+  }
+
+  async getCommand(commandId: number) {
+    const response = await this.sendCommand("/mdm/saas/command/getCommand", {
+      id: commandId,
+    });
+    const { data } = await response.json();
+    return data;
   }
 }

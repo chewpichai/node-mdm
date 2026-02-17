@@ -59,3 +59,41 @@ export type Wallpaper = {
     id: number;
     url: string;
 };
+export type OperationHistory = {
+    flag: number;
+    id: number;
+    deviceId: number;
+    operation: string;
+    description: string;
+    deleted: number;
+    creator: number;
+    createTime: string;
+    modifyTime: string;
+    commandId: number | null;
+    type: number;
+    createTimeValue: number;
+};
+export declare enum DoIt {
+    "notExecuted" = 0,
+    "executed" = 1,
+    "success" = 2,
+    "failed" = 3,
+    "CheckOut" = 4,
+    "notSent" = 5,
+    "notFullyExecuted" = 6,
+    "abandoned" = 7
+}
+export type Command = {
+    id: number;
+    uid: number;
+    mid: number;
+    deviceId: number;
+    command: "DeviceInformation" | "InstallProfile" | "RemoveProfile" | "Settings" | "ActivationLockBypassCode" | "ClearPasscode" | "EnableLostMode" | "DisableLostMode" | "DeviceLocation" | "ScheduleOSUpdate";
+    udid: string;
+    doIt: DoIt;
+    creator: number;
+    createTime: string;
+    modifyTime: string;
+    commandItem: number;
+    commandName: string;
+};

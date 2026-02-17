@@ -1,13 +1,6 @@
 import dayjs from "dayjs";
-import {
-  DeviceLocation,
-  DevicePermissions,
-  IMDM,
-  MDMDevice,
-  MDMQuery,
-} from ".";
+import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
 import { getCache } from "./lib/cache";
-import { MDMDeviceDetail } from "./types";
 
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
@@ -101,17 +94,10 @@ export class AndroidMDM implements IMDM {
     }
   }
 
-  async getDeviceDetail(
-    deviceId?: number
-  ): Promise<MDMDeviceDetail | undefined> {
-    return;
-  }
-
-  async getEscrowKey(): Promise<string | undefined> {
-    return;
-  }
-
-  async enableLostMode(phoneNumber: string, content: string) {
+  async enableLostMode(
+    phoneNumber: string,
+    content: string
+  ): Promise<[boolean, number | null]> {
     if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
@@ -131,14 +117,14 @@ export class AndroidMDM implements IMDM {
         }
       );
       const { status } = await response.json();
-      return status === "OK";
+      return [status === "OK", null];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
   }
 
-  async disableLostMode() {
+  async disableLostMode(): Promise<[boolean, number | null]> {
     if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
@@ -158,15 +144,11 @@ export class AndroidMDM implements IMDM {
         }
       );
       const { status } = await response.json();
-      return status === "OK";
+      return [status === "OK", null];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, null];
     }
-  }
-
-  async refreshLocation() {
-    return false;
   }
 
   async getLocations() {
@@ -177,10 +159,6 @@ export class AndroidMDM implements IMDM {
     return [{ lat: data.lat, lng: data.lon }] as DeviceLocation[];
   }
 
-  async enableSupervision() {
-    return;
-  }
-
   async removeMDM(password: string) {
     return this.setFactoryReset(false);
   }
@@ -189,28 +167,8 @@ export class AndroidMDM implements IMDM {
     return false;
   }
 
-  async hideApp() {
-    return false;
-  }
-
-  async setPermissions(permissions: DevicePermissions) {
-    return false;
-  }
-
-  async disableProxy() {
-    return false;
-  }
-
-  async enableProxy() {
-    return false;
-  }
-
-  async getWallpapers() {
-    return [];
-  }
-
-  async uploadWallpaper(wallpaper: string) {
-    return false;
+  async hideApp(): Promise<[boolean, number | null]> {
+    return [false, null];
   }
 
   async setWallpaper() {

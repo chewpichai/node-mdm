@@ -1,4 +1,4 @@
-import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, Wallpaper } from "./types";
+import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery } from "./types";
 export interface IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -6,21 +6,12 @@ export interface IMDM {
     sendCommand: (url: string, data: Record<string, unknown>) => Promise<Response>;
     init: () => Promise<void>;
     getDevice: () => Promise<MDMDevice | undefined>;
-    getDeviceDetail: (deviceId?: number) => Promise<MDMDeviceDetail | undefined>;
-    getEscrowKey: () => Promise<string | undefined>;
-    enableLostMode: (phoneNumber: string, content: string) => Promise<boolean>;
-    disableLostMode: () => Promise<boolean>;
-    refreshLocation: () => Promise<boolean>;
+    enableLostMode: (phoneNumber: string, content: string) => Promise<[boolean, number | null]>;
+    disableLostMode: () => Promise<[boolean, number | null]>;
     getLocations: () => Promise<DeviceLocation[]>;
-    enableSupervision: () => Promise<void>;
     removeMDM: (password: string) => Promise<boolean>;
     removePassword: () => Promise<boolean>;
-    hideApp: () => Promise<boolean>;
-    setPermissions: (permissions: DevicePermissions) => Promise<boolean>;
-    disableProxy: () => Promise<boolean>;
-    enableProxy: () => Promise<boolean>;
-    getWallpapers: () => Promise<Wallpaper[]>;
-    uploadWallpaper: (wallpaper: string) => Promise<boolean>;
+    hideApp: () => Promise<[boolean, number | null]>;
     setWallpaper: (changeable: boolean, wallpaperId?: number) => Promise<boolean>;
     getCredit: () => Promise<{
         credit: number;

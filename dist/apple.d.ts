@@ -12,21 +12,22 @@ export declare class AppleMDM implements IMDM {
     getDevice(): Promise<MDMDevice | undefined>;
     getDeviceDetail(deviceId?: number): Promise<MDMDeviceDetail | undefined>;
     getEscrowKey(): Promise<string | undefined>;
-    enableLostMode(phoneNumber: string, content: string): Promise<boolean>;
-    disableLostMode(): Promise<boolean>;
+    enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | null]>;
+    disableLostMode(): Promise<[boolean, number | null]>;
     refreshLocation(): Promise<boolean>;
     getLocations(): Promise<DeviceLocation[]>;
     enableSupervision(): Promise<void>;
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
-    hideApp(): Promise<boolean>;
+    hideApp(): Promise<[boolean, number | null]>;
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     disableProxy(): Promise<boolean>;
     enableProxy(): Promise<boolean>;
-    getWallpapers(): Promise<never[]>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(changeable: boolean): Promise<boolean>;
     getCredit(): Promise<{
         credit: number;
     }>;
+    getOperationHistory(): Promise<any[]>;
+    getCommand(commandId: number): Promise<any>;
 }

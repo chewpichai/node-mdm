@@ -104,12 +104,6 @@ class AndroidSeekDreamMDM {
             return;
         }
     }
-    async getDeviceDetail(deviceId) {
-        return;
-    }
-    async getEscrowKey() {
-        return;
-    }
     async enableLostMode(phoneNumber, content) {
         if (this.query.brand !== "android-seekdream")
             throw new Error("invalid_brand");
@@ -122,12 +116,12 @@ class AndroidSeekDreamMDM {
                 phone: phoneNumber,
                 content,
             });
-            const { status } = await response.json();
-            return status === "OK";
+            const { code } = await response.json();
+            return [code === 200, null];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
     }
     async disableLostMode() {
@@ -140,16 +134,13 @@ class AndroidSeekDreamMDM {
                 serial: this.query.serialNumber,
                 merchant_id: this.query.merchantId,
             });
-            const { status } = await response.json();
-            return status === "OK";
+            const { code } = await response.json();
+            return [code === 200, null];
         }
         catch (error) {
             console.error(error);
-            return false;
+            return [false, null];
         }
-    }
-    async refreshLocation() {
-        return false;
     }
     async getLocations() {
         if (!this.query.merchantId)
@@ -162,9 +153,6 @@ class AndroidSeekDreamMDM {
         const response = await this.sendCommand(`/google/getLocations?${params}`);
         const { data } = await response.json();
         return data.list.map(({ location: { lat, lng }, }) => ({ lat, lng }));
-    }
-    async enableSupervision() {
-        return;
     }
     async removeMDM(password) {
         if (this.query.brand !== "android-seekdream")
@@ -204,16 +192,7 @@ class AndroidSeekDreamMDM {
         }
     }
     async hideApp() {
-        return false;
-    }
-    async setPermissions(permissions) {
-        return false;
-    }
-    async disableProxy() {
-        return false;
-    }
-    async enableProxy() {
-        return false;
+        return [false, null];
     }
     async getWallpapers() {
         if (this.query.brand !== "android-seekdream")
@@ -236,9 +215,6 @@ class AndroidSeekDreamMDM {
             console.error(error);
             return [];
         }
-    }
-    async uploadWallpaper(wallpaper) {
-        return false;
     }
     async setWallpaper(changeable, wallpaperId) {
         if (this.query.brand !== "android-seekdream")
