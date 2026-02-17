@@ -107,11 +107,11 @@ class AndroidMDM {
                 messageType: "1",
             });
             const { status } = await response.json();
-            return [status === "OK", null];
+            return [status === "OK", undefined];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async disableLostMode() {
@@ -132,11 +132,11 @@ class AndroidMDM {
                 messageType: "1",
             });
             const { status } = await response.json();
-            return [status === "OK", null];
+            return [status === "OK", undefined];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async getLocations() {
@@ -153,7 +153,10 @@ class AndroidMDM {
         return false;
     }
     async hideApp() {
-        return [false, null];
+        return [false, undefined];
+    }
+    async uploadWallpaper(wallpaper) {
+        return true;
     }
     async setWallpaper() {
         if (this.query.brand !== "android")

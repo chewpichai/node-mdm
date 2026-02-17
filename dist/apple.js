@@ -4,6 +4,7 @@ exports.AppleMDM = void 0;
 exports.sleep = sleep;
 const _1 = require(".");
 const cache_1 = require("./lib/cache");
+const types_1 = require("./types");
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
 const MDM_PASSWORD = process.env.MDM_ISHALOU_PASSWORD;
@@ -124,11 +125,11 @@ class AppleMDM {
             });
             const data = await response.json();
             console.log("enableLostMode", data);
-            return [data.status === 200, data.data.commandId];
+            return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async disableLostMode() {
@@ -138,11 +139,11 @@ class AppleMDM {
             const response = await this.sendCommand("/mdm/saas/device/renewRegulation", { id: this.query.mdmId });
             const data = await response.json();
             console.log("disableLostMode", data);
-            return [data.status === 200, data.data.commandId];
+            return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async refreshLocation() {
@@ -195,9 +196,11 @@ class AppleMDM {
         if (!this.query.mdmId)
             throw new Error("mdm_id_not_found");
         try {
-            await this.sendCommand("/mdm/saas/device/deviceUnLock", {
+            const response = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
                 id: this.query.mdmId,
             });
+            const data = await response.json();
+            console.log("🚀 ~ AppleMDM ~ removeMDM ~ data:", data);
             return true;
         }
         catch (error) {
@@ -228,11 +231,11 @@ class AppleMDM {
             });
             const data = await response.json();
             console.log("hideApp", data);
-            return [data.status === 200, data.data.commandId];
+            return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async setPermissions(permissions) {
@@ -334,7 +337,9 @@ class AppleMDM {
         const response = await this.sendCommand("/mdm/saas/command/getCommand", {
             id: commandId,
         });
-        const { data } = await response.json();
+        const { status, data } = await response.json();
+        if (status !== 200)
+            return { id: commandId, doIt: types_1.DoIt.abandoned };
         return data;
     }
 }

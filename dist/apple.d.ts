@@ -1,5 +1,5 @@
 import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
-import { MDMDeviceDetail } from "./types";
+import { Command, MDMDeviceDetail, OperationHistory } from "./types";
 export declare function sleep(ms: number): Promise<unknown>;
 export declare class AppleMDM implements IMDM {
     tokenKey: string;
@@ -12,14 +12,14 @@ export declare class AppleMDM implements IMDM {
     getDevice(): Promise<MDMDevice | undefined>;
     getDeviceDetail(deviceId?: number): Promise<MDMDeviceDetail | undefined>;
     getEscrowKey(): Promise<string | undefined>;
-    enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | null]>;
-    disableLostMode(): Promise<[boolean, number | null]>;
+    enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
+    disableLostMode(): Promise<[boolean, number | undefined]>;
     refreshLocation(): Promise<boolean>;
     getLocations(): Promise<DeviceLocation[]>;
     enableSupervision(): Promise<void>;
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
-    hideApp(): Promise<[boolean, number | null]>;
+    hideApp(): Promise<[boolean, number | undefined]>;
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     disableProxy(): Promise<boolean>;
     enableProxy(): Promise<boolean>;
@@ -28,6 +28,6 @@ export declare class AppleMDM implements IMDM {
     getCredit(): Promise<{
         credit: number;
     }>;
-    getOperationHistory(): Promise<any[]>;
-    getCommand(commandId: number): Promise<any>;
+    getOperationHistory(): Promise<OperationHistory[]>;
+    getCommand(commandId: number): Promise<Command>;
 }

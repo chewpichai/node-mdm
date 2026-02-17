@@ -23,9 +23,9 @@ export interface IMDM {
   enableLostMode: (
     phoneNumber: string,
     content: string
-  ) => Promise<[boolean, number | null]>;
+  ) => Promise<[boolean, number | undefined]>;
 
-  disableLostMode: () => Promise<[boolean, number | null]>;
+  disableLostMode: () => Promise<[boolean, number | undefined]>;
 
   getLocations: () => Promise<DeviceLocation[]>;
 
@@ -33,7 +33,9 @@ export interface IMDM {
 
   removePassword: () => Promise<boolean>;
 
-  hideApp: () => Promise<[boolean, number | null]>;
+  hideApp: () => Promise<[boolean, number | undefined]>;
+
+  uploadWallpaper: (wallpaper: string) => Promise<boolean>;
 
   setWallpaper: (changeable: boolean, wallpaperId?: number) => Promise<boolean>;
 

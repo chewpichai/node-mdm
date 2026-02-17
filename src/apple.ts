@@ -7,7 +7,7 @@ import {
   MDMQuery,
 } from ".";
 import { getCache } from "./lib/cache";
-import { MDMDeviceDetail, OperationHistory } from "./types";
+import { Command, DoIt, MDMDeviceDetail, OperationHistory } from "./types";
 
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
@@ -146,7 +146,7 @@ export class AppleMDM implements IMDM {
   async enableLostMode(
     phoneNumber: string,
     content: string
-  ): Promise<[boolean, number | null]> {
+  ): Promise<[boolean, number | undefined]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -157,14 +157,14 @@ export class AppleMDM implements IMDM {
       });
       const data = await response.json();
       console.log("enableLostMode", data);
-      return [data.status === 200, data.data.commandId];
+      return [data.status === 200, data.data?.commandId];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | null]> {
+  async disableLostMode(): Promise<[boolean, number | undefined]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -174,10 +174,10 @@ export class AppleMDM implements IMDM {
       );
       const data = await response.json();
       console.log("disableLostMode", data);
-      return [data.status === 200, data.data.commandId];
+      return [data.status === 200, data.data?.commandId];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
@@ -240,9 +240,11 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      await this.sendCommand("/mdm/saas/device/deviceUnLock", {
+      const response = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
         id: this.query.mdmId,
       });
+      const data = await response.json();
+      console.log("🚀 ~ AppleMDM ~ removeMDM ~ data:", data);
       return true;
     } catch (error) {
       console.error(error);
@@ -266,7 +268,7 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async hideApp(): Promise<[boolean, number | null]> {
+  async hideApp(): Promise<[boolean, number | undefined]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -276,10 +278,10 @@ export class AppleMDM implements IMDM {
       });
       const data = await response.json();
       console.log("hideApp", data);
-      return [data.status === 200, data.data.commandId];
+      return [data.status === 200, data.data?.commandId];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
@@ -400,7 +402,7 @@ export class AppleMDM implements IMDM {
     const tasks = rows.filter(
       (row: OperationHistory) => row.commandId !== null
     );
-    const commands = await Promise.all(
+    const commands = await Promise.all<OperationHistory>(
       tasks.map((task: { commandId: number }) =>
         this.getCommand(task.commandId)
       )
@@ -412,7 +414,11 @@ export class AppleMDM implements IMDM {
     const response = await this.sendCommand("/mdm/saas/command/getCommand", {
       id: commandId,
     });
-    const { data } = await response.json();
-    return data;
+    const { status, data } = await response.json();
+
+    if (status !== 200)
+      return { id: commandId, doIt: DoIt.abandoned } as Command;
+
+    return data as Command;
   }
 }

@@ -9,12 +9,13 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
-    enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | null]>;
-    disableLostMode(): Promise<[boolean, number | null]>;
+    enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
+    disableLostMode(): Promise<[boolean, number | undefined]>;
     getLocations(): Promise<DeviceLocation[]>;
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
-    hideApp(): Promise<[boolean, number | null]>;
+    hideApp(): Promise<[boolean, number | undefined]>;
+    uploadWallpaper(wallpaper: string): Promise<boolean>;
     getWallpapers(): Promise<Wallpaper[]>;
     setWallpaper(changeable: boolean, wallpaperId?: number): Promise<boolean>;
     getCredit(): Promise<{

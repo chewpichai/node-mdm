@@ -116,12 +116,13 @@ class AndroidSeekDreamMDM {
                 phone: phoneNumber,
                 content,
             });
-            const { code } = await response.json();
-            return [code === 200, null];
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
+            return [data.code === 200, undefined];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async disableLostMode() {
@@ -134,12 +135,13 @@ class AndroidSeekDreamMDM {
                 serial: this.query.serialNumber,
                 merchant_id: this.query.merchantId,
             });
-            const { code } = await response.json();
-            return [code === 200, null];
+            const data = await response.json();
+            console.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
+            return [data.code === 200, undefined];
         }
         catch (error) {
             console.error(error);
-            return [false, null];
+            return [false, undefined];
         }
     }
     async getLocations() {
@@ -192,7 +194,10 @@ class AndroidSeekDreamMDM {
         }
     }
     async hideApp() {
-        return [false, null];
+        return [false, undefined];
+    }
+    async uploadWallpaper(wallpaper) {
+        return true;
     }
     async getWallpapers() {
         if (this.query.brand !== "android-seekdream")

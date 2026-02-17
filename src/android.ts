@@ -97,7 +97,7 @@ export class AndroidMDM implements IMDM {
   async enableLostMode(
     phoneNumber: string,
     content: string
-  ): Promise<[boolean, number | null]> {
+  ): Promise<[boolean, number | undefined]> {
     if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
@@ -117,14 +117,14 @@ export class AndroidMDM implements IMDM {
         }
       );
       const { status } = await response.json();
-      return [status === "OK", null];
+      return [status === "OK", undefined];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | null]> {
+  async disableLostMode(): Promise<[boolean, number | undefined]> {
     if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(
@@ -144,10 +144,10 @@ export class AndroidMDM implements IMDM {
         }
       );
       const { status } = await response.json();
-      return [status === "OK", null];
+      return [status === "OK", undefined];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
@@ -167,8 +167,12 @@ export class AndroidMDM implements IMDM {
     return false;
   }
 
-  async hideApp(): Promise<[boolean, number | null]> {
-    return [false, null];
+  async hideApp(): Promise<[boolean, number | undefined]> {
+    return [false, undefined];
+  }
+
+  async uploadWallpaper(wallpaper: string) {
+    return true;
   }
 
   async setWallpaper() {

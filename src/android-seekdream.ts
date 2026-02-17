@@ -122,7 +122,7 @@ export class AndroidSeekDreamMDM implements IMDM {
   async enableLostMode(
     phoneNumber: string,
     content: string
-  ): Promise<[boolean, number | null]> {
+  ): Promise<[boolean, number | undefined]> {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
@@ -135,15 +135,16 @@ export class AndroidSeekDreamMDM implements IMDM {
         phone: phoneNumber,
         content,
       });
-      const { code } = await response.json();
-      return [code === 200, null];
+      const data = await response.json();
+      console.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
+      return [data.code === 200, undefined];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | null]> {
+  async disableLostMode(): Promise<[boolean, number | undefined]> {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
@@ -154,11 +155,12 @@ export class AndroidSeekDreamMDM implements IMDM {
         serial: this.query.serialNumber,
         merchant_id: this.query.merchantId,
       });
-      const { code } = await response.json();
-      return [code === 200, null];
+      const data = await response.json();
+      console.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
+      return [data.code === 200, undefined];
     } catch (error) {
       console.error(error);
-      return [false, null];
+      return [false, undefined];
     }
   }
 
@@ -221,8 +223,12 @@ export class AndroidSeekDreamMDM implements IMDM {
     }
   }
 
-  async hideApp(): Promise<[boolean, number | null]> {
-    return [false, null];
+  async hideApp(): Promise<[boolean, number | undefined]> {
+    return [false, undefined];
+  }
+
+  async uploadWallpaper(wallpaper: string) {
+    return true;
   }
 
   async getWallpapers() {
