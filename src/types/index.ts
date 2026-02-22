@@ -21,6 +21,7 @@ export type MDMDevice = {
   createTime: string;
   merchantId?: string;
   imei?: string;
+  usbItunesStatus: 0 | 1;
 };
 
 export type MDMDeviceDetail = {

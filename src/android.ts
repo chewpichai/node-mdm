@@ -88,6 +88,7 @@ export class AndroidMDM implements IMDM {
         deviceAssignedBy: "",
         color: null,
         createTime: dayjs(device.enrollTime).format("YYYYMMDDHHmmss"),
+        usbItunesStatus: 0,
       };
     } catch {
       return undefined;

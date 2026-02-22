@@ -113,6 +113,7 @@ export class AndroidSeekDreamMDM implements IMDM {
         createTime: dayjs(device.add_time).format("YYYYMMDDHHmmss"),
         merchantId: device.merchant_id,
         imei: device.imei,
+        usbItunesStatus: 0,
       };
     } catch {
       return;

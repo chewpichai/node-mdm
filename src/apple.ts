@@ -421,4 +421,44 @@ export class AppleMDM implements IMDM {
 
     return data as Command;
   }
+
+  async disableUSB() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
+    try {
+      const response = await this.sendCommand(
+        "/mdm/saas/device/setUsbItunesStatus",
+        {
+          id: this.query.mdmId,
+          usbItunesStatus: 1,
+        }
+      );
+      const data = await response.json();
+      console.log("disableUSB", data);
+      return data.status === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  async enableUSB() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
+    try {
+      const response = await this.sendCommand(
+        "/mdm/saas/device/setUsbItunesStatus",
+        {
+          id: this.query.mdmId,
+          usbItunesStatus: 0,
+        }
+      );
+      const data = await response.json();
+      console.log("enableUSB", data);
+      return data.status === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
 }

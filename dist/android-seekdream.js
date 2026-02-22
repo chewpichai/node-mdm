@@ -98,6 +98,7 @@ class AndroidSeekDreamMDM {
                 createTime: (0, dayjs_1.default)(device.add_time).format("YYYYMMDDHHmmss"),
                 merchantId: device.merchant_id,
                 imei: device.imei,
+                usbItunesStatus: 0,
             };
         }
         catch {

@@ -30,4 +30,6 @@ export declare class AppleMDM implements IMDM {
     }>;
     getOperationHistory(): Promise<OperationHistory[]>;
     getCommand(commandId: number): Promise<Command>;
+    disableUSB(): Promise<boolean>;
+    enableUSB(): Promise<boolean>;
 }
