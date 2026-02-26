@@ -72,7 +72,7 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async getDevice(): Promise<MDMDevice | undefined> {
+  async _getDevice(): Promise<MDMDevice | undefined> {
     if (this.query.brand !== "apple") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand("/mdm/saas/device/queryPage", {
@@ -92,11 +92,23 @@ export class AppleMDM implements IMDM {
           rows: [device],
         },
       } = await response.json();
+      return device;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getDevice(): Promise<MDMDevice | undefined> {
+    if (this.query.brand !== "apple") throw new Error("invalid_brand");
+    try {
+      const device = await this._getDevice();
       this.query.mdmId = device?.id;
 
       if (device?.deviceStatus === DEVICE_STATUS.UNREGULATED) {
         await this.enableSupervision();
-        device.deviceStatus = DEVICE_STATUS.SUPERVISED;
+        const _device = await this._getDevice();
+        if (!_device) throw new Error("device_not_found");
+        device.deviceStatus = _device?.deviceStatus;
       }
 
       if (device?.httpProxyStatus === 1) {

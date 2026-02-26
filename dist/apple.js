@@ -56,7 +56,7 @@ class AppleMDM {
             }
         }
     }
-    async getDevice() {
+    async _getDevice() {
         if (this.query.brand !== "apple")
             throw new Error("invalid_brand");
         try {
@@ -73,10 +73,24 @@ class AppleMDM {
                 endDateValue: "",
             });
             const { data: { rows: [device], }, } = await response.json();
+            return device;
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    async getDevice() {
+        if (this.query.brand !== "apple")
+            throw new Error("invalid_brand");
+        try {
+            const device = await this._getDevice();
             this.query.mdmId = device?.id;
             if (device?.deviceStatus === _1.DEVICE_STATUS.UNREGULATED) {
                 await this.enableSupervision();
-                device.deviceStatus = _1.DEVICE_STATUS.SUPERVISED;
+                const _device = await this._getDevice();
+                if (!_device)
+                    throw new Error("device_not_found");
+                device.deviceStatus = _device?.deviceStatus;
             }
             if (device?.httpProxyStatus === 1) {
                 await this.disableProxy();
