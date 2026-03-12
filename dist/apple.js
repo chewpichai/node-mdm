@@ -390,5 +390,19 @@ class AppleMDM {
             return false;
         }
     }
+    async updateOS() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
+        try {
+            const response = await this.sendCommand("/mdm/saas/device/scheduleOSUpdate", { id: this.query.mdmId });
+            const data = await response.json();
+            console.log("updateOS", data);
+            return data.status === 200;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
 }
 exports.AppleMDM = AppleMDM;

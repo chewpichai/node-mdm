@@ -2,13 +2,13 @@
 
     $ yarn add chewpichai/node-mdm
 
-A lightweight Node.js SDK to interact with internal MDM services (Ishalou + Android) with Redis-backed caching for performance and credential-based authentication helpers.
+A lightweight Node.js SDK to interact with internal MDM services (Ishalou, Android, and Android-SeekDream) with in-memory caching for performance and credential-based authentication helpers.
 
 ## Features
 
-- Unified client for Ishalou and Android MDM endpoints
+- Unified client for Ishalou, Android, and Android-SeekDream MDM endpoints
 - Promise-based API
-- Centralized auth handling
+- Centralized auth handling with `node-cache`
 - Typed responses (if using TypeScript consumers)
 - Minimal external dependencies
 
@@ -29,17 +29,18 @@ pnpm add chewpichai/node-mdm
 
 ## Environment Variables
 
-**MDM_ISHALOU_URL** - URL for ishalou server.
+**MDM_ISHALOU_URL** - URL for Ishalou server (Apple).
+**MDM_ISHALOU_USERNAME** - Username for Ishalou server.
+**MDM_ISHALOU_PASSWORD** - Password for Ishalou server.
 
-**MDM_ISHALOU_USERNAME** - Username for ishalou server.
+**MDM_ANDROID_URL** - URL for Android server.
+**MDM_ANDROID_USERNAME** - Username for Android server.
+**MDM_ANDROID_PASSWORD** - Password for Android server.
 
-**MDM_ISHALOU_PASSWORD** - Password for ishalou server.
-
-**MDM_ANDROID_URL** - URL for android server.
-
-**MDM_ANDROID_USERNAME** - Username for android server.
-
-**MDM_ANDROID_PASSWORD** - Password for android server.
+**MDM_SEEKDREAM_URL** - URL for Android-SeekDream server.
+**MDM_SEEKDREAM_USERNAME** - Username for Android-SeekDream server.
+**MDM_SEEKDREAM_PASSWORD** - Password for Android-SeekDream server.
+**MDM_SEEKDREAM_API_KEY** - API Key for Android-SeekDream server.
 
 ### Example .env
 
@@ -47,9 +48,15 @@ pnpm add chewpichai/node-mdm
 MDM_ISHALOU_URL=https://ishalou.internal
 MDM_ISHALOU_USERNAME=service_user
 MDM_ISHALOU_PASSWORD=secret
+
 MDM_ANDROID_URL=https://android.internal
 MDM_ANDROID_USERNAME=service_user
 MDM_ANDROID_PASSWORD=secret
+
+MDM_SEEKDREAM_URL=https://seekdream.internal
+MDM_SEEKDREAM_USERNAME=service_user
+MDM_SEEKDREAM_PASSWORD=secret
+MDM_SEEKDREAM_API_KEY=key_12345
 ```
 
 ## Configuration
@@ -69,61 +76,83 @@ const { getMDM } = require("node-mdm");
 
 (async () => {
   const mdm = await getMDM({
-    applicationId,
-    serialNumber,
-    brand: "apple" | "android",
+    applicationId: "app_id_123",
+    serialNumber: "SN_123",
+    brand: "apple", // "apple" | "android" | "android-seekdream"
+    // merchantId: "merchant_id", // For android-seekdream
   });
 
-  // Get mdmId from device.
+  // Get device from MDM.
   const device = await mdm.getDevice();
   console.log("Device", device);
 })();
 ```
 
-## API Overview (Placeholder)
+## API Overview
 
 ```text
 getMDM(options: MDMQuery)
-  -> returns Promise<AppleMDM | AndroidMDM>
+  -> returns Promise<AppleMDM | AndroidMDM | AndroidSeekDreamMDM>
 
 MDMQuery
   - applicationId: string
   - serialNumber: string
-  - mdmId: string | undefined
-  - brand: "apple" | "android"
+  - mdmId?: number
+  - merchantId?: string
+  - brand: "apple" | "android" | "android-seekdream"
 
 AppleMDM
   - getDevice()
-  - getDeviceDetail()
+  - getDeviceDetail(deviceId?: number)
   - getEscrowKey()
   - enableLostMode(phoneNumber: string, content: string)
   - disableLostMode()
   - refreshLocation()
   - getLocations()
   - enableSupervision()
-  - removeMDM()
+  - removeMDM(password: string)
   - removePassword()
   - hideApp()
   - setPermissions(permissions: DevicePermissions)
   - disableProxy()
   - enableProxy()
-  - getWallpaper()
-  - uploadWallpaper(imageBase64: string)
+  - uploadWallpaper(wallpaper: string)
   - setWallpaper(changeable: boolean)
   - getCredit()
+  - getOperationHistory()
+  - getCommand(commandId: number)
+  - disableUSB()
+  - enableUSB()
 
 AndroidMDM
   - getDevice()
   - enableLostMode(phoneNumber: string, content: string)
   - disableLostMode()
   - getLocations()
-  - removeMDM()
-  - setWallpaper(changeable: boolean)
-  - setADB(enabled)
+  - removeMDM(password: string)
+  - removePassword()
+  - hideApp()
+  - uploadWallpaper(wallpaper: string)
+  - setWallpaper()
+  - setADB(enabled: boolean)
   - setFactoryReset(enabled: boolean)
-```
+  - getCredit()
 
-(Adjust to actual implemented methods.)
+AndroidSeekDreamMDM
+  - getDevice()
+  - enableLostMode(phoneNumber: string, content: string)
+  - disableLostMode()
+  - getLocations()
+  - removeMDM(password: string)
+  - removePassword()
+  - hideApp()
+  - uploadWallpaper(wallpaper: string)
+  - getWallpapers()
+  - setWallpaper(changeable: boolean, wallpaperId?: number)
+  - getCredit()
+  - reboot()
+  - playSound()
+```
 
 ## TypeScript
 
@@ -138,8 +167,15 @@ import { getMDM } from "node-mdm";
 Batch device fetch:
 
 ```js
-const ids = ["a", "b", "c"];
-const results = await Promise.all(ids.map((id) => mdm.getDevice(id)));
+const ids = ["apple", "android", "android-seekdream"];
+const queries = ids.map((brand) => ({
+  applicationId: "a1",
+  serialNumber: "s1",
+  brand,
+}));
+const results = await Promise.all(
+  queries.map((q) => getMDM(q).then((mdm) => mdm.getDevice()))
+);
 ```
 
 ## Testing (Local)
@@ -148,8 +184,6 @@ const results = await Promise.all(ids.map((id) => mdm.getDevice(id)));
 # Unit tests
 yarn test
 ```
-
-Use a local Redis or a test container.
 
 ## Development (Repository)
 
@@ -166,7 +200,7 @@ Report vulnerabilities privately via security advisory channel (do not open publ
 
 ## License
 
-MIT (adjust if different)
+MIT
 
 ## Support
 
