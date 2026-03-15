@@ -215,7 +215,7 @@ class AppleMDM {
             });
             const data = await response.json();
             console.log("🚀 ~ AppleMDM ~ removeMDM ~ data:", data);
-            return true;
+            return data.status === 200;
         }
         catch (error) {
             console.error(error);
