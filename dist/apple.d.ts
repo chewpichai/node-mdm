@@ -34,4 +34,5 @@ export declare class AppleMDM implements IMDM {
     disableUSB(): Promise<boolean>;
     enableUSB(): Promise<boolean>;
     updateOS(): Promise<boolean>;
+    clearCommand(): Promise<boolean>;
 }

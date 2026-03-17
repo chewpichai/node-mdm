@@ -74,6 +74,7 @@ export class AppleMDM implements IMDM {
 
   async _getDevice(): Promise<MDMDevice | undefined> {
     if (this.query.brand !== "apple") throw new Error("invalid_brand");
+
     try {
       const response = await this.sendCommand("/mdm/saas/device/queryPage", {
         possessor: this.query.serialNumber ? "" : this.query.applicationId,
@@ -484,6 +485,26 @@ export class AppleMDM implements IMDM {
       );
       const data = await response.json();
       console.log("updateOS", data);
+      return data.status === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  async clearCommand() {
+    if (!this.query.mdmId) throw new Error("mdm_id_not_found");
+
+    try {
+      const device = await this.getDevice();
+
+      if (!device) return false;
+
+      const response = await fetch(
+        `https://mrsh.ishalou.net/api/mdm/admin/device/deleteCmd?serialNumber=${device.serialNumber}`
+      );
+      const data = await response.json();
+      console.log("🚀 ~ AppleMDM ~ clearCommand ~ data:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);

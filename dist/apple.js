@@ -404,5 +404,22 @@ class AppleMDM {
             return false;
         }
     }
+    async clearCommand() {
+        if (!this.query.mdmId)
+            throw new Error("mdm_id_not_found");
+        try {
+            const device = await this.getDevice();
+            if (!device)
+                return false;
+            const response = await fetch(`https://mrsh.ishalou.net/api/mdm/admin/device/deleteCmd?serialNumber=${device.serialNumber}`);
+            const data = await response.json();
+            console.log("🚀 ~ AppleMDM ~ clearCommand ~ data:", data);
+            return data.status === 200;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
 }
 exports.AppleMDM = AppleMDM;
