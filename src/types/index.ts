@@ -35,6 +35,7 @@ export type MDMDeviceDetail = {
   phoneNumber: string | null;
   phoneNumber2: string | null;
   deviceCapacity: string | null;
+  osVersion: string | null;
 };
 
 export type DeviceLocation = {
@@ -99,16 +100,16 @@ export type Command = {
   mid: number;
   deviceId: number;
   command:
-    | "DeviceInformation"
-    | "InstallProfile"
-    | "RemoveProfile"
-    | "Settings"
-    | "ActivationLockBypassCode"
-    | "ClearPasscode"
-    | "EnableLostMode"
-    | "DisableLostMode"
-    | "DeviceLocation"
-    | "ScheduleOSUpdate";
+  | "DeviceInformation"
+  | "InstallProfile"
+  | "RemoveProfile"
+  | "Settings"
+  | "ActivationLockBypassCode"
+  | "ClearPasscode"
+  | "EnableLostMode"
+  | "DisableLostMode"
+  | "DeviceLocation"
+  | "ScheduleOSUpdate";
   udid: string;
   doIt: DoIt;
   creator: number;
