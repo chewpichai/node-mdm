@@ -33,6 +33,7 @@ export type MDMDeviceDetail = {
     phoneNumber: string | null;
     phoneNumber2: string | null;
     deviceCapacity: string | null;
+    osVersion: string | null;
 };
 export type DeviceLocation = {
     deviceId: number;
