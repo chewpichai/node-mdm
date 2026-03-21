@@ -169,7 +169,7 @@ export class AppleMDM implements IMDM {
         id: this.query.mdmId,
       });
       const data = await response.json();
-      console.log("enableLostMode", data);
+      console.log("enableLostMode:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
       console.error(error);
@@ -186,7 +186,7 @@ export class AppleMDM implements IMDM {
         { id: this.query.mdmId }
       );
       const data = await response.json();
-      console.log("disableLostMode", data);
+      console.log("disableLostMode:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
       console.error(error);
@@ -202,8 +202,9 @@ export class AppleMDM implements IMDM {
         "/mdm/saas/deviceLocationNewest/deviceLocationSync",
         { deviceId: this.query.mdmId }
       );
-      const { status } = await response.json();
-      return status === 200;
+      const data = await response.json();
+      console.log("refreshLocation:", data);
+      return data.status === 200;
     } catch (error) {
       console.error(error);
       return false;
@@ -257,7 +258,7 @@ export class AppleMDM implements IMDM {
         id: this.query.mdmId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AppleMDM ~ removeMDM ~ data:", data);
+      console.log("removeMDM:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -273,8 +274,9 @@ export class AppleMDM implements IMDM {
         "/mdm/saas/device/setClearPasscode",
         { id: this.query.mdmId }
       );
-      const { status } = await response.json();
-      return status === 200;
+      const data = await response.json();
+      console.log("removePassword:", data);
+      return data.status === 200;
     } catch (error) {
       console.error(error);
       return false;
@@ -290,7 +292,7 @@ export class AppleMDM implements IMDM {
         rentIdentifierId: 81,
       });
       const data = await response.json();
-      console.log("hideApp", data);
+      console.log("hideApp:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
       console.error(error);
@@ -310,7 +312,7 @@ export class AppleMDM implements IMDM {
         }
       );
       const data = await response.json();
-      console.log("setPermissions", data);
+      console.log("setPermissions:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -327,7 +329,7 @@ export class AppleMDM implements IMDM {
         { id: this.query.mdmId }
       );
       const data = await response.json();
-      console.log("disableProxy", data);
+      console.log("disableProxy:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -344,7 +346,7 @@ export class AppleMDM implements IMDM {
         { id: this.query.mdmId }
       );
       const data = await response.json();
-      console.log("enableProxy", data);
+      console.log("enableProxy:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -361,7 +363,7 @@ export class AppleMDM implements IMDM {
         wallpager: wallpaper,
       });
       const data = await response.json();
-      console.log("uploadWallpaper", data);
+      console.log("uploadWallpaper:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -378,7 +380,7 @@ export class AppleMDM implements IMDM {
         wallgerStatus: changeable,
       });
       const data = await response.json();
-      console.log("setWallpaper", data);
+      console.log("setWallpaper:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -447,7 +449,7 @@ export class AppleMDM implements IMDM {
         }
       );
       const data = await response.json();
-      console.log("disableUSB", data);
+      console.log("disableUSB:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -467,7 +469,7 @@ export class AppleMDM implements IMDM {
         }
       );
       const data = await response.json();
-      console.log("enableUSB", data);
+      console.log("enableUSB:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -484,7 +486,7 @@ export class AppleMDM implements IMDM {
         { id: this.query.mdmId }
       );
       const data = await response.json();
-      console.log("updateOS", data);
+      console.log("updateOS:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
@@ -504,7 +506,7 @@ export class AppleMDM implements IMDM {
         `https://mrsh.ishalou.net/api/mdm/admin/device/deleteCmd?serialNumber=${device.serialNumber}`
       );
       const data = await response.json();
-      console.log("🚀 ~ AppleMDM ~ clearCommand ~ data:", data);
+      console.log("clearCommand:", data);
       return data.status === 200;
     } catch (error) {
       console.error(error);
