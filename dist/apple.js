@@ -73,6 +73,10 @@ class AppleMDM {
                 endDateValue: "",
             });
             const { data: { rows: [device], }, } = await response.json();
+            if (this.query.serialNumber &&
+                device.serialNumber !== this.query.serialNumber) {
+                throw new Error("device_not_found");
+            }
             return device;
         }
         catch (error) {

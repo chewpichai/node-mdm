@@ -70,6 +70,10 @@ class AndroidMDM {
             const device = data.data.devices.items[0];
             if (!device)
                 return undefined;
+            if (this.query.serialNumber &&
+                device.serial !== this.query.serialNumber) {
+                throw new Error("device_not_found");
+            }
             return {
                 id: device.id,
                 deviceStatus: 1,

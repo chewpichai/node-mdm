@@ -33,7 +33,7 @@ const testAndroidMDM = async () => {
 const testAndroidSeekdreamMDM = async () => {
   const mdm = await getMDM({
     applicationId: "",
-    serialNumber: "13012704B6004299",
+    serialNumber: "RFGL1139R4Y",
     brand: "android-seekdream",
   });
   console.log(mdm);
@@ -44,7 +44,7 @@ const testAndroidSeekdreamMDM = async () => {
 };
 
 (async () => {
-  await testAppleMDM();
+  // await testAppleMDM();
   // await testAndroidMDM();
-  // await testAndroidSeekdreamMDM();
+  await testAndroidSeekdreamMDM();
 })();

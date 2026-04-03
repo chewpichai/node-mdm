@@ -83,6 +83,10 @@ class AndroidSeekDreamMDM {
             const { data: { lists: [device], }, } = await response.json();
             if (!device)
                 return undefined;
+            if (this.query.serialNumber &&
+                device.dc_info.hardwareInfo.serialNumber !== this.query.serialNumber) {
+                throw new Error("device_not_found");
+            }
             return {
                 id: device.device_id,
                 deviceStatus: device.status_flag,

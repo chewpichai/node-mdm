@@ -1,12 +1,10 @@
 # NODE-MDM
 
-    $ yarn add chewpichai/node-mdm
-
 A lightweight Node.js SDK to interact with internal MDM services (Ishalou, Android, and Android-SeekDream) with in-memory caching for performance and credential-based authentication helpers.
 
 ## Features
 
-- Unified client for Ishalou, Android, and Android-SeekDream MDM endpoints
+- Unified client for Ishalou (Apple), Android, and Android-SeekDream MDM endpoints
 - Promise-based API
 - Centralized auth handling with `node-cache`
 - Typed responses (if using TypeScript consumers)
@@ -41,32 +39,24 @@ pnpm add chewpichai/node-mdm
 **MDM_SEEKDREAM_USERNAME** - Username for Android-SeekDream server.
 **MDM_SEEKDREAM_PASSWORD** - Password for Android-SeekDream server.
 **MDM_SEEKDREAM_API_KEY** - API Key for Android-SeekDream server.
+**MDM_SEEKDREAM_SECOND_PASSWORD** - (Optional) Second password for certain operations.
 
 ### Example .env
 
 ```env
-MDM_ISHALOU_URL=https://ishalou.internal
-MDM_ISHALOU_USERNAME=service_user
-MDM_ISHALOU_PASSWORD=secret
+MDM_ISHALOU_URL=https://mrsh.ishalou.com/api
+MDM_ISHALOU_USERNAME=18878756004
+MDM_ISHALOU_PASSWORD=123456
 
-MDM_ANDROID_URL=https://android.internal
-MDM_ANDROID_USERNAME=service_user
+MDM_ANDROID_URL=http://159.65.136.63:8080
+MDM_ANDROID_USERNAME=admin
 MDM_ANDROID_PASSWORD=secret
 
-MDM_SEEKDREAM_URL=https://seekdream.internal
-MDM_SEEKDREAM_USERNAME=service_user
+MDM_SEEKDREAM_URL=https://openapi.mdm.plus
+MDM_SEEKDREAM_USERNAME=0660614826514
 MDM_SEEKDREAM_PASSWORD=secret
-MDM_SEEKDREAM_API_KEY=key_12345
-```
-
-## Configuration
-
-Load environment variables early (dotenv or platform-specific).
-
-```js
-require("dotenv").config();
-const { getMDM } = require("node-mdm");
-// ... usage below ...
+MDM_SEEKDREAM_API_KEY=5eb1567ad0a72b05a38d55151d43182970
+MDM_SEEKDREAM_SECOND_PASSWORD=optional_second_secret
 ```
 
 ## Quick Usage
@@ -98,7 +88,7 @@ MDMQuery
   - applicationId: string
   - serialNumber: string
   - mdmId?: number
-  - merchantId?: string
+  - merchantId?: string (Required for android-seekdream)
   - brand: "apple" | "android" | "android-seekdream"
 
 AppleMDM
@@ -123,6 +113,8 @@ AppleMDM
   - getCommand(commandId: number)
   - disableUSB()
   - enableUSB()
+  - updateOS()
+  - clearCommand()
 
 AndroidMDM
   - getDevice()
@@ -156,10 +148,18 @@ AndroidSeekDreamMDM
 
 ## TypeScript
 
-Type definitions are bundled. Import using ES Module syntax if preferred:
+Type definitions are bundled. Import using ES Module syntax:
 
 ```ts
-import { getMDM } from "node-mdm";
+import { getMDM, MDMQuery, IMDM } from "node-mdm";
+
+const query: MDMQuery = {
+  applicationId: "a1",
+  serialNumber: "SN1",
+  brand: "apple",
+};
+
+const mdm: IMDM = await getMDM(query);
 ```
 
 ## Common Patterns
