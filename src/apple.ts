@@ -259,7 +259,7 @@ export class AppleMDM implements IMDM {
       });
       const data = await response.json();
       console.log("removeMDM:", data);
-      return data.status === 200;
+      return [11001009, 200].includes(data.status);
     } catch (error) {
       console.error(error);
       return false;
