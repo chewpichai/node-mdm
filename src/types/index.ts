@@ -56,7 +56,7 @@ export type DevicePermissions = {
 };
 
 export type MDMQuery = {
-  brand: "apple" | "android" | "android-seekdream";
+  brand: "apple" | "android" | "android-seekdream" | "apple-chewlabx";
   mdmId?: number;
   serialNumber: string;
   applicationId: string;
@@ -100,16 +100,16 @@ export type Command = {
   mid: number;
   deviceId: number;
   command:
-  | "DeviceInformation"
-  | "InstallProfile"
-  | "RemoveProfile"
-  | "Settings"
-  | "ActivationLockBypassCode"
-  | "ClearPasscode"
-  | "EnableLostMode"
-  | "DisableLostMode"
-  | "DeviceLocation"
-  | "ScheduleOSUpdate";
+    | "DeviceInformation"
+    | "InstallProfile"
+    | "RemoveProfile"
+    | "Settings"
+    | "ActivationLockBypassCode"
+    | "ClearPasscode"
+    | "EnableLostMode"
+    | "DisableLostMode"
+    | "DeviceLocation"
+    | "ScheduleOSUpdate";
   udid: string;
   doIt: DoIt;
   creator: number;

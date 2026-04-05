@@ -45,11 +45,13 @@ export interface IMDM {
 import { AndroidMDM } from "./android";
 import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
+import { AppleChewLabxMDM } from "./apple-chewlabx";
 
 const CLASSES = {
   apple: AppleMDM,
   android: AndroidMDM,
   "android-seekdream": AndroidSeekDreamMDM,
+  "apple-chewlabx": AppleChewLabxMDM,
 };
 
 export async function getMDM(query: MDMQuery) {
@@ -61,6 +63,7 @@ export { DEVICE_STATUS } from "./types";
 export {
   AndroidMDM,
   AndroidSeekDreamMDM,
+  AppleChewLabxMDM,
   AppleMDM,
   DeviceLocation,
   DevicePermissions,

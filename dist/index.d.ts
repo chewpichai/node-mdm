@@ -21,6 +21,7 @@ export interface IMDM {
 import { AndroidMDM } from "./android";
 import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
-export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleMDM | AndroidSeekDreamMDM>;
+import { AppleChewLabxMDM } from "./apple-chewlabx";
+export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleChewLabxMDM | AndroidSeekDreamMDM>;
 export { DEVICE_STATUS } from "./types";
-export { AndroidMDM, AndroidSeekDreamMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };
+export { AndroidMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };

@@ -43,8 +43,22 @@ const testAndroidSeekdreamMDM = async () => {
   console.log("Device", device);
 };
 
+const testAppleChewLabxMDM = async () => {
+  const mdm = await getMDM({
+    applicationId: "",
+    serialNumber: "DMPTD15QGXQ7",
+    brand: "apple-chewlabx",
+  });
+  console.log(mdm);
+
+  // Get mdmId from device.
+  const device = await mdm.getDevice();
+  console.log("Device", device);
+};
+
 (async () => {
   // await testAppleMDM();
   // await testAndroidMDM();
-  await testAndroidSeekdreamMDM();
+  // await testAndroidSeekdreamMDM();
+  await testAppleChewLabxMDM();
 })();
