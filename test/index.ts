@@ -59,6 +59,6 @@ const testAppleChewLabxMDM = async () => {
 (async () => {
   // await testAppleMDM();
   // await testAndroidMDM();
-  await testAndroidSeekdreamMDM();
-  // await testAppleChewLabxMDM();
+  // await testAndroidSeekdreamMDM();
+  await testAppleChewLabxMDM();
 })();
