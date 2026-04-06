@@ -117,10 +117,11 @@ export class AppleChewLabxMDM implements IMDM {
         phoneModel: device.model,
         commandContentList: null,
         deviceAssignedBy: device.device_assigned_by,
-        color: null,
+        color: device.color,
         createTime: dayjs(device.device_assigned_date).format("YYYYMMDDHHmmss"),
         imei: device.imei,
         usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
+        deviceCapacity: device.capacity,
       };
     } catch (error) {
       console.error(error);

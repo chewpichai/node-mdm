@@ -103,6 +103,7 @@ class AndroidSeekDreamMDM {
                 merchantId: device.merchant_id,
                 imei: device.imei,
                 usbItunesStatus: 0,
+                deviceCapacity: null,
             };
         }
         catch {

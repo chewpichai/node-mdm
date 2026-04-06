@@ -90,10 +90,11 @@ class AppleChewLabxMDM {
                 phoneModel: device.model,
                 commandContentList: null,
                 deviceAssignedBy: device.device_assigned_by,
-                color: null,
+                color: device.color,
                 createTime: (0, dayjs_1.default)(device.device_assigned_date).format("YYYYMMDDHHmmss"),
                 imei: device.imei,
                 usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
+                deviceCapacity: device.capacity,
             };
         }
         catch (error) {

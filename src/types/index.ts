@@ -22,6 +22,7 @@ export type MDMDevice = {
   merchantId?: string;
   imei?: string;
   usbItunesStatus: 0 | 1;
+  deviceCapacity: string | null;
 };
 
 export type MDMDeviceDetail = {

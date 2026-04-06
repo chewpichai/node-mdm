@@ -121,6 +121,7 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchantId: device.merchant_id,
         imei: device.imei,
         usbItunesStatus: 0,
+        deviceCapacity: null,
       };
     } catch {
       return;
