@@ -64,7 +64,26 @@ class AppleChewLabxMDM {
                 device.serial_number !== this.query.serialNumber) {
                 throw new Error("device_not_found");
             }
-            return device;
+            const functionRestrictData = JSON.stringify(Object.fromEntries(Object.entries(device.restrictions).map(([key, value]) => [
+                key,
+                value ? "true" : "false",
+            ])));
+            return {
+                id: device.id,
+                deviceStatus: device.status,
+                description: device.description,
+                serialNumber: device.serial_number,
+                activationLockStatus: 1,
+                functionRestrictData,
+                httpProxyStatus: 0,
+                phoneModel: device.model,
+                commandContentList: null,
+                deviceAssignedBy: device.device_assigned_by,
+                color: null,
+                createTime: device.device_assigned_date,
+                imei: device.imei,
+                usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
+            };
         }
         catch (error) {
             console.error(error);
@@ -159,7 +178,10 @@ class AppleChewLabxMDM {
     }
     async setPermissions(permissions) {
         try {
-            await this.sendCommand(`/devices/${this.query.serialNumber}/restrictions`, undefined, "PUT");
+            await this.sendCommand(`/devices/${this.query.serialNumber}/restrictions`, Object.fromEntries(Object.entries(permissions).map(([key, value]) => [
+                key,
+                value === "true",
+            ])), "PUT");
             return true;
         }
         catch (error) {
@@ -184,7 +206,7 @@ class AppleChewLabxMDM {
     }
     async updateOS() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/os-update`, undefined, "PUT");
+            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/os-update`, undefined, "POST");
             const { status } = await response.json();
             return status === "scheduling";
         }
