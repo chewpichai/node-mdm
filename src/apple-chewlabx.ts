@@ -29,14 +29,14 @@ export class AppleChewLabxMDM implements IMDM {
     this.query = query;
   }
 
-  async sendCommand(
+  sendCommand(
     url: string,
     data?: Record<string, unknown> | FormData,
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET"
   ) {
     if (!this.token) throw new Error("token_not_found");
 
-    return await fetch(`${MDM_URL}${url}`, {
+    return fetch(`${MDM_URL}${url}`, {
       method,
       headers: {
         ...(data instanceof FormData
@@ -44,7 +44,12 @@ export class AppleChewLabxMDM implements IMDM {
           : { "Content-Type": "application/json" }),
         authorization: `Bearer ${this.token}`,
       },
-      body: data instanceof FormData ? data : JSON.stringify(data),
+      body:
+        method === "GET"
+          ? undefined
+          : data instanceof FormData
+            ? data
+            : JSON.stringify(data),
     });
   }
 
@@ -133,8 +138,8 @@ export class AppleChewLabxMDM implements IMDM {
       const response = await this.sendCommand(
         `/devices/${this.query.serialNumber}/escrow-key`
       );
-      const { escrowKey } = await response.json();
-      return escrowKey;
+      const { escrow_key } = await response.json();
+      return escrow_key;
     } catch (error) {
       console.error(error);
     }

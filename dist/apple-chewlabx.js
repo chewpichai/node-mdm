@@ -20,10 +20,10 @@ class AppleChewLabxMDM {
         this.token = null;
         this.query = query;
     }
-    async sendCommand(url, data, method = "GET") {
+    sendCommand(url, data, method = "GET") {
         if (!this.token)
             throw new Error("token_not_found");
-        return await fetch(`${MDM_URL}${url}`, {
+        return fetch(`${MDM_URL}${url}`, {
             method,
             headers: {
                 ...(data instanceof FormData
@@ -31,7 +31,11 @@ class AppleChewLabxMDM {
                     : { "Content-Type": "application/json" }),
                 authorization: `Bearer ${this.token}`,
             },
-            body: data instanceof FormData ? data : JSON.stringify(data),
+            body: method === "GET"
+                ? undefined
+                : data instanceof FormData
+                    ? data
+                    : JSON.stringify(data),
         });
     }
     async init() {
@@ -104,8 +108,8 @@ class AppleChewLabxMDM {
     async getEscrowKey() {
         try {
             const response = await this.sendCommand(`/devices/${this.query.serialNumber}/escrow-key`);
-            const { escrowKey } = await response.json();
-            return escrowKey;
+            const { escrow_key } = await response.json();
+            return escrow_key;
         }
         catch (error) {
             console.error(error);

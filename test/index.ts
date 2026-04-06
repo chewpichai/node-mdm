@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { AppleMDM, getMDM } from "../dist";
+import { AppleChewLabxMDM, AppleMDM, getMDM } from "../dist";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
@@ -44,16 +44,19 @@ const testAndroidSeekdreamMDM = async () => {
 };
 
 const testAppleChewLabxMDM = async () => {
-  const mdm = await getMDM({
+  const mdm = (await getMDM({
     applicationId: "",
     serialNumber: "DMPTD15QGXQ7",
     brand: "apple-chewlabx",
-  });
+  })) as AppleChewLabxMDM;
   console.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
   console.log("Device", device);
+
+  const escrowKey = await mdm.getEscrowKey();
+  console.log("Escrow Key", escrowKey);
 };
 
 (async () => {
