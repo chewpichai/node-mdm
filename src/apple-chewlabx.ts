@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
   DeviceLocation,
   DevicePermissions,
@@ -41,7 +42,7 @@ export class AppleChewLabxMDM implements IMDM {
         ...(data instanceof FormData
           ? {}
           : { "Content-Type": "application/json" }),
-        authorization: this.token,
+        authorization: `Bearer ${this.token}`,
       },
       body: data instanceof FormData ? data : JSON.stringify(data),
     });
@@ -97,9 +98,17 @@ export class AppleChewLabxMDM implements IMDM {
         )
       );
 
+      const statusMap: Record<string, MDMDevice["deviceStatus"]> = {
+        normal: 0,
+        deleted: 2,
+        lost_mode: 3,
+        hide_apps: 4,
+      };
+      const deviceStatus = statusMap[device.status] ?? 1;
+
       return {
         id: device.id,
-        deviceStatus: device.status,
+        deviceStatus,
         description: device.description,
         serialNumber: device.serial_number,
         activationLockStatus: 1,
@@ -109,7 +118,7 @@ export class AppleChewLabxMDM implements IMDM {
         commandContentList: null,
         deviceAssignedBy: device.device_assigned_by,
         color: null,
-        createTime: device.device_assigned_date,
+        createTime: dayjs(device.device_assigned_date).format("YYYYMMDDHHmmss"),
         imei: device.imei,
         usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
       };

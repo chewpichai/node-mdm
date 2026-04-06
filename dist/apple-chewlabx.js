@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppleChewLabxMDM = void 0;
+const dayjs_1 = __importDefault(require("dayjs"));
 const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_CHEWLABX_URL;
 const MDM_USERNAME = process.env.MDM_CHEWLABX_USERNAME;
@@ -25,7 +29,7 @@ class AppleChewLabxMDM {
                 ...(data instanceof FormData
                     ? {}
                     : { "Content-Type": "application/json" }),
-                authorization: this.token,
+                authorization: `Bearer ${this.token}`,
             },
             body: data instanceof FormData ? data : JSON.stringify(data),
         });
@@ -68,9 +72,16 @@ class AppleChewLabxMDM {
                 key,
                 value ? "true" : "false",
             ])));
+            const statusMap = {
+                normal: 0,
+                deleted: 2,
+                lost_mode: 3,
+                hide_apps: 4,
+            };
+            const deviceStatus = statusMap[device.status] ?? 1;
             return {
                 id: device.id,
-                deviceStatus: device.status,
+                deviceStatus,
                 description: device.description,
                 serialNumber: device.serial_number,
                 activationLockStatus: 1,
@@ -80,7 +91,7 @@ class AppleChewLabxMDM {
                 commandContentList: null,
                 deviceAssignedBy: device.device_assigned_by,
                 color: null,
-                createTime: device.device_assigned_date,
+                createTime: (0, dayjs_1.default)(device.device_assigned_date).format("YYYYMMDDHHmmss"),
                 imei: device.imei,
                 usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
             };
