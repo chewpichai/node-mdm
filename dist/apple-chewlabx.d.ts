@@ -19,7 +19,8 @@ export declare class AppleChewLabxMDM implements IMDM {
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     setWallpaper(changeable: boolean, wallpaper?: number | File): Promise<boolean>;
     updateOS(): Promise<boolean>;
-    clearCommand(): Promise<boolean>;
+    disableUSB(): Promise<boolean>;
+    enableUSB(): Promise<boolean>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     getCredit(): Promise<{
         credit: number;

@@ -306,9 +306,28 @@ export class AppleChewLabxMDM implements IMDM {
     }
   }
 
-  async clearCommand() {
+  async disableUSB() {
     try {
-      throw new Error("not_implemented");
+      await this.sendCommand(
+        `/devices/${this.query.serialNumber}/restrictions`,
+        { allowUSBRestrictedMode: true },
+        "PUT"
+      );
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  async enableUSB() {
+    try {
+      await this.sendCommand(
+        `/devices/${this.query.serialNumber}/restrictions`,
+        { allowUSBRestrictedMode: false },
+        "PUT"
+      );
+      return true;
     } catch (error) {
       console.error(error);
       return false;
