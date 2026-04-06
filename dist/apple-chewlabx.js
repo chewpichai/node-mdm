@@ -28,7 +28,7 @@ class AppleChewLabxMDM {
             headers: {
                 ...(data instanceof FormData
                     ? {}
-                    : { "Content-Type": "application/json" }),
+                    : { "content-type": "application/json" }),
                 authorization: `Bearer ${this.token}`,
             },
             body: method === "GET"
@@ -120,6 +120,7 @@ class AppleChewLabxMDM {
             const response = await this.sendCommand(`/devices/${this.query.serialNumber}/lock`, {
                 message: content,
                 phone: phoneNumber,
+                footnote: phoneNumber,
             }, "PUT");
             const { status } = await response.json();
             return [status === "locking", undefined];

@@ -41,7 +41,7 @@ export class AppleChewLabxMDM implements IMDM {
       headers: {
         ...(data instanceof FormData
           ? {}
-          : { "Content-Type": "application/json" }),
+          : { "content-type": "application/json" }),
         authorization: `Bearer ${this.token}`,
       },
       body:
@@ -155,6 +155,7 @@ export class AppleChewLabxMDM implements IMDM {
         {
           message: content,
           phone: phoneNumber,
+          footnote: phoneNumber,
         },
         "PUT"
       );
