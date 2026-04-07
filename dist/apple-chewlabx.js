@@ -98,7 +98,7 @@ class AppleChewLabxMDM {
                 createTime: (0, dayjs_1.default)(device.device_assigned_date).format("YYYYMMDDHHmmss"),
                 imei: device.imei,
                 usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
-                deviceCapacity: `${device.capacity}GB`,
+                deviceCapacity: device.capacity ? `${device.capacity}GB` : "",
             };
         }
         catch (error) {

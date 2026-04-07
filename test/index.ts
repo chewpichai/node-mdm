@@ -46,17 +46,14 @@ const testAndroidSeekdreamMDM = async () => {
 const testAppleChewLabxMDM = async () => {
   const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "DMPG244HLM95",
+    serialNumber: "DMPTD15QGXQ7",
     brand: "apple-chewlabx",
   })) as AppleChewLabxMDM;
   console.log(mdm);
 
   // Get mdmId from device.
-  // const device = await mdm.getDevice();
-  // console.log("Device", device);
-
-  const result = await mdm.enableLostMode("0800000000", "test");
-  console.log("EnableLostMode", result);
+  const device = await mdm.getDevice();
+  console.log("Device", device);
 };
 
 (async () => {
