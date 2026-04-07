@@ -212,7 +212,7 @@ export class AppleChewLabxMDM implements IMDM {
   async removeMDM(password: string) {
     try {
       const response = await this.sendCommand(
-        `/devices/${this.query.serialNumber}/remove`,
+        `/devices/${this.query.serialNumber}`,
         undefined,
         "DELETE"
       );

@@ -163,7 +163,7 @@ class AppleChewLabxMDM {
     }
     async removeMDM(password) {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/remove`, undefined, "DELETE");
+            const response = await this.sendCommand(`/devices/${this.query.serialNumber}`, undefined, "DELETE");
             const { status } = await response.json();
             return status === "deleted";
         }
