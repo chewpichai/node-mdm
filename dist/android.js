@@ -89,6 +89,7 @@ class AndroidMDM {
                 createTime: (0, dayjs_1.default)(device.enrollTime).format("YYYYMMDDHHmmss"),
                 usbItunesStatus: 0,
                 deviceCapacity: null,
+                osVersion: null,
             };
         }
         catch {

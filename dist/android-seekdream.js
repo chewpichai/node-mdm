@@ -104,6 +104,7 @@ class AndroidSeekDreamMDM {
                 imei: device.imei,
                 usbItunesStatus: 0,
                 deviceCapacity: null,
+                osVersion: null,
             };
         }
         catch {

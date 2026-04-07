@@ -127,6 +127,7 @@ export class AppleChewLabxMDM implements IMDM {
         imei: device.imei,
         usbItunesStatus: device.restrictions.allowUSBRestrictedMode ? 1 : 0,
         deviceCapacity: device.capacity ? `${device.capacity}GB` : "",
+        osVersion: device.os_version ?? "",
       };
     } catch (error) {
       console.error(error);
