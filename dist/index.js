@@ -10,15 +10,19 @@ const apple_1 = require("./apple");
 Object.defineProperty(exports, "AppleMDM", { enumerable: true, get: function () { return apple_1.AppleMDM; } });
 const apple_chewlabx_1 = require("./apple-chewlabx");
 Object.defineProperty(exports, "AppleChewLabxMDM", { enumerable: true, get: function () { return apple_chewlabx_1.AppleChewLabxMDM; } });
-const CLASSES = {
-    apple: apple_1.AppleMDM,
-    android: android_1.AndroidMDM,
-    "android-seekdream": android_seekdream_1.AndroidSeekDreamMDM,
-    "apple-chewlabx": apple_chewlabx_1.AppleChewLabxMDM,
-};
 async function getMDM(query) {
-    const clz = CLASSES[query.brand];
-    return await clz.getInstance(query);
+    switch (query.brand) {
+        case "apple-chewlabx":
+            return await apple_chewlabx_1.AppleChewLabxMDM.getInstance(query);
+        case "android":
+            return await android_1.AndroidMDM.getInstance(query);
+        case "android-seekdream":
+            return await android_seekdream_1.AndroidSeekDreamMDM.getInstance(query);
+        case "apple":
+            return await apple_1.AppleMDM.getInstance(query);
+        default:
+            throw new Error("Invalid brand");
+    }
 }
 var types_1 = require("./types");
 Object.defineProperty(exports, "DEVICE_STATUS", { enumerable: true, get: function () { return types_1.DEVICE_STATUS; } });

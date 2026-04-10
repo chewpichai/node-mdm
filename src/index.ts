@@ -47,16 +47,19 @@ import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
 import { AppleChewLabxMDM } from "./apple-chewlabx";
 
-const CLASSES = {
-  apple: AppleMDM,
-  android: AndroidMDM,
-  "android-seekdream": AndroidSeekDreamMDM,
-  "apple-chewlabx": AppleChewLabxMDM,
-};
-
 export async function getMDM(query: MDMQuery) {
-  const clz = CLASSES[query.brand];
-  return await clz.getInstance(query);
+  switch (query.brand) {
+    case "apple-chewlabx":
+      return await AppleChewLabxMDM.getInstance(query);
+    case "android":
+      return await AndroidMDM.getInstance(query);
+    case "android-seekdream":
+      return await AndroidSeekDreamMDM.getInstance(query);
+    case "apple":
+      return await AppleMDM.getInstance(query);
+    default:
+      throw new Error("Invalid brand");
+  }
 }
 
 export { DEVICE_STATUS } from "./types";
