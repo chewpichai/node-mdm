@@ -24,6 +24,7 @@ export type MDMDevice = {
   usbItunesStatus: 0 | 1;
   deviceCapacity: string | null;
   osVersion: string | null;
+  lastOnlineTime?: string;
 };
 
 export type MDMDeviceDetail = {
@@ -36,8 +37,6 @@ export type MDMDeviceDetail = {
   mvno2: string | null;
   phoneNumber: string | null;
   phoneNumber2: string | null;
-  deviceCapacity: string | null;
-  osVersion: string | null;
 };
 
 export type DeviceLocation = {
@@ -58,7 +57,12 @@ export type DevicePermissions = {
 };
 
 export type MDMQuery = {
-  brand: "apple" | "android" | "android-seekdream" | "apple-chewlabx";
+  brand:
+    | "apple"
+    | "android"
+    | "android-seekdream"
+    | "apple-chewlabx"
+    | "apple-mdmlockphone";
   mdmId?: number;
   serialNumber: string;
   applicationId: string;

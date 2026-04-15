@@ -7,6 +7,9 @@ declare global {
       MDM_ISHALOU_URL: string;
       MDM_ISHALOU_USERNAME: string;
       MDM_ISHALOU_PASSWORD: string;
+      MDM_MDMLOCKPHONE_URL: string;
+      MDM_MDMLOCKPHONE_APPID: string;
+      MDM_MDMLOCKPHONE_APPSECRET: string;
       MDM_ANDROID_URL: string;
       MDM_ANDROID_USERNAME: string;
       MDM_ANDROID_PASSWORD: string;

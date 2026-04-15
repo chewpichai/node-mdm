@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppleMDM = exports.AppleChewLabxMDM = exports.AndroidSeekDreamMDM = exports.AndroidMDM = exports.DEVICE_STATUS = void 0;
+exports.AppleMDMLockPhoneMDM = exports.AppleMDM = exports.AppleChewLabxMDM = exports.AndroidSeekDreamMDM = exports.AndroidMDM = exports.DEVICE_STATUS = void 0;
 exports.getMDM = getMDM;
 const android_1 = require("./android");
 Object.defineProperty(exports, "AndroidMDM", { enumerable: true, get: function () { return android_1.AndroidMDM; } });
@@ -10,6 +10,8 @@ const apple_1 = require("./apple");
 Object.defineProperty(exports, "AppleMDM", { enumerable: true, get: function () { return apple_1.AppleMDM; } });
 const apple_chewlabx_1 = require("./apple-chewlabx");
 Object.defineProperty(exports, "AppleChewLabxMDM", { enumerable: true, get: function () { return apple_chewlabx_1.AppleChewLabxMDM; } });
+const apple_mdmlockphone_1 = require("./apple-mdmlockphone");
+Object.defineProperty(exports, "AppleMDMLockPhoneMDM", { enumerable: true, get: function () { return apple_mdmlockphone_1.AppleMDMLockPhoneMDM; } });
 async function getMDM(query) {
     switch (query.brand) {
         case "apple-chewlabx":
@@ -20,6 +22,8 @@ async function getMDM(query) {
             return await android_seekdream_1.AndroidSeekDreamMDM.getInstance(query);
         case "apple":
             return await apple_1.AppleMDM.getInstance(query);
+        case "apple-mdmlockphone":
+            return await apple_mdmlockphone_1.AppleMDMLockPhoneMDM.getInstance(query);
         default:
             throw new Error("Invalid brand");
     }
