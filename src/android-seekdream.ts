@@ -206,6 +206,8 @@ export class AndroidSeekDreamMDM implements IMDM {
         secondPassword: password,
         merchant_id: this.query.merchantId,
       });
+      const data = await response.json();
+      console.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
       return response.ok;
     } catch (error) {
       console.error(error);

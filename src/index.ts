@@ -65,7 +65,7 @@ export async function getMDM(query: MDMQuery) {
   }
 }
 
-export { DEVICE_STATUS } from "./types";
+export { DEVICE_STATUS, Wallpaper } from "./types";
 export {
   AndroidMDM,
   AndroidSeekDreamMDM,

@@ -182,7 +182,8 @@ class AndroidMDM {
                 }),
                 messageType: "1",
             });
-            return await response.json();
+            console.log("🚀 ~ AndroidMDM ~ setWallpaper ~ response:", await response.json());
+            return response.ok;
         }
         catch (error) {
             console.error(error);

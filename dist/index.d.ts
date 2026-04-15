@@ -24,5 +24,5 @@ import { AppleMDM } from "./apple";
 import { AppleChewLabxMDM } from "./apple-chewlabx";
 import { AppleMDMLockPhoneMDM } from "./apple-mdmlockphone";
 export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleMDM | AppleChewLabxMDM | AppleMDMLockPhoneMDM | AndroidSeekDreamMDM>;
-export { DEVICE_STATUS } from "./types";
+export { DEVICE_STATUS, Wallpaper } from "./types";
 export { AndroidMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, AppleMDMLockPhoneMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };
