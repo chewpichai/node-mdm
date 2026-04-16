@@ -62,7 +62,8 @@ export type MDMQuery = {
     | "android"
     | "android-seekdream"
     | "apple-chewlabx"
-    | "apple-mdmlockphone";
+    | "apple-mdmlockphone"
+    | "apple-seekdream";
   mdmId?: number;
   serialNumber: string;
   applicationId: string;

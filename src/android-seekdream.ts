@@ -8,7 +8,6 @@ const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
-const MDM_SEEKDREAM_SECOND_PASSWORD = process.env.MDM_SEEKDREAM_SECOND_PASSWORD;
 
 export class AndroidSeekDreamMDM implements IMDM {
   tokenKey: string;

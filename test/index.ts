@@ -1,6 +1,11 @@
 require("dotenv").config();
-import { AppleChewLabxMDM, AppleMDM, getMDM } from "../dist";
-import { AppleMDMLockPhoneMDM } from "../dist/apple-mdmlockphone";
+import {
+  AppleChewLabxMDM,
+  AppleMDM,
+  AppleMDMLockPhoneMDM,
+  AppleSeekDreamMDM,
+  getMDM,
+} from "../dist";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
@@ -79,10 +84,32 @@ const testAppleMDMLockPhoneMDM = async () => {
   // await mdm.setWallpaper(true, wallpaper);
 };
 
+const testAppleSeekDreamMDM = async () => {
+  const mdm = (await getMDM({
+    applicationId: "",
+    serialNumber: "JVWNY4HMXD",
+    brand: "apple-seekdream",
+  })) as AppleSeekDreamMDM;
+  console.log(mdm);
+
+  // Get mdmId from device.
+  const device = await mdm.getDevice();
+  console.log("Device", device);
+
+  // await mdm.enableLostMode("0812223333", "this is a test");
+  // await mdm.disableLostMode();
+  // await mdm.refreshLocation();
+  // const locations = await mdm.getLocations();
+  // console.log("Locations", locations);
+  const credit = await mdm.getCredit();
+  console.log("Credit", credit);
+};
+
 (async () => {
   // await testAppleMDM();
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  await testAppleMDMLockPhoneMDM();
+  // await testAppleMDMLockPhoneMDM();
+  await testAppleSeekDreamMDM();
 })();

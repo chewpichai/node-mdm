@@ -47,6 +47,7 @@ import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
 import { AppleChewLabxMDM } from "./apple-chewlabx";
 import { AppleMDMLockPhoneMDM } from "./apple-mdmlockphone";
+import { AppleSeekDreamMDM } from "./apple-seekdream";
 
 export async function getMDM(query: MDMQuery) {
   switch (query.brand) {
@@ -60,6 +61,8 @@ export async function getMDM(query: MDMQuery) {
       return await AppleMDM.getInstance(query);
     case "apple-mdmlockphone":
       return await AppleMDMLockPhoneMDM.getInstance(query);
+    case "apple-seekdream":
+      return await AppleSeekDreamMDM.getInstance(query);
     default:
       throw new Error("Invalid brand");
   }
@@ -72,6 +75,7 @@ export {
   AppleChewLabxMDM,
   AppleMDM,
   AppleMDMLockPhoneMDM,
+  AppleSeekDreamMDM,
   DeviceLocation,
   DevicePermissions,
   MDMDevice,

@@ -52,7 +52,7 @@ export type DevicePermissions = {
     allowAccountModification?: "true" | "false";
 };
 export type MDMQuery = {
-    brand: "apple" | "android" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone";
+    brand: "apple" | "android" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone" | "apple-seekdream";
     mdmId?: number;
     serialNumber: string;
     applicationId: string;
