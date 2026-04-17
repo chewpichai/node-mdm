@@ -8,6 +8,7 @@ const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
+const MDM_ROLE = process.env.MDM_SEEKDREAM_ROLE;
 
 export class AndroidSeekDreamMDM implements IMDM {
   tokenKey: string;
@@ -59,7 +60,7 @@ export class AndroidSeekDreamMDM implements IMDM {
             "X-API-Key": MDM_API_KEY,
           },
           body: JSON.stringify({
-            role: "agent",
+            role: MDM_ROLE,
             username: MDM_USERNAME,
             password: crypto
               .createHash("md5")

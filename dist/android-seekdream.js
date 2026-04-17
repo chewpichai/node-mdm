@@ -11,6 +11,7 @@ const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
+const MDM_ROLE = process.env.MDM_SEEKDREAM_ROLE;
 class AndroidSeekDreamMDM {
     static async getInstance(query) {
         const instance = new AndroidSeekDreamMDM(query);
@@ -53,7 +54,7 @@ class AndroidSeekDreamMDM {
                         "X-API-Key": MDM_API_KEY,
                     },
                     body: JSON.stringify({
-                        role: "agent",
+                        role: MDM_ROLE,
                         username: MDM_USERNAME,
                         password: crypto_1.default
                             .createHash("md5")
