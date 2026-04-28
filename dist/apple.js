@@ -41,8 +41,9 @@ class AppleMDM {
         this.token = cache.get(this.tokenKey);
         if (!this.token) {
             try {
-                await fetch(`${MDM_URL}/auth/jwt/app/login/mobileCode?type=1&mobile=${MDM_USERNAME}`);
-                const response = await fetch(`${MDM_URL}/auth/jwt/user/mobile/token`, {
+                let response = await fetch(`${MDM_URL}/auth/jwt/app/login/mobileCode?type=1&mobile=${MDM_USERNAME}`);
+                console.log("🚀 ~ AppleMDM ~ init ~ response:", await response.json());
+                response = await fetch(`${MDM_URL}/auth/jwt/user/mobile/token`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ mobile: MDM_USERNAME, code: MDM_PASSWORD }),
