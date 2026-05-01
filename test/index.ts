@@ -65,8 +65,9 @@ const testAppleChewLabxMDM = async () => {
 const testAppleMDMLockPhoneMDM = async () => {
   const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "FK1ZR4QGN70V",
+    serialNumber: "G54W92L49D",
     brand: "apple-mdmlockphone",
+    mdmId: 9,
   })) as AppleMDMLockPhoneMDM;
   console.log(mdm);
 
@@ -82,6 +83,8 @@ const testAppleMDMLockPhoneMDM = async () => {
   // await mdm.refreshLocation();
   // await mdm.removePassword();
   // await mdm.setWallpaper(true, wallpaper);
+  // console.log("Escrow Key =", await mdm.getEscrowKey());
+  // await mdm.updateOS();
 };
 
 const testAppleSeekDreamMDM = async () => {
@@ -110,6 +113,6 @@ const testAppleSeekDreamMDM = async () => {
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  // await testAppleMDMLockPhoneMDM();
-  await testAppleSeekDreamMDM();
+  await testAppleMDMLockPhoneMDM();
+  // await testAppleSeekDreamMDM();
 })();

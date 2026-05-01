@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import {
+  DEVICE_STATUS,
   DeviceLocation,
   DevicePermissions,
   IMDM,
@@ -33,11 +34,11 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     this.query = query;
   }
 
-  async sendCommand(url: string, data: Record<string, unknown>) {
+  async sendCommand(url: string, data?: Record<string, unknown>) {
     if (!this.token) throw new Error("token_not_found");
 
     return await fetch(`${MDM_URL}${url}`, {
-      method: "POST",
+      method: data ? "POST" : "GET",
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${this.token}`,
@@ -71,6 +72,51 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     }
   }
 
+  async getDeviceStatus(): Promise<
+    (typeof DEVICE_STATUS)[keyof typeof DEVICE_STATUS]
+  > {
+    try {
+      const response = await this.sendCommand("/device/status", {
+        serialNo: this.query.serialNumber,
+      });
+      const {
+        data: { rentModeStatus, lostModeStatus },
+      } = await response.json();
+      return lostModeStatus === "1"
+        ? DEVICE_STATUS.LOST_LOCKED
+        : rentModeStatus === "1"
+          ? DEVICE_STATUS.RENT_LOCKED
+          : DEVICE_STATUS.SUPERVISED;
+    } catch (error) {
+      console.error(error);
+      return DEVICE_STATUS.UNREGULATED;
+    }
+  }
+
+  async getUSBItunesStatus() {
+    try {
+      const response = await this.sendCommand("/device/usb/status", {
+        serialNo: this.query.serialNumber,
+      });
+      const { data } = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getHttpProxyStatus() {
+    try {
+      const response = await this.sendCommand("/device/http_proxy/status", {
+        serialNo: this.query.serialNumber,
+      });
+      const { data } = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async getDevice(): Promise<MDMDevice | undefined> {
     if (this.query.brand !== "apple-mdmlockphone")
       throw new Error("invalid_brand");
@@ -79,6 +125,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const response = await this.sendCommand("/devicePage", {
         current: 1,
         serialNumber: this.query.serialNumber,
+        contractCode: this.query.applicationId,
         size: 10,
       });
       const {
@@ -94,21 +141,33 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         throw new Error("device_not_found");
       }
 
+      const [
+        functionRestrictData,
+        deviceStatus,
+        httpProxyStatus,
+        usbItunesStatus,
+      ] = await Promise.all([
+        this.getFunctionRestrictions(device.id),
+        this.getDeviceStatus(),
+        this.getHttpProxyStatus(),
+        this.getUSBItunesStatus(),
+      ]);
+
       return {
         id: device.id,
-        deviceStatus: device.status,
-        description: device.description,
+        deviceStatus,
+        description: device.salesRegion ?? device.description,
         serialNumber: device.sserialno,
         activationLockStatus: 0,
-        functionRestrictData: "",
-        httpProxyStatus: 0,
+        functionRestrictData: JSON.stringify(functionRestrictData),
+        httpProxyStatus,
         phoneModel: device.smodel,
         commandContentList: [],
         deviceAssignedBy: device.deviceAssignedBy,
         color: device.color,
         createTime: dayjs(device.tcreatetime).format("YYYYMMDDHHmmss"),
         imei: device.simei,
-        usbItunesStatus: 0,
+        usbItunesStatus,
         deviceCapacity: `${device.capacity}GB`,
         osVersion: device.sosversion,
         lastOnlineTime: dayjs(device.tlastusetime).format("YYYYMMDDHHmmss"),
@@ -118,8 +177,41 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     }
   }
 
+  async getFunctionRestrictions(deviceId: number) {
+    if (this.query.brand !== "apple-mdmlockphone")
+      throw new Error("invalid_brand");
+
+    try {
+      const response = await this.sendCommand("/function", {
+        deviceId,
+      });
+      const {
+        data: { functionRestrictData },
+      } = await response.json();
+      for (const key in functionRestrictData) {
+        functionRestrictData[key] = String(functionRestrictData[key]);
+      }
+      return functionRestrictData;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async getEscrowKey(): Promise<string | undefined> {
-    throw new Error("not_implemented");
+    if (this.query.brand !== "apple-mdmlockphone")
+      throw new Error("invalid_brand");
+
+    try {
+      const response = await this.sendCommand("/unlock/code", {
+        serialNo: this.query.serialNumber,
+      });
+      const {
+        data: [code],
+      } = await response.json();
+      return code.passCode;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async enableLostMode(
@@ -203,19 +295,94 @@ export class AppleMDMLockPhoneMDM implements IMDM {
   }
 
   async hideApp(): Promise<[boolean, number | undefined]> {
-    throw new Error("not_implemented");
+    return [false, undefined];
+    if (this.query.brand !== "apple-mdmlockphone")
+      throw new Error("invalid_brand");
+
+    try {
+      const response = await this.sendCommand("/appLimit", {
+        serialNo: this.query.serialNumber,
+        appLimitInfoDTOList: [
+          { bundleId: "com.TMBTOUCH.PRODUCTION" },
+          { bundleId: "com.bangkokbank.mbanking" },
+          { bundleId: "com.kasikornbank.retail.mbanking.wap" },
+          { bundleId: "com.kkp.kkpmobile" },
+          { bundleId: "com.krungsri.kma" },
+          { bundleId: "com.ktb.netbank" },
+          { bundleId: "com.ktc.tap.consumer" },
+          { bundleId: "com.scb.iphone" },
+          { bundleId: "com.tdcm.truemoneywallet" },
+          { bundleId: "com.uob.mightyth" },
+          { bundleId: "com.cimbthai.digital.mycimb" },
+          { bundleId: "com.lh.lhbu" },
+          { bundleId: "jp.naver.line" },
+          { bundleId: "com.gsb.mobilife.MyMo" },
+          { bundleId: "com.baac.amobileplus" },
+        ],
+        deviceId: this.query.mdmId,
+        limitType: 1,
+      });
+      const data = await response.json();
+      console.log("hideApp:", data);
+      return [data.code === 200, data.requestId];
+    } catch (error) {
+      console.error(error);
+      return [false, undefined];
+    }
   }
 
   async setPermissions(permissions: DevicePermissions) {
-    throw new Error("not_implemented");
+    if (this.query.brand !== "apple-mdmlockphone")
+      throw new Error("invalid_brand");
+
+    try {
+      const formattedPermissions = Object.fromEntries(
+        Object.entries(permissions).map(([key, value]) => [
+          key,
+          value === "true",
+        ])
+      );
+      const response = await this.sendCommand("/setFunction", {
+        deviceId: this.query.mdmId,
+        ...formattedPermissions,
+      });
+      const data = await response.json();
+      console.log("setPermissions:", data);
+      return data.code === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async disableProxy() {
-    throw new Error("not_implemented");
+    try {
+      const response = await this.sendCommand("/http/proxy", {
+        serialNo: this.query.serialNumber,
+        operationType: 0,
+      });
+      const data = await response.json();
+      console.log("disableProxy:", data);
+      return data.code === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async enableProxy() {
-    throw new Error("not_implemented");
+    try {
+      const response = await this.sendCommand("/http/proxy", {
+        serialNo: this.query.serialNumber,
+        operationType: 1,
+      });
+      const data = await response.json();
+      console.log("enableProxy:", data);
+      return data.code === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async uploadWallpaper(wallpaper: string) {
@@ -241,18 +408,60 @@ export class AppleMDMLockPhoneMDM implements IMDM {
   }
 
   async disableUSB() {
-    throw new Error("not_implemented");
+    try {
+      const response = await this.sendCommand("/policy/usb", {
+        serialNo: this.query.serialNumber,
+        operationType: 0,
+      });
+      const data = await response.json();
+      console.log("disableUSB:", data);
+      return data.code === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async enableUSB() {
-    throw new Error("not_implemented");
+    try {
+      const response = await this.sendCommand("/policy/usb", {
+        serialNo: this.query.serialNumber,
+        operationType: 1,
+      });
+      const data = await response.json();
+      console.log("enableUSB:", data);
+      return data.code === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async updateOS() {
-    throw new Error("not_implemented");
+    try {
+      const response = await this.sendCommand("/apple/gdfm", {
+        serialNo: this.query.serialNumber,
+      });
+      const data = await response.json();
+      console.log("updateOS:", data);
+      return data.code === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   async getCredit() {
-    return { credit: 0 };
+    try {
+      const response = await this.sendCommand("/balance/query");
+      const {
+        data: { balance },
+      } = await response.json();
+      console.log("getCredit:", balance);
+      return { credit: balance.apple as number };
+    } catch (error) {
+      console.error(error);
+      return { credit: 0 };
+    }
   }
 }
