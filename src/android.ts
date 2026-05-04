@@ -129,7 +129,7 @@ export class AndroidMDM implements IMDM {
       const { status } = await response.json();
       return [status === "OK", undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -156,7 +156,7 @@ export class AndroidMDM implements IMDM {
       const { status } = await response.json();
       return [status === "OK", undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -210,7 +210,7 @@ export class AndroidMDM implements IMDM {
       );
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -236,7 +236,7 @@ export class AndroidMDM implements IMDM {
       );
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -262,7 +262,7 @@ export class AndroidMDM implements IMDM {
       );
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }

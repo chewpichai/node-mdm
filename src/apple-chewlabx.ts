@@ -87,6 +87,8 @@ export class AppleChewLabxMDM implements IMDM {
       );
       const device = await response.json();
 
+      if (!device?.serial_number) throw new Error("device_not_found");
+
       if (
         this.query.serialNumber &&
         device.serial_number !== this.query.serialNumber
@@ -130,7 +132,7 @@ export class AppleChewLabxMDM implements IMDM {
         osVersion: device.os_version ?? "",
       };
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -142,7 +144,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { escrow_key } = await response.json();
       return escrow_key;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -163,7 +165,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return [status === "locking", undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -178,7 +180,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return [status === "unlocking", undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -193,7 +195,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return status === "success";
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -219,7 +221,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return status === "deleted";
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -234,7 +236,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return status === "clearing";
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -249,7 +251,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return [status === "hiding", undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -268,7 +270,7 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -287,7 +289,7 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -302,7 +304,7 @@ export class AppleChewLabxMDM implements IMDM {
       const { status } = await response.json();
       return status === "scheduling";
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -316,7 +318,7 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -330,7 +332,7 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }

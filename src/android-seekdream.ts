@@ -149,7 +149,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -169,7 +169,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -210,7 +210,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -230,7 +230,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -264,7 +264,7 @@ export class AndroidSeekDreamMDM implements IMDM {
         })
       ) as Wallpaper[];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [];
     }
   }
@@ -287,7 +287,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -311,7 +311,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -331,7 +331,7 @@ export class AndroidSeekDreamMDM implements IMDM {
       console.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }

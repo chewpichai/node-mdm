@@ -88,7 +88,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
           ? DEVICE_STATUS.RENT_LOCKED
           : DEVICE_STATUS.SUPERVISED;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return DEVICE_STATUS.UNREGULATED;
     }
   }
@@ -101,7 +101,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const { data } = await response.json();
       return data;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -113,7 +113,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const { data } = await response.json();
       return data;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -125,7 +125,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const response = await this.sendCommand("/devicePage", {
         current: 1,
         serialNumber: this.query.serialNumber,
-        contractCode: this.query.applicationId,
+        contractCode: this.query.serialNumber
+          ? undefined
+          : this.query.applicationId,
         size: 10,
       });
       const {
@@ -140,6 +142,8 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       ) {
         throw new Error("device_not_found");
       }
+
+      this.query.serialNumber = device.sserialno;
 
       const [
         functionRestrictData,
@@ -173,7 +177,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         lastOnlineTime: dayjs(device.tlastusetime).format("YYYYMMDDHHmmss"),
       };
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -193,7 +197,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       }
       return functionRestrictData;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -210,7 +214,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       } = await response.json();
       return code.passCode;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -230,7 +234,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("enableLostMode:", data);
       return [data.code === 200, data.requestId];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -245,7 +249,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("disableLostMode:", data);
       return [data.code === 200, data.requestId];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -274,7 +278,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("removeMDM:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -289,7 +293,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("removePassword:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -326,7 +330,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("hideApp:", data);
       return [data.code === 200, data.requestId];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -350,7 +354,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("setPermissions:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -365,7 +369,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("disableProxy:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -380,7 +384,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("enableProxy:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -402,7 +406,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("setWallpaper:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -417,7 +421,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("disableUSB:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -432,7 +436,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("enableUSB:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -446,7 +450,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("updateOS:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -460,7 +464,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       console.log("getCredit:", balance);
       return { credit: balance.apple as number };
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return { credit: 0 };
     }
   }

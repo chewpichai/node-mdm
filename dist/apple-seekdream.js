@@ -105,7 +105,7 @@ class AppleSeekDreamMDM {
             };
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getEscrowKey() {
@@ -122,7 +122,7 @@ class AppleSeekDreamMDM {
             return "";
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -138,7 +138,7 @@ class AppleSeekDreamMDM {
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -150,7 +150,7 @@ class AppleSeekDreamMDM {
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -180,7 +180,7 @@ class AppleSeekDreamMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -211,7 +211,7 @@ class AppleSeekDreamMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }

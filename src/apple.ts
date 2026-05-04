@@ -104,7 +104,7 @@ export class AppleMDM implements IMDM {
 
       return device;
     } catch (error) {
-      console.error(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
     }
   }
 
@@ -128,7 +128,7 @@ export class AppleMDM implements IMDM {
 
       return device;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -145,7 +145,7 @@ export class AppleMDM implements IMDM {
       const { data } = await response.json();
       return data;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -161,7 +161,7 @@ export class AppleMDM implements IMDM {
       } = await response.json();
       return escrowKey;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -181,12 +181,12 @@ export class AppleMDM implements IMDM {
       console.log("enableLostMode:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | undefined]> {
+  async disableLostMode(): Promise<[boolean, number | string | undefined]> {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -196,10 +196,11 @@ export class AppleMDM implements IMDM {
       );
       const data = await response.json();
       console.log("disableLostMode:", data);
-      return [data.status === 200, data.data?.commandId];
+      if (data !== 200) throw new Error(data.message);
+      return [true, data.data.commandId];
     } catch (error) {
-      console.error(error);
-      return [false, undefined];
+      console.warn(error);
+      return [false, (error as Error).message];
     }
   }
 
@@ -215,7 +216,7 @@ export class AppleMDM implements IMDM {
       console.log("refreshLocation:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -255,7 +256,7 @@ export class AppleMDM implements IMDM {
         allowAccountModification: "false",
       });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -270,7 +271,7 @@ export class AppleMDM implements IMDM {
       console.log("removeMDM:", data);
       return [11001009, 200].includes(data.status);
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -287,7 +288,7 @@ export class AppleMDM implements IMDM {
       console.log("removePassword:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -304,7 +305,7 @@ export class AppleMDM implements IMDM {
       console.log("hideApp:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -324,7 +325,7 @@ export class AppleMDM implements IMDM {
       console.log("setPermissions:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -341,7 +342,7 @@ export class AppleMDM implements IMDM {
       console.log("disableProxy:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -358,7 +359,7 @@ export class AppleMDM implements IMDM {
       console.log("enableProxy:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -375,7 +376,7 @@ export class AppleMDM implements IMDM {
       console.log("uploadWallpaper:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -392,7 +393,7 @@ export class AppleMDM implements IMDM {
       console.log("setWallpaper:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -461,7 +462,7 @@ export class AppleMDM implements IMDM {
       console.log("disableUSB:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -481,7 +482,7 @@ export class AppleMDM implements IMDM {
       console.log("enableUSB:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -498,7 +499,7 @@ export class AppleMDM implements IMDM {
       console.log("updateOS:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -518,7 +519,7 @@ export class AppleMDM implements IMDM {
       console.log("clearCommand:", data);
       return data.status === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }

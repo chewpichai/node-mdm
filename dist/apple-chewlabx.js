@@ -68,6 +68,8 @@ class AppleChewLabxMDM {
         try {
             const response = await this.sendCommand(`/devices/${this.query.serialNumber}`);
             const device = await response.json();
+            if (!device?.serial_number)
+                throw new Error("device_not_found");
             if (this.query.serialNumber &&
                 device.serial_number !== this.query.serialNumber) {
                 throw new Error("device_not_found");
@@ -103,7 +105,7 @@ class AppleChewLabxMDM {
             };
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getEscrowKey() {
@@ -113,7 +115,7 @@ class AppleChewLabxMDM {
             return escrow_key;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -127,7 +129,7 @@ class AppleChewLabxMDM {
             return [status === "locking", undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -138,7 +140,7 @@ class AppleChewLabxMDM {
             return [status === "unlocking", undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -149,7 +151,7 @@ class AppleChewLabxMDM {
             return status === "success";
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -168,7 +170,7 @@ class AppleChewLabxMDM {
             return status === "deleted";
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -179,7 +181,7 @@ class AppleChewLabxMDM {
             return status === "clearing";
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -190,7 +192,7 @@ class AppleChewLabxMDM {
             return [status === "hiding", undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -203,7 +205,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -218,7 +220,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -229,7 +231,7 @@ class AppleChewLabxMDM {
             return status === "scheduling";
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -239,7 +241,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -249,7 +251,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }

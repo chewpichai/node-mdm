@@ -81,7 +81,7 @@ class AppleMDM {
             return device;
         }
         catch (error) {
-            console.error(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getDevice() {
@@ -104,7 +104,7 @@ class AppleMDM {
             return device;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getDeviceDetail(deviceId) {
@@ -116,7 +116,7 @@ class AppleMDM {
             return data;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getEscrowKey() {
@@ -130,7 +130,7 @@ class AppleMDM {
             return escrowKey;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -147,7 +147,7 @@ class AppleMDM {
             return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -158,11 +158,13 @@ class AppleMDM {
             const response = await this.sendCommand("/mdm/saas/device/renewRegulation", { id: this.query.mdmId });
             const data = await response.json();
             console.log("disableLostMode:", data);
-            return [data.status === 200, data.data?.commandId];
+            if (data !== 200)
+                throw new Error(data.message);
+            return [true, data.data.commandId];
         }
         catch (error) {
-            console.error(error);
-            return [false, undefined];
+            console.warn(error);
+            return [false, error.message];
         }
     }
     async refreshLocation() {
@@ -175,7 +177,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -209,7 +211,7 @@ class AppleMDM {
             });
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async removeMDM(password) {
@@ -224,7 +226,7 @@ class AppleMDM {
             return [11001009, 200].includes(data.status);
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -238,7 +240,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -255,7 +257,7 @@ class AppleMDM {
             return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -272,7 +274,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -286,7 +288,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -300,7 +302,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -317,7 +319,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -334,7 +336,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -376,7 +378,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -393,7 +395,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -407,7 +409,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -424,7 +426,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }

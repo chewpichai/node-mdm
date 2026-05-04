@@ -128,7 +128,7 @@ class AndroidSeekDreamMDM {
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -147,7 +147,7 @@ class AndroidSeekDreamMDM {
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -179,7 +179,7 @@ class AndroidSeekDreamMDM {
             return response.ok;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -198,7 +198,7 @@ class AndroidSeekDreamMDM {
             return response.ok;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -226,7 +226,7 @@ class AndroidSeekDreamMDM {
             }));
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [];
         }
     }
@@ -248,7 +248,7 @@ class AndroidSeekDreamMDM {
             return response.ok;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -270,7 +270,7 @@ class AndroidSeekDreamMDM {
             return response.ok;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -289,7 +289,7 @@ class AndroidSeekDreamMDM {
             return response.ok;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }

@@ -25,7 +25,7 @@ export interface IMDM {
     content: string
   ) => Promise<[boolean, number | undefined]>;
 
-  disableLostMode: () => Promise<[boolean, number | undefined]>;
+  disableLostMode: () => Promise<[boolean, number | string | undefined]>;
 
   getLocations: () => Promise<DeviceLocation[]>;
 

@@ -126,7 +126,7 @@ export class AppleSeekDreamMDM implements IMDM {
         merchantId: device.merchant_id,
       };
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -146,7 +146,7 @@ export class AppleSeekDreamMDM implements IMDM {
       console.log("getEscrowKey:", data);
       return "";
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 
@@ -168,7 +168,7 @@ export class AppleSeekDreamMDM implements IMDM {
       console.log("enableLostMode:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -183,7 +183,7 @@ export class AppleSeekDreamMDM implements IMDM {
       console.log("disableLostMode:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return [false, undefined];
     }
   }
@@ -226,7 +226,7 @@ export class AppleSeekDreamMDM implements IMDM {
       console.log("removePassword:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }
@@ -262,7 +262,7 @@ export class AppleSeekDreamMDM implements IMDM {
       console.log("setWallpaper:", data);
       return data.code === 200;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       return false;
     }
   }

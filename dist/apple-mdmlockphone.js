@@ -74,7 +74,7 @@ class AppleMDMLockPhoneMDM {
                     : _1.DEVICE_STATUS.SUPERVISED;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return _1.DEVICE_STATUS.UNREGULATED;
         }
     }
@@ -87,7 +87,7 @@ class AppleMDMLockPhoneMDM {
             return data;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getHttpProxyStatus() {
@@ -99,7 +99,7 @@ class AppleMDMLockPhoneMDM {
             return data;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getDevice() {
@@ -109,7 +109,9 @@ class AppleMDMLockPhoneMDM {
             const response = await this.sendCommand("/devicePage", {
                 current: 1,
                 serialNumber: this.query.serialNumber,
-                contractCode: this.query.applicationId,
+                contractCode: this.query.serialNumber
+                    ? undefined
+                    : this.query.applicationId,
                 size: 10,
             });
             const { data: { records: [device], }, } = await response.json();
@@ -117,6 +119,7 @@ class AppleMDMLockPhoneMDM {
                 device?.sserialno !== this.query.serialNumber) {
                 throw new Error("device_not_found");
             }
+            this.query.serialNumber = device.sserialno;
             const [functionRestrictData, deviceStatus, httpProxyStatus, usbItunesStatus,] = await Promise.all([
                 this.getFunctionRestrictions(device.id),
                 this.getDeviceStatus(),
@@ -144,7 +147,7 @@ class AppleMDMLockPhoneMDM {
             };
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getFunctionRestrictions(deviceId) {
@@ -161,7 +164,7 @@ class AppleMDMLockPhoneMDM {
             return functionRestrictData;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async getEscrowKey() {
@@ -175,7 +178,7 @@ class AppleMDMLockPhoneMDM {
             return code.passCode;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -192,7 +195,7 @@ class AppleMDMLockPhoneMDM {
             return [data.code === 200, data.requestId];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -207,7 +210,7 @@ class AppleMDMLockPhoneMDM {
             return [data.code === 200, data.requestId];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -234,7 +237,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -249,7 +252,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -285,7 +288,7 @@ class AppleMDMLockPhoneMDM {
             return [data.code === 200, data.requestId];
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return [false, undefined];
         }
     }
@@ -306,7 +309,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -321,7 +324,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -336,7 +339,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -357,7 +360,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -372,7 +375,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -387,7 +390,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -401,7 +404,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return false;
         }
     }
@@ -413,7 +416,7 @@ class AppleMDMLockPhoneMDM {
             return { credit: balance.apple };
         }
         catch (error) {
-            console.error(error);
+            console.warn(error);
             return { credit: 0 };
         }
     }
