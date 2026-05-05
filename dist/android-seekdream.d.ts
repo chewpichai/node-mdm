@@ -10,7 +10,10 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
-    disableLostMode(): Promise<[boolean, number | undefined]>;
+    disableLostMode(): Promise<[
+        true,
+        number | undefined
+    ] | [false, string | undefined]>;
     getLocations(): Promise<DeviceLocation[]>;
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;

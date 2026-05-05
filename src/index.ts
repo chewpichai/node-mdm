@@ -25,7 +25,9 @@ export interface IMDM {
     content: string
   ) => Promise<[boolean, number | undefined]>;
 
-  disableLostMode: () => Promise<[boolean, number | string | undefined]>;
+  disableLostMode: () => Promise<
+    [true, number | undefined] | [false, string | undefined]
+  >;
 
   getLocations: () => Promise<DeviceLocation[]>;
 
@@ -68,7 +70,7 @@ export async function getMDM(query: MDMQuery) {
   }
 }
 
-export { DEVICE_STATUS, Wallpaper } from "./types";
+export { DeviceStatus, Wallpaper } from "./types";
 export {
   AndroidMDM,
   AndroidSeekDreamMDM,

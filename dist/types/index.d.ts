@@ -1,13 +1,13 @@
-export declare const DEVICE_STATUS: {
-    readonly UNREGULATED: 0;
-    readonly SUPERVISED: 1;
-    readonly DEREGULATED: 2;
-    readonly LOST_LOCKED: 3;
-    readonly RENT_LOCKED: 4;
-};
+export declare enum DeviceStatus {
+    UNREGULATED = 0,
+    SUPERVISED = 1,
+    DEREGULATED = 2,
+    LOST_LOCKED = 3,
+    RENT_LOCKED = 4
+}
 export type MDMDevice = {
     id: number;
-    deviceStatus: (typeof DEVICE_STATUS)[keyof typeof DEVICE_STATUS];
+    deviceStatus: DeviceStatus;
     description: string;
     serialNumber: string;
     activationLockStatus: 0 | 1;

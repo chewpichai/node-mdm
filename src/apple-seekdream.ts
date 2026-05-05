@@ -173,7 +173,9 @@ export class AppleSeekDreamMDM implements IMDM {
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | undefined]> {
+  async disableLostMode(): Promise<
+    [true, number | undefined] | [false, string | undefined]
+  > {
     try {
       const response = await this.sendCommand(
         `/device/unlock?serial=${this.query.serialNumber}`,

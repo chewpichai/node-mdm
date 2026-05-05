@@ -170,7 +170,9 @@ export class AppleChewLabxMDM implements IMDM {
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | undefined]> {
+  async disableLostMode(): Promise<
+    [true, number | undefined] | [false, string | undefined]
+  > {
     try {
       const response = await this.sendCommand(
         `/devices/${this.query.serialNumber}/unlock`,

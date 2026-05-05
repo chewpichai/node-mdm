@@ -134,7 +134,9 @@ export class AndroidMDM implements IMDM {
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | undefined]> {
+  async disableLostMode(): Promise<
+    [true, number | undefined] | [false, string | undefined]
+  > {
     if (this.query.brand !== "android") throw new Error("invalid_brand");
     try {
       const response = await this.sendCommand(

@@ -90,7 +90,7 @@ class AppleMDM {
         try {
             const device = await this._getDevice();
             this.query.mdmId = device?.id;
-            if (device?.deviceStatus === _1.DEVICE_STATUS.UNREGULATED) {
+            if (device?.deviceStatus === _1.DeviceStatus.UNREGULATED) {
                 await this.enableSupervision();
                 const _device = await this._getDevice();
                 if (!_device)
@@ -158,7 +158,7 @@ class AppleMDM {
             const response = await this.sendCommand("/mdm/saas/device/renewRegulation", { id: this.query.mdmId });
             const data = await response.json();
             console.log("disableLostMode:", data);
-            if (data !== 200)
+            if (data.status !== 200)
                 throw new Error(data.message);
             return [true, data.data.commandId];
         }

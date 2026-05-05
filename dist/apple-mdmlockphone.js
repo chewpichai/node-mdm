@@ -68,14 +68,14 @@ class AppleMDMLockPhoneMDM {
             });
             const { data: { rentModeStatus, lostModeStatus }, } = await response.json();
             return lostModeStatus === "1"
-                ? _1.DEVICE_STATUS.LOST_LOCKED
+                ? _1.DeviceStatus.LOST_LOCKED
                 : rentModeStatus === "1"
-                    ? _1.DEVICE_STATUS.RENT_LOCKED
-                    : _1.DEVICE_STATUS.SUPERVISED;
+                    ? _1.DeviceStatus.RENT_LOCKED
+                    : _1.DeviceStatus.SUPERVISED;
         }
         catch (error) {
             console.warn(error);
-            return _1.DEVICE_STATUS.UNREGULATED;
+            return _1.DeviceStatus.UNREGULATED;
         }
     }
     async getUSBItunesStatus() {

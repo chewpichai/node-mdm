@@ -154,7 +154,9 @@ export class AndroidSeekDreamMDM implements IMDM {
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | undefined]> {
+  async disableLostMode(): Promise<
+    [true, number | undefined] | [false, string | undefined]
+  > {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 

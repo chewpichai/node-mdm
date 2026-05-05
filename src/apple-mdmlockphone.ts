@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import {
-  DEVICE_STATUS,
   DeviceLocation,
   DevicePermissions,
+  DeviceStatus,
   IMDM,
   MDMDevice,
   MDMQuery,
@@ -72,9 +72,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     }
   }
 
-  async getDeviceStatus(): Promise<
-    (typeof DEVICE_STATUS)[keyof typeof DEVICE_STATUS]
-  > {
+  async getDeviceStatus(): Promise<DeviceStatus> {
     try {
       const response = await this.sendCommand("/device/status", {
         serialNo: this.query.serialNumber,
@@ -83,13 +81,13 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         data: { rentModeStatus, lostModeStatus },
       } = await response.json();
       return lostModeStatus === "1"
-        ? DEVICE_STATUS.LOST_LOCKED
+        ? DeviceStatus.LOST_LOCKED
         : rentModeStatus === "1"
-          ? DEVICE_STATUS.RENT_LOCKED
-          : DEVICE_STATUS.SUPERVISED;
+          ? DeviceStatus.RENT_LOCKED
+          : DeviceStatus.SUPERVISED;
     } catch (error) {
       console.warn(error);
-      return DEVICE_STATUS.UNREGULATED;
+      return DeviceStatus.UNREGULATED;
     }
   }
 
@@ -239,7 +237,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | undefined]> {
+  async disableLostMode(): Promise<
+    [true, number | undefined] | [false, string | undefined]
+  > {
     try {
       const response = await this.sendCommand("/unlock", {
         appid: MDM_APPID,

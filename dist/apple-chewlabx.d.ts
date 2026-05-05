@@ -10,7 +10,10 @@ export declare class AppleChewLabxMDM implements IMDM {
     getDevice(): Promise<MDMDevice | undefined>;
     getEscrowKey(): Promise<string | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
-    disableLostMode(): Promise<[boolean, number | undefined]>;
+    disableLostMode(): Promise<[
+        true,
+        number | undefined
+    ] | [false, string | undefined]>;
     refreshLocation(): Promise<boolean>;
     getLocations(): Promise<DeviceLocation[]>;
     removeMDM(password: string): Promise<boolean>;

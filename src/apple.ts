@@ -1,7 +1,7 @@
 import {
-  DEVICE_STATUS,
   DeviceLocation,
   DevicePermissions,
+  DeviceStatus,
   IMDM,
   MDMDevice,
   MDMQuery,
@@ -114,7 +114,7 @@ export class AppleMDM implements IMDM {
       const device = await this._getDevice();
       this.query.mdmId = device?.id;
 
-      if (device?.deviceStatus === DEVICE_STATUS.UNREGULATED) {
+      if (device?.deviceStatus === DeviceStatus.UNREGULATED) {
         await this.enableSupervision();
         const _device = await this._getDevice();
         if (!_device) throw new Error("device_not_found");
@@ -186,7 +186,9 @@ export class AppleMDM implements IMDM {
     }
   }
 
-  async disableLostMode(): Promise<[boolean, number | string | undefined]> {
+  async disableLostMode(): Promise<
+    [true, number | undefined] | [false, string | undefined]
+  > {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
@@ -196,7 +198,7 @@ export class AppleMDM implements IMDM {
       );
       const data = await response.json();
       console.log("disableLostMode:", data);
-      if (data !== 200) throw new Error(data.message);
+      if (data.status !== 200) throw new Error(data.message);
       return [true, data.data.commandId];
     } catch (error) {
       console.warn(error);

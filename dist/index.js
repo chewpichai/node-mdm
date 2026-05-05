@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppleSeekDreamMDM = exports.AppleMDMLockPhoneMDM = exports.AppleMDM = exports.AppleChewLabxMDM = exports.AndroidSeekDreamMDM = exports.AndroidMDM = exports.DEVICE_STATUS = void 0;
+exports.AppleSeekDreamMDM = exports.AppleMDMLockPhoneMDM = exports.AppleMDM = exports.AppleChewLabxMDM = exports.AndroidSeekDreamMDM = exports.AndroidMDM = exports.DeviceStatus = void 0;
 exports.getMDM = getMDM;
 const android_1 = require("./android");
 Object.defineProperty(exports, "AndroidMDM", { enumerable: true, get: function () { return android_1.AndroidMDM; } });
@@ -33,4 +33,4 @@ async function getMDM(query) {
     }
 }
 var types_1 = require("./types");
-Object.defineProperty(exports, "DEVICE_STATUS", { enumerable: true, get: function () { return types_1.DEVICE_STATUS; } });
+Object.defineProperty(exports, "DeviceStatus", { enumerable: true, get: function () { return types_1.DeviceStatus; } });
