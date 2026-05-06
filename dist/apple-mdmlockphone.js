@@ -131,7 +131,7 @@ class AppleMDMLockPhoneMDM {
                 deviceStatus,
                 description: device.salesRegion ?? device.description,
                 serialNumber: device.sserialno,
-                activationLockStatus: 0,
+                activationLockStatus: device.ilockstatus,
                 functionRestrictData: JSON.stringify(functionRestrictData),
                 httpProxyStatus,
                 phoneModel: device.smodel,
@@ -285,6 +285,25 @@ class AppleMDMLockPhoneMDM {
             });
             const data = await response.json();
             console.log("hideApp:", data);
+            return [data.code === 200, data.requestId];
+        }
+        catch (error) {
+            console.warn(error);
+            return [false, undefined];
+        }
+    }
+    async disableHideApp() {
+        if (this.query.brand !== "apple-mdmlockphone")
+            throw new Error("invalid_brand");
+        try {
+            const response = await this.sendCommand("/appLimit", {
+                serialNo: this.query.serialNumber,
+                appLimitInfoDTOList: [],
+                deviceId: this.query.mdmId,
+                limitType: 2,
+            });
+            const data = await response.json();
+            console.log("disableHideApp:", data);
             return [data.code === 200, data.requestId];
         }
         catch (error) {
