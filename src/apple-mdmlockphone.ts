@@ -342,7 +342,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     try {
       const response = await this.sendCommand("/appLimit", {
         serialNo: this.query.serialNumber,
-        appLimitInfoDTOList: [],
+        appLimitInfoDTOList: [{ bundleId: "" }],
         deviceId: this.query.mdmId,
         limitType: 2,
       });

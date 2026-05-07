@@ -8,6 +8,10 @@ const types_1 = require("./types");
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
 const MDM_PASSWORD = process.env.MDM_ISHALOU_PASSWORD;
+const ERRORS = {
+    "已存在未执行的相关指令,请勿重复操作": "existing_command_error",
+    设备状态错误: "device_status_error",
+};
 async function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -159,7 +163,7 @@ class AppleMDM {
             const data = await response.json();
             console.log("disableLostMode:", data);
             if (data.status !== 200)
-                throw new Error(data.message);
+                throw new Error(ERRORS[data.message] || data.message);
             return [true, data.data.commandId];
         }
         catch (error) {
