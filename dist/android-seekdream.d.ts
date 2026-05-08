@@ -1,5 +1,5 @@
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
-import { Wallpaper } from "./types";
+import { DeviceStatus, Wallpaper } from "./types";
 export declare class AndroidSeekDreamMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -9,6 +9,7 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
+    getDeviceStatus(flag: number): DeviceStatus.SUPERVISED | DeviceStatus.LOST_LOCKED | DeviceStatus.RENT_LOCKED;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
     disableLostMode(): Promise<[
         true,

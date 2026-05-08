@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
+import { DeviceLocation, DeviceStatus, IMDM, MDMDevice, MDMQuery } from ".";
 import { getCache } from "./lib/cache";
 
 const MDM_URL = process.env.MDM_ANDROID_URL;
@@ -84,7 +84,7 @@ export class AndroidMDM implements IMDM {
 
       return {
         id: device.id,
-        deviceStatus: 1,
+        deviceStatus: DeviceStatus.SUPERVISED,
         description: "",
         serialNumber: device.serial,
         activationLockStatus: 1,

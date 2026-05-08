@@ -7,6 +7,7 @@ exports.AppleSeekDreamMDM = void 0;
 exports.sleep = sleep;
 const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
+const _1 = require(".");
 const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
@@ -85,7 +86,7 @@ class AppleSeekDreamMDM {
             const [imei] = device.IMEI.split(",");
             return {
                 id: device.id,
-                deviceStatus: 0,
+                deviceStatus: _1.DeviceStatus.SUPERVISED,
                 description: device.device_description,
                 serialNumber: device.serial,
                 activationLockStatus: 0,

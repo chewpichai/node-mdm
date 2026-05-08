@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidMDM = void 0;
 const dayjs_1 = __importDefault(require("dayjs"));
+const _1 = require(".");
 const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
@@ -76,7 +77,7 @@ class AndroidMDM {
             }
             return {
                 id: device.id,
-                deviceStatus: 1,
+                deviceStatus: _1.DeviceStatus.SUPERVISED,
                 description: "",
                 serialNumber: device.serial,
                 activationLockStatus: 1,

@@ -2,7 +2,7 @@ import crypto from "crypto";
 import dayjs from "dayjs";
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
 import { getCache } from "./lib/cache";
-import { Wallpaper } from "./types";
+import { DeviceStatus, Wallpaper } from "./types";
 
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
@@ -107,7 +107,7 @@ export class AndroidSeekDreamMDM implements IMDM {
 
       return {
         id: device.device_id,
-        deviceStatus: device.status_flag,
+        deviceStatus: this.getDeviceStatus(device.status_flag),
         description: "",
         serialNumber: device.dc_info.hardwareInfo.serialNumber,
         activationLockStatus: 1,
@@ -127,6 +127,15 @@ export class AndroidSeekDreamMDM implements IMDM {
     } catch {
       return;
     }
+  }
+
+  getDeviceStatus(flag: number) {
+    const LOST_MODE = 8;
+    const RENT_MODE = 1024;
+
+    if (flag & LOST_MODE) return DeviceStatus.LOST_LOCKED;
+    if (flag & RENT_MODE) return DeviceStatus.RENT_LOCKED;
+    return DeviceStatus.SUPERVISED;
   }
 
   async enableLostMode(

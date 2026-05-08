@@ -7,6 +7,7 @@ exports.AndroidSeekDreamMDM = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const cache_1 = require("./lib/cache");
+const types_1 = require("./types");
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
@@ -89,7 +90,7 @@ class AndroidSeekDreamMDM {
             }
             return {
                 id: device.device_id,
-                deviceStatus: device.status_flag,
+                deviceStatus: this.getDeviceStatus(device.status_flag),
                 description: "",
                 serialNumber: device.dc_info.hardwareInfo.serialNumber,
                 activationLockStatus: 1,
@@ -110,6 +111,15 @@ class AndroidSeekDreamMDM {
         catch {
             return;
         }
+    }
+    getDeviceStatus(flag) {
+        const LOST_MODE = 8;
+        const RENT_MODE = 1024;
+        if (flag & LOST_MODE)
+            return types_1.DeviceStatus.LOST_LOCKED;
+        if (flag & RENT_MODE)
+            return types_1.DeviceStatus.RENT_LOCKED;
+        return types_1.DeviceStatus.SUPERVISED;
     }
     async enableLostMode(phoneNumber, content) {
         if (this.query.brand !== "android-seekdream")

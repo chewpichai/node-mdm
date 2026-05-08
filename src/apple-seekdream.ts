@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import {
   DeviceLocation,
   DevicePermissions,
+  DeviceStatus,
   IMDM,
   MDMDevice,
   MDMQuery,
@@ -107,7 +108,7 @@ export class AppleSeekDreamMDM implements IMDM {
 
       return {
         id: device.id,
-        deviceStatus: 0,
+        deviceStatus: DeviceStatus.SUPERVISED,
         description: device.device_description,
         serialNumber: device.serial,
         activationLockStatus: 0,
