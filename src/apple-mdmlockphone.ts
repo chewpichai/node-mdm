@@ -230,7 +230,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       const data = await response.json();
       console.log("enableLostMode:", data);
-      return [data.code === 200, data.requestId];
+      return [data.code === 200, undefined];
     } catch (error) {
       console.warn(error);
       return [false, undefined];
@@ -247,7 +247,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       const data = await response.json();
       console.log("disableLostMode:", data);
-      return [data.code === 200, data.requestId];
+      return [data.code === 200, undefined];
     } catch (error) {
       console.warn(error);
       return [false, undefined];
@@ -299,36 +299,17 @@ export class AppleMDMLockPhoneMDM implements IMDM {
   }
 
   async hideApp(): Promise<[boolean, number | undefined]> {
-    return [false, undefined];
     if (this.query.brand !== "apple-mdmlockphone")
       throw new Error("invalid_brand");
 
     try {
-      const response = await this.sendCommand("/appLimit", {
+      const response = await this.sendCommand("/collectRent", {
         serialNo: this.query.serialNumber,
-        appLimitInfoDTOList: [
-          { bundleId: "com.TMBTOUCH.PRODUCTION" },
-          { bundleId: "com.bangkokbank.mbanking" },
-          { bundleId: "com.kasikornbank.retail.mbanking.wap" },
-          { bundleId: "com.kkp.kkpmobile" },
-          { bundleId: "com.krungsri.kma" },
-          { bundleId: "com.ktb.netbank" },
-          { bundleId: "com.ktc.tap.consumer" },
-          { bundleId: "com.scb.iphone" },
-          { bundleId: "com.tdcm.truemoneywallet" },
-          { bundleId: "com.uob.mightyth" },
-          { bundleId: "com.cimbthai.digital.mycimb" },
-          { bundleId: "com.lh.lhbu" },
-          { bundleId: "jp.naver.line" },
-          { bundleId: "com.gsb.mobilife.MyMo" },
-          { bundleId: "com.baac.amobileplus" },
-        ],
-        deviceId: this.query.mdmId,
-        limitType: 1,
+        type: "1",
       });
       const data = await response.json();
       console.log("hideApp:", data);
-      return [data.code === 200, data.requestId];
+      return [data.code === 200, undefined];
     } catch (error) {
       console.warn(error);
       return [false, undefined];
@@ -340,15 +321,13 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       throw new Error("invalid_brand");
 
     try {
-      const response = await this.sendCommand("/appLimit", {
+      const response = await this.sendCommand("/collectRent", {
         serialNo: this.query.serialNumber,
-        appLimitInfoDTOList: [{ bundleId: "" }],
-        deviceId: this.query.mdmId,
-        limitType: 2,
+        type: "0",
       });
       const data = await response.json();
       console.log("disableHideApp:", data);
-      return [data.code === 200, data.requestId];
+      return [data.code === 200, undefined];
     } catch (error) {
       console.warn(error);
       return [false, undefined];
