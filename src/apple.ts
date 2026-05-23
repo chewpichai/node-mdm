@@ -59,14 +59,14 @@ export class AppleMDM implements IMDM {
 
     if (!this.token) {
       try {
-        let response = await fetch(
-          `${MDM_URL}/auth/jwt/app/login/mobileCode?type=1&mobile=${MDM_USERNAME}`
-        );
-        console.log("🚀 ~ AppleMDM ~ init ~ response:", await response.json());
-        response = await fetch(`${MDM_URL}/auth/jwt/user/mobile/token`, {
+        const response = await fetch(`${MDM_URL}/auth/jwt/user/pwd/token`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mobile: MDM_USERNAME, code: MDM_PASSWORD }),
+          body: JSON.stringify({
+            mobile: MDM_USERNAME,
+            password: MDM_PASSWORD,
+            rememberMe: true,
+          }),
         });
         const { data } = await response.json();
         this.token = data;

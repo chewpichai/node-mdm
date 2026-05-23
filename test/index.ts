@@ -10,7 +10,7 @@ import {
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "F6WJ25D7LT",
+    serialNumber: "NPY2CKKVYD",
     brand: "apple",
   })) as AppleMDM;
   console.log(mdm);
@@ -109,10 +109,10 @@ const testAppleSeekDreamMDM = async () => {
 };
 
 (async () => {
-  // await testAppleMDM();
+  await testAppleMDM();
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  await testAppleMDMLockPhoneMDM();
+  // await testAppleMDMLockPhoneMDM();
   // await testAppleSeekDreamMDM();
 })();
