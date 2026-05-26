@@ -65,7 +65,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         });
         const { data } = await response.json();
         this.token = data.accessToken;
-        cache.set(this.tokenKey, data.accessToken, 9 * 60);
+        cache.set(this.tokenKey, data.accessToken, 30 * 60);
       } catch {
         this.token = "error";
       }
@@ -190,10 +190,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const {
         data: { functionRestrictData },
       } = await response.json();
-      for (const key in functionRestrictData) {
-        functionRestrictData[key] = String(functionRestrictData[key]);
-      }
-      return functionRestrictData;
+      return functionRestrictData as unknown as DevicePermissions;
     } catch (error) {
       console.warn(error);
     }
@@ -339,15 +336,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       throw new Error("invalid_brand");
 
     try {
-      const formattedPermissions = Object.fromEntries(
-        Object.entries(permissions).map(([key, value]) => [
-          key,
-          value === "true",
-        ])
-      );
       const response = await this.sendCommand("/setFunction", {
         deviceId: this.query.mdmId,
-        ...formattedPermissions,
+        ...permissions,
       });
       const data = await response.json();
       console.log("setPermissions:", data);

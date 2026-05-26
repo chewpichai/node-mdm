@@ -43,13 +43,13 @@ export type DeviceLocation = {
     lat: number;
 };
 export type DevicePermissions = {
-    forceAutomaticDateAndTime: "true" | "false";
-    allowFindMyDevice: "true" | "false";
-    allowUIConfigurationProfileInstallation: "true" | "false";
-    allowEnterpriseAppTrust: "true" | "false";
-    allowVPNCreation: "true" | "false";
-    forceWiFiPowerOn: "true" | "false";
-    allowAccountModification?: "true" | "false";
+    forceAutomaticDateAndTime: boolean;
+    allowFindMyDevice: boolean;
+    allowAccountModification: boolean;
+    allowUIConfigurationProfileInstallation: boolean;
+    allowEnterpriseAppTrust: boolean;
+    allowVPNCreation: boolean;
+    forceWiFiPowerOn: boolean;
 };
 export type MDMQuery = {
     brand: "apple" | "android" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone" | "apple-seekdream";

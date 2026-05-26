@@ -198,10 +198,7 @@ class AppleChewLabxMDM {
     }
     async setPermissions(permissions) {
         try {
-            await this.sendCommand(`/devices/${this.query.serialNumber}/restrictions`, Object.fromEntries(Object.entries(permissions).map(([key, value]) => [
-                key,
-                value === "true",
-            ])), "PUT");
+            await this.sendCommand(`/devices/${this.query.serialNumber}/restrictions`, permissions, "PUT");
             return true;
         }
         catch (error) {

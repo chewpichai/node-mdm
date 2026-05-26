@@ -12,7 +12,7 @@ export declare class AppleMDMLockPhoneMDM implements IMDM {
     getUSBItunesStatus(): Promise<any>;
     getHttpProxyStatus(): Promise<any>;
     getDevice(): Promise<MDMDevice | undefined>;
-    getFunctionRestrictions(deviceId: number): Promise<any>;
+    getFunctionRestrictions(deviceId: number): Promise<DevicePermissions | undefined>;
     getEscrowKey(): Promise<string | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
     disableLostMode(): Promise<[

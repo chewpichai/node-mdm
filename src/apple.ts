@@ -125,11 +125,20 @@ export class AppleMDM implements IMDM {
         device.deviceStatus = _device?.deviceStatus;
       }
 
-      if (device?.httpProxyStatus === 1) {
+      if (!device) throw new Error("device_not_found");
+
+      if (device.httpProxyStatus === 1) {
         await this.disableProxy();
         device.httpProxyStatus = 0;
       }
 
+      device.functionRestrictData = JSON.stringify(
+        Object.fromEntries(
+          Object.entries(JSON.parse(device.functionRestrictData)).map(
+            ([key, value]) => [key, value === "true"]
+          )
+        )
+      );
       return device;
     } catch (error) {
       console.warn(error);
@@ -254,13 +263,13 @@ export class AppleMDM implements IMDM {
       });
       await sleep(3000);
       await this.setPermissions({
-        allowEnterpriseAppTrust: "true",
-        allowUIConfigurationProfileInstallation: "true",
-        forceAutomaticDateAndTime: "true",
-        forceWiFiPowerOn: "false",
-        allowFindMyDevice: "true",
-        allowVPNCreation: "true",
-        allowAccountModification: "false",
+        forceAutomaticDateAndTime: true,
+        allowFindMyDevice: false,
+        allowAccountModification: true,
+        allowUIConfigurationProfileInstallation: false,
+        allowEnterpriseAppTrust: false,
+        allowVPNCreation: false,
+        forceWiFiPowerOn: false,
       });
     } catch (error) {
       console.warn(error);
@@ -321,11 +330,18 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
+      const formattedPermissions = Object.fromEntries(
+        Object.entries(permissions).map(([key, value]) => {
+          if (["forceAutomaticDateAndTime", "forceWiFiPowerOn"].includes(key))
+            return [key, value ? "true" : "false"];
+          return [key, value ? "false" : "true"];
+        })
+      );
       const response = await this.sendCommand(
         "/mdm/saas/device/setFunctionRestrict",
         {
           id: this.query.mdmId,
-          functionRestrictData: JSON.stringify(permissions),
+          functionRestrictData: JSON.stringify(formattedPermissions),
         }
       );
       const data = await response.json();

@@ -54,7 +54,7 @@ class AppleMDMLockPhoneMDM {
                 });
                 const { data } = await response.json();
                 this.token = data.accessToken;
-                cache.set(this.tokenKey, data.accessToken, 9 * 60);
+                cache.set(this.tokenKey, data.accessToken, 30 * 60);
             }
             catch {
                 this.token = "error";
@@ -158,9 +158,6 @@ class AppleMDMLockPhoneMDM {
                 deviceId,
             });
             const { data: { functionRestrictData }, } = await response.json();
-            for (const key in functionRestrictData) {
-                functionRestrictData[key] = String(functionRestrictData[key]);
-            }
             return functionRestrictData;
         }
         catch (error) {
@@ -294,13 +291,9 @@ class AppleMDMLockPhoneMDM {
         if (this.query.brand !== "apple-mdmlockphone")
             throw new Error("invalid_brand");
         try {
-            const formattedPermissions = Object.fromEntries(Object.entries(permissions).map(([key, value]) => [
-                key,
-                value === "true",
-            ]));
             const response = await this.sendCommand("/setFunction", {
                 deviceId: this.query.mdmId,
-                ...formattedPermissions,
+                ...permissions,
             });
             const data = await response.json();
             console.log("setPermissions:", data);

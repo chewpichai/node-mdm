@@ -262,12 +262,7 @@ export class AppleChewLabxMDM implements IMDM {
     try {
       await this.sendCommand(
         `/devices/${this.query.serialNumber}/restrictions`,
-        Object.fromEntries(
-          Object.entries(permissions).map(([key, value]) => [
-            key,
-            value === "true",
-          ])
-        ),
+        permissions,
         "PUT"
       );
       return true;
