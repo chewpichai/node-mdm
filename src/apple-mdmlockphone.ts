@@ -65,7 +65,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         });
         const { data } = await response.json();
         this.token = data.accessToken;
-        cache.set(this.tokenKey, data.accessToken, 60 * 60);
+        cache.set(this.tokenKey, data.accessToken, 9 * 60);
       } catch {
         this.token = "error";
       }
