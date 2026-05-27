@@ -114,9 +114,13 @@ class AppleMDMLockPhoneMDM {
                     : this.query.applicationId,
                 size: 10,
             });
-            const { data: { records: [device], }, } = await response.json();
-            if (this.query.serialNumber &&
-                device?.sserialno !== this.query.serialNumber) {
+            const body = await response.json();
+            console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ this.query:", this.query);
+            console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ body:", body);
+            if (body.code !== 200)
+                throw new Error("device_not_found");
+            const { data: { records: [device], }, } = body;
+            if (!device || device.sserialno !== this.query.serialNumber) {
                 throw new Error("device_not_found");
             }
             this.query.serialNumber = device.sserialno;
@@ -158,7 +162,11 @@ class AppleMDMLockPhoneMDM {
                 deviceId,
             });
             const { data: { functionRestrictData }, } = await response.json();
-            return functionRestrictData;
+            return Object.fromEntries(Object.entries(functionRestrictData).map(([key, value]) => {
+                if (!["forceAutomaticDateAndTime", "forceWiFiPowerOn"].includes(key))
+                    return [key, !value];
+                return [key, value];
+            }));
         }
         catch (error) {
             console.warn(error);

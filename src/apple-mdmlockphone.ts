@@ -128,16 +128,23 @@ export class AppleMDMLockPhoneMDM implements IMDM {
           : this.query.applicationId,
         size: 10,
       });
+      const body = await response.json();
+
+      console.log(
+        "🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ this.query:",
+        this.query
+      );
+      console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ body:", body);
+
+      if (body.code !== 200) throw new Error("device_not_found");
+
       const {
         data: {
           records: [device],
         },
-      } = await response.json();
+      } = body;
 
-      if (
-        this.query.serialNumber &&
-        device?.sserialno !== this.query.serialNumber
-      ) {
+      if (!device || device.sserialno !== this.query.serialNumber) {
         throw new Error("device_not_found");
       }
 
@@ -190,7 +197,13 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const {
         data: { functionRestrictData },
       } = await response.json();
-      return functionRestrictData as unknown as DevicePermissions;
+      return Object.fromEntries(
+        Object.entries(functionRestrictData).map(([key, value]) => {
+          if (!["forceAutomaticDateAndTime", "forceWiFiPowerOn"].includes(key))
+            return [key, !value];
+          return [key, value];
+        })
+      ) as unknown as DevicePermissions;
     } catch (error) {
       console.warn(error);
     }
