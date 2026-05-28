@@ -116,11 +116,13 @@ class AppleMDMLockPhoneMDM {
             });
             const body = await response.json();
             console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ this.query:", this.query);
-            console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ body:", body);
+            console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ body:", JSON.stringify(body, null, 2));
             if (body.code !== 200)
                 throw new Error("device_not_found");
             const { data: { records: [device], }, } = body;
-            if (!device || device.sserialno !== this.query.serialNumber) {
+            if (!device ||
+                (this.query.serialNumber &&
+                    this.query.serialNumber !== device.sserialno)) {
                 throw new Error("device_not_found");
             }
             this.query.serialNumber = device.sserialno;

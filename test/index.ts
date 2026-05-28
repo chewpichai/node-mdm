@@ -64,8 +64,8 @@ const testAppleChewLabxMDM = async () => {
 
 const testAppleMDMLockPhoneMDM = async () => {
   const mdm = (await getMDM({
-    applicationId: "",
-    serialNumber: "LN23FHNW0M",
+    applicationId: "60082605000629",
+    serialNumber: "",
     brand: "apple-mdmlockphone",
     mdmId: 9,
   })) as AppleMDMLockPhoneMDM;
@@ -85,15 +85,15 @@ const testAppleMDMLockPhoneMDM = async () => {
   // await mdm.setWallpaper(true, wallpaper);
   // console.log("Escrow Key =", await mdm.getEscrowKey());
   // await mdm.updateOS();
-  await mdm.setPermissions({
-    forceAutomaticDateAndTime: false,
-    allowFindMyDevice: false,
-    allowAccountModification: true,
-    allowUIConfigurationProfileInstallation: false,
-    allowEnterpriseAppTrust: false,
-    allowVPNCreation: false,
-    forceWiFiPowerOn: true,
-  });
+  // await mdm.setPermissions({
+  //   forceAutomaticDateAndTime: false,
+  //   allowFindMyDevice: false,
+  //   allowAccountModification: true,
+  //   allowUIConfigurationProfileInstallation: false,
+  //   allowEnterpriseAppTrust: false,
+  //   allowVPNCreation: false,
+  //   forceWiFiPowerOn: true,
+  // });
 };
 
 const testAppleSeekDreamMDM = async () => {
