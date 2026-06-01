@@ -4,6 +4,8 @@ export declare class AppleMDMLockPhoneMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
     query: MDMQuery;
+    refreshKey: string;
+    refreshToken: string | null | undefined;
     static getInstance(query: MDMQuery): Promise<AppleMDMLockPhoneMDM>;
     constructor(query: MDMQuery);
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;

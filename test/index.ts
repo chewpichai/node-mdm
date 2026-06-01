@@ -64,10 +64,10 @@ const testAppleChewLabxMDM = async () => {
 
 const testAppleMDMLockPhoneMDM = async () => {
   const mdm = (await getMDM({
-    applicationId: "60082605000629",
-    serialNumber: "",
+    applicationId: "",
+    serialNumber: "LN23FHNW0M",
     brand: "apple-mdmlockphone",
-    mdmId: 9,
+    mdmId: 14300,
   })) as AppleMDMLockPhoneMDM;
   console.log(mdm);
 
@@ -94,6 +94,8 @@ const testAppleMDMLockPhoneMDM = async () => {
   //   allowVPNCreation: false,
   //   forceWiFiPowerOn: true,
   // });
+  const locations = await mdm.getLocations();
+  console.log("Locations", locations);
 };
 
 const testAppleSeekDreamMDM = async () => {

@@ -21,6 +21,8 @@ export class AppleMDMLockPhoneMDM implements IMDM {
   tokenKey: string;
   token: string | null | undefined;
   query: MDMQuery;
+  refreshKey: string;
+  refreshToken: string | null | undefined;
 
   static async getInstance(query: MDMQuery) {
     const instance = new AppleMDMLockPhoneMDM(query);
@@ -32,6 +34,8 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     this.tokenKey = "appleMDMLockPhoneMDMToken";
     this.token = null;
     this.query = query;
+    this.refreshKey = "appleMDMLockPhoneMDMRefreshToken";
+    this.refreshToken = null;
   }
 
   async sendCommand(url: string, data?: Record<string, unknown>) {
@@ -52,22 +56,46 @@ export class AppleMDMLockPhoneMDM implements IMDM {
 
     const cache = getCache();
     this.token = cache.get(this.tokenKey);
+    this.refreshToken = cache.get(this.refreshKey);
 
-    if (!this.token) {
+    if (!this.token && !this.refreshToken) {
       try {
         const response = await fetch(`${MDM_URL}/token`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            appId: MDM_APPID,
+            appid: MDM_APPID,
             appSecret: MDM_APPSECRET,
           }),
         });
         const { data } = await response.json();
         this.token = data.accessToken;
-        cache.set(this.tokenKey, data.accessToken, 30 * 60);
+        this.refreshToken = data.refreshToken;
+        cache.set(this.tokenKey, data.accessToken, 50 * 60);
+        cache.set(this.refreshKey, data.refreshToken, 100 * 60);
+        return;
       } catch {
-        this.token = "error";
+        this.token = null;
+        this.refreshToken = null;
+      }
+    }
+
+    if (!this.token && this.refreshToken) {
+      try {
+        const response = await fetch(`${MDM_URL}/refreshToken`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken: this.refreshToken }),
+        });
+        const { data } = await response.json();
+        this.token = data.accessToken;
+        this.refreshToken = data.refreshToken;
+        cache.set(this.tokenKey, data.accessToken, 50 * 60);
+        cache.set(this.refreshKey, data.refreshToken, 100 * 60);
+        return;
+      } catch {
+        this.token = null;
+        this.refreshToken = null;
       }
     }
   }
@@ -130,22 +158,16 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       const body = await response.json();
 
-      console.log(
-        "🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ this.query:",
-        this.query
-      );
-      console.log(
-        "🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ body:",
-        JSON.stringify(body, null, 2)
-      );
-
-      if (body.code !== 200) throw new Error("device_not_found");
+      if (body.code !== 200) {
+        console.log("🚀 ~ this.query:", this.query);
+        console.log("🚀 ~ body:", JSON.stringify(body, null, 2));
+        throw new Error("device_not_found");
+      }
 
       const {
-        data: {
-          records: [device],
-        },
+        data: { records },
       } = body;
+      const device = records.filter((d: any) => d.isdelete === 0).at(0);
 
       if (
         !device ||
@@ -282,7 +304,14 @@ export class AppleMDMLockPhoneMDM implements IMDM {
   }
 
   async getLocations(): Promise<DeviceLocation[]> {
-    throw new Error("not_implemented");
+    const response = await this.sendCommand("/location/data", {
+      serialNo: this.query.serialNumber,
+    });
+    const { data } = await response.json();
+    return data.map((l: any) => ({
+      lat: Number(l.latitude),
+      lng: Number(l.longitude),
+    })) as DeviceLocation[];
   }
 
   async removeMDM(password: string) {

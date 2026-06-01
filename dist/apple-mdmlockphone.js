@@ -24,6 +24,8 @@ class AppleMDMLockPhoneMDM {
         this.tokenKey = "appleMDMLockPhoneMDMToken";
         this.token = null;
         this.query = query;
+        this.refreshKey = "appleMDMLockPhoneMDMRefreshToken";
+        this.refreshToken = null;
     }
     async sendCommand(url, data) {
         if (!this.token)
@@ -42,22 +44,46 @@ class AppleMDMLockPhoneMDM {
             return;
         const cache = (0, cache_1.getCache)();
         this.token = cache.get(this.tokenKey);
-        if (!this.token) {
+        this.refreshToken = cache.get(this.refreshKey);
+        if (!this.token && !this.refreshToken) {
             try {
                 const response = await fetch(`${MDM_URL}/token`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        appId: MDM_APPID,
+                        appid: MDM_APPID,
                         appSecret: MDM_APPSECRET,
                     }),
                 });
                 const { data } = await response.json();
                 this.token = data.accessToken;
-                cache.set(this.tokenKey, data.accessToken, 30 * 60);
+                this.refreshToken = data.refreshToken;
+                cache.set(this.tokenKey, data.accessToken, 50 * 60);
+                cache.set(this.refreshKey, data.refreshToken, 100 * 60);
+                return;
             }
             catch {
-                this.token = "error";
+                this.token = null;
+                this.refreshToken = null;
+            }
+        }
+        if (!this.token && this.refreshToken) {
+            try {
+                const response = await fetch(`${MDM_URL}/refreshToken`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ refreshToken: this.refreshToken }),
+                });
+                const { data } = await response.json();
+                this.token = data.accessToken;
+                this.refreshToken = data.refreshToken;
+                cache.set(this.tokenKey, data.accessToken, 50 * 60);
+                cache.set(this.refreshKey, data.refreshToken, 100 * 60);
+                return;
+            }
+            catch {
+                this.token = null;
+                this.refreshToken = null;
             }
         }
     }
@@ -115,11 +141,13 @@ class AppleMDMLockPhoneMDM {
                 size: 10,
             });
             const body = await response.json();
-            console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ this.query:", this.query);
-            console.log("🚀 ~ AppleMDMLockPhoneMDM ~ getDevice ~ body:", JSON.stringify(body, null, 2));
-            if (body.code !== 200)
+            if (body.code !== 200) {
+                console.log("🚀 ~ this.query:", this.query);
+                console.log("🚀 ~ body:", JSON.stringify(body, null, 2));
                 throw new Error("device_not_found");
-            const { data: { records: [device], }, } = body;
+            }
+            const { data: { records }, } = body;
+            const device = records.filter((d) => d.isdelete === 0).at(0);
             if (!device ||
                 (this.query.serialNumber &&
                     this.query.serialNumber !== device.sserialno)) {
@@ -231,7 +259,14 @@ class AppleMDMLockPhoneMDM {
         return data.code === 200;
     }
     async getLocations() {
-        throw new Error("not_implemented");
+        const response = await this.sendCommand("/location/data", {
+            serialNo: this.query.serialNumber,
+        });
+        const { data } = await response.json();
+        return data.map((l) => ({
+            lat: Number(l.latitude),
+            lng: Number(l.longitude),
+        }));
     }
     async removeMDM(password) {
         try {
