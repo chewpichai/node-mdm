@@ -385,9 +385,16 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       throw new Error("invalid_brand");
 
     try {
+      const formattedPermissions = Object.fromEntries(
+        Object.entries(permissions).map(([key, value]) => {
+          if (!["forceAutomaticDateAndTime", "forceWiFiPowerOn"].includes(key))
+            return [key, !value];
+          return [key, value];
+        })
+      );
       const response = await this.sendCommand("/setFunction", {
         deviceId: this.query.mdmId,
-        ...permissions,
+        ...formattedPermissions,
       });
       const data = await response.json();
       console.log("setPermissions:", data);
