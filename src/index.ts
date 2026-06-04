@@ -11,11 +11,6 @@ export interface IMDM {
   token: string | null | undefined;
   query: MDMQuery;
 
-  sendCommand: (
-    url: string,
-    data: Record<string, unknown>
-  ) => Promise<Response>;
-
   init: () => Promise<void>;
 
   getDevice: () => Promise<MDMDevice | undefined>;

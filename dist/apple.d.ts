@@ -7,7 +7,7 @@ export declare class AppleMDM implements IMDM {
     query: MDMQuery;
     static getInstance(query: MDMQuery): Promise<AppleMDM>;
     constructor(query: MDMQuery);
-    sendCommand(url: string, data: Record<string, unknown>): Promise<Response>;
+    sendCommand(url: string, body: Record<string, unknown>): Promise<any>;
     init(): Promise<void>;
     _getDevice(): Promise<MDMDevice | undefined>;
     getDevice(): Promise<MDMDevice | undefined>;

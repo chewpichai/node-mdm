@@ -19,8 +19,14 @@ const testAppleMDM = async () => {
   const device = await mdm.getDevice();
   console.log("Device", device);
 
+  // const detail = await mdm.getDeviceDetail();
+  // console.log("Detail", detail);
+
   const commands = await mdm.getOperationHistory();
   console.log("Commands", commands);
+
+  // const escrowKey = await mdm.getEscrowKey();
+  // console.log("Escrow Key", escrowKey);
 };
 
 const testAndroidMDM = async () => {
@@ -65,9 +71,8 @@ const testAppleChewLabxMDM = async () => {
 const testAppleMDMLockPhoneMDM = async () => {
   const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "LN23FHNW0M",
+    serialNumber: "LR02XJQ0MY",
     brand: "apple-mdmlockphone",
-    mdmId: 14300,
   })) as AppleMDMLockPhoneMDM;
   console.log(mdm);
 
@@ -83,7 +88,10 @@ const testAppleMDMLockPhoneMDM = async () => {
   // await mdm.refreshLocation();
   // await mdm.removePassword();
   // await mdm.setWallpaper(true, wallpaper);
-  // console.log("Escrow Key =", await mdm.getEscrowKey());
+
+  const escrowKey = await mdm.getEscrowKey();
+  console.log("Escrow Key =", escrowKey);
+
   // await mdm.updateOS();
   // await mdm.setPermissions({
   //   forceAutomaticDateAndTime: false,
@@ -94,8 +102,9 @@ const testAppleMDMLockPhoneMDM = async () => {
   //   allowVPNCreation: false,
   //   forceWiFiPowerOn: true,
   // });
-  const locations = await mdm.getLocations();
-  console.log("Locations", locations);
+
+  // const locations = await mdm.getLocations();
+  // console.log("Locations", locations);
 };
 
 const testAppleSeekDreamMDM = async () => {
@@ -119,6 +128,52 @@ const testAppleSeekDreamMDM = async () => {
   console.log("Credit", credit);
 };
 
+const testAppleMDMLockPhoneMDMDevices = async () => {
+  const applicationIds = [
+    "60082605001078",
+    "60082605000206",
+    "60072604003675",
+    "60082604001232",
+    "60072605003072",
+    "60082604001358",
+    "60072605002838",
+    "60082604001693",
+    "60082604001108",
+    "60072604009228",
+    "60082605000616",
+    "60082604000984",
+    "60082604001791",
+    "60072605002494",
+    "60072604007262",
+    "60072604009654",
+    "60082605000081",
+    "60072605003057",
+    "60072605003285",
+    "60072605005440",
+    "60072605006599",
+    "60072605002939",
+    "60072604004733",
+    "60072605003593",
+    "60082604001105",
+    "60072604004618",
+    "60072604007408",
+    "60072604004629",
+    "60072605003189",
+    "60082604001451",
+  ];
+  for (const applicationId of applicationIds) {
+    const mdm = (await getMDM({
+      applicationId,
+      serialNumber: "",
+      brand: "apple-mdmlockphone",
+    })) as AppleMDMLockPhoneMDM;
+
+    // Get mdmId from device.
+    const device = await mdm.getDevice();
+    console.log("Device", device);
+  }
+};
+
 (async () => {
   // await testAppleMDM();
   // await testAndroidMDM();
@@ -126,4 +181,5 @@ const testAppleSeekDreamMDM = async () => {
   // await testAppleChewLabxMDM();
   await testAppleMDMLockPhoneMDM();
   // await testAppleSeekDreamMDM();
+  // await testAppleMDMLockPhoneMDMDevices();
 })();

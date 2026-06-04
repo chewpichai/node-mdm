@@ -3,7 +3,6 @@ export interface IMDM {
     tokenKey: string;
     token: string | null | undefined;
     query: MDMQuery;
-    sendCommand: (url: string, data: Record<string, unknown>) => Promise<Response>;
     init: () => Promise<void>;
     getDevice: () => Promise<MDMDevice | undefined>;
     enableLostMode: (phoneNumber: string, content: string) => Promise<[boolean, number | undefined]>;

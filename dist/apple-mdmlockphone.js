@@ -27,10 +27,10 @@ class AppleMDMLockPhoneMDM {
         this.refreshKey = "appleMDMLockPhoneMDMRefreshToken";
         this.refreshToken = null;
     }
-    async sendCommand(url, data) {
+    async sendCommand(url, data, retry = 0) {
         if (!this.token)
             throw new Error("token_not_found");
-        return await fetch(`${MDM_URL}${url}`, {
+        const response = await fetch(`${MDM_URL}${url}`, {
             method: data ? "POST" : "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -38,6 +38,24 @@ class AppleMDMLockPhoneMDM {
             },
             body: JSON.stringify(data),
         });
+        if (!response.ok) {
+            if (response.status === 429 && retry < 3) {
+                await sleep(1000);
+                return this.sendCommand(url, data, retry + 1);
+            }
+            throw new Error("network_error");
+        }
+        const text = await response.text();
+        try {
+            const data = JSON.parse(text);
+            if (data.code !== 200)
+                console.log("🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ data:", data);
+            return data;
+        }
+        catch (error) {
+            console.warn("🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ text:", text);
+            throw error;
+        }
     }
     async init() {
         if (this.token)
@@ -89,10 +107,9 @@ class AppleMDMLockPhoneMDM {
     }
     async getDeviceStatus() {
         try {
-            const response = await this.sendCommand("/device/status", {
+            const { data: { rentModeStatus, lostModeStatus }, } = await this.sendCommand("/device/status", {
                 serialNo: this.query.serialNumber,
             });
-            const { data: { rentModeStatus, lostModeStatus }, } = await response.json();
             return lostModeStatus === "1"
                 ? _1.DeviceStatus.LOST_LOCKED
                 : rentModeStatus === "1"
@@ -100,39 +117,36 @@ class AppleMDMLockPhoneMDM {
                     : _1.DeviceStatus.SUPERVISED;
         }
         catch (error) {
-            console.warn(error);
             return _1.DeviceStatus.UNREGULATED;
         }
     }
     async getUSBItunesStatus() {
         try {
-            const response = await this.sendCommand("/device/usb/status", {
+            const { data } = await this.sendCommand("/device/usb/status", {
                 serialNo: this.query.serialNumber,
             });
-            const { data } = await response.json();
             return data;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getHttpProxyStatus() {
         try {
-            const response = await this.sendCommand("/device/http_proxy/status", {
+            const { data } = await this.sendCommand("/device/http_proxy/status", {
                 serialNo: this.query.serialNumber,
             });
-            const { data } = await response.json();
             return data;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getDevice() {
         if (this.query.brand !== "apple-mdmlockphone")
             throw new Error("invalid_brand");
         try {
-            const response = await this.sendCommand("/devicePage", {
+            const body = await this.sendCommand("/devicePage", {
                 current: 1,
                 serialNumber: this.query.serialNumber,
                 contractCode: this.query.serialNumber
@@ -140,12 +154,8 @@ class AppleMDMLockPhoneMDM {
                     : this.query.applicationId,
                 size: 10,
             });
-            const body = await response.json();
-            if (body.code !== 200) {
-                console.log("🚀 ~ this.query:", this.query);
-                console.log("🚀 ~ body:", JSON.stringify(body, null, 2));
+            if (body.code !== 200)
                 throw new Error("device_not_found");
-            }
             const { data: { records }, } = body;
             const device = records.filter((d) => d.isdelete === 0).at(0);
             if (!device ||
@@ -154,6 +164,7 @@ class AppleMDMLockPhoneMDM {
                 throw new Error("device_not_found");
             }
             this.query.serialNumber = device.sserialno;
+            this.query.mdmId = device.id;
             const [functionRestrictData, deviceStatus, httpProxyStatus, usbItunesStatus,] = await Promise.all([
                 this.getFunctionRestrictions(device.id),
                 this.getDeviceStatus(),
@@ -188,10 +199,9 @@ class AppleMDMLockPhoneMDM {
         if (this.query.brand !== "apple-mdmlockphone")
             throw new Error("invalid_brand");
         try {
-            const response = await this.sendCommand("/function", {
+            const { data: { functionRestrictData }, } = await this.sendCommand("/function", {
                 deviceId,
             });
-            const { data: { functionRestrictData }, } = await response.json();
             return Object.fromEntries(Object.entries(functionRestrictData).map(([key, value]) => {
                 if (!["forceAutomaticDateAndTime", "forceWiFiPowerOn"].includes(key))
                     return [key, !value];
@@ -199,70 +209,62 @@ class AppleMDMLockPhoneMDM {
             }));
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getEscrowKey() {
         if (this.query.brand !== "apple-mdmlockphone")
             throw new Error("invalid_brand");
         try {
-            const response = await this.sendCommand("/unlock/code", {
+            const { data: [code], } = await this.sendCommand("/unlock/code", {
                 serialNo: this.query.serialNumber,
             });
-            const { data: [code], } = await response.json();
             return code.passCode;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async enableLostMode(phoneNumber, content) {
         try {
-            const response = await this.sendCommand("/lock", {
+            const data = await this.sendCommand("/lock", {
                 appid: MDM_APPID,
                 isLocationNow: 1,
                 lostMidInfo: content,
                 lostPhoneNum: phoneNumber,
                 serialNo: this.query.serialNumber,
             });
-            const data = await response.json();
-            console.log("enableLostMode:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
     async disableLostMode() {
         try {
-            const response = await this.sendCommand("/unlock", {
+            const data = await this.sendCommand("/unlock", {
                 appid: MDM_APPID,
                 serialNo: this.query.serialNumber,
             });
-            const data = await response.json();
-            console.log("disableLostMode:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
     async refreshLocation() {
-        const response = await this.sendCommand("/location", {
+        const data = await this.sendCommand("/location", {
             appid: MDM_APPID,
             serialNo: this.query.serialNumber,
         });
-        const data = await response.json();
-        console.log("refreshLocations:", data);
         return data.code === 200;
     }
     async getLocations() {
-        const response = await this.sendCommand("/location/data", {
+        const { data } = await this.sendCommand("/location/data", {
             serialNo: this.query.serialNumber,
         });
-        const { data } = await response.json();
         return data.map((l) => ({
             lat: Number(l.latitude),
             lng: Number(l.longitude),
@@ -270,31 +272,27 @@ class AppleMDMLockPhoneMDM {
     }
     async removeMDM(password) {
         try {
-            const response = await this.sendCommand("/unbindOnce", {
+            const data = await this.sendCommand("/unbindOnce", {
                 appid: MDM_APPID,
                 serialNo: this.query.serialNumber,
             });
-            const data = await response.json();
-            console.log("removeMDM:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async removePassword() {
         try {
-            const response = await this.sendCommand("/clearLock", {
+            const data = await this.sendCommand("/clearLock", {
                 appid: MDM_APPID,
                 serialNo: this.query.serialNumber,
             });
-            const data = await response.json();
-            console.log("removePassword:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -302,16 +300,14 @@ class AppleMDMLockPhoneMDM {
         if (this.query.brand !== "apple-mdmlockphone")
             throw new Error("invalid_brand");
         try {
-            const response = await this.sendCommand("/collectRent", {
+            const data = await this.sendCommand("/collectRent", {
                 serialNo: this.query.serialNumber,
                 type: "1",
             });
-            const data = await response.json();
-            console.log("hideApp:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -319,16 +315,14 @@ class AppleMDMLockPhoneMDM {
         if (this.query.brand !== "apple-mdmlockphone")
             throw new Error("invalid_brand");
         try {
-            const response = await this.sendCommand("/collectRent", {
+            const data = await this.sendCommand("/collectRent", {
                 serialNo: this.query.serialNumber,
                 type: "0",
             });
-            const data = await response.json();
-            console.log("disableHideApp:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -341,46 +335,40 @@ class AppleMDMLockPhoneMDM {
                     return [key, !value];
                 return [key, value];
             }));
-            const response = await this.sendCommand("/setFunction", {
+            const data = await this.sendCommand("/setFunction", {
                 deviceId: this.query.mdmId,
                 ...formattedPermissions,
             });
-            const data = await response.json();
-            console.log("setPermissions:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async disableProxy() {
         try {
-            const response = await this.sendCommand("/http/proxy", {
+            const data = await this.sendCommand("/http/proxy", {
                 serialNo: this.query.serialNumber,
                 operationType: 0,
             });
-            const data = await response.json();
-            console.log("disableProxy:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async enableProxy() {
         try {
-            const response = await this.sendCommand("/http/proxy", {
+            const data = await this.sendCommand("/http/proxy", {
                 serialNo: this.query.serialNumber,
                 operationType: 1,
             });
-            const data = await response.json();
-            console.log("enableProxy:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -389,75 +377,65 @@ class AppleMDMLockPhoneMDM {
     }
     async setWallpaper(changeable, wallpaper) {
         try {
-            const response = await this.sendCommand("/setWallpaper", {
+            const data = await this.sendCommand("/setWallpaper", {
                 appid: MDM_APPID,
                 paperLimit: changeable ? "0" : "1",
                 paperType: "3",
                 paperUrl: wallpaper,
                 serialNo: this.query.serialNumber,
             });
-            const data = await response.json();
-            console.log("setWallpaper:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async disableUSB() {
         try {
-            const response = await this.sendCommand("/policy/usb", {
+            const data = await this.sendCommand("/policy/usb", {
                 serialNo: this.query.serialNumber,
                 operationType: 0,
             });
-            const data = await response.json();
-            console.log("disableUSB:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async enableUSB() {
         try {
-            const response = await this.sendCommand("/policy/usb", {
+            const data = await this.sendCommand("/policy/usb", {
                 serialNo: this.query.serialNumber,
                 operationType: 1,
             });
-            const data = await response.json();
-            console.log("enableUSB:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async updateOS() {
         try {
-            const response = await this.sendCommand("/apple/gdfm", {
+            const data = await this.sendCommand("/apple/gdfm", {
                 serialNo: this.query.serialNumber,
             });
-            const data = await response.json();
-            console.log("updateOS:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async getCredit() {
         try {
-            const response = await this.sendCommand("/balance/query");
-            const { data: { balance }, } = await response.json();
-            console.log("getCredit:", balance);
+            const { data: { balance }, } = await this.sendCommand("/balance/query");
             return { credit: balance.apple };
         }
         catch (error) {
-            console.warn(error);
+            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
             return { credit: 0 };
         }
     }

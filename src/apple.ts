@@ -38,17 +38,33 @@ export class AppleMDM implements IMDM {
     this.query = query;
   }
 
-  async sendCommand(url: string, data: Record<string, unknown>) {
+  async sendCommand(url: string, body: Record<string, unknown>) {
     if (!this.token) throw new Error("token_not_found");
 
-    return await fetch(`${MDM_URL}${url}`, {
+    const response = await fetch(`${MDM_URL}${url}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: this.token,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
     });
+
+    if (!response.ok) throw new Error("network_error");
+
+    const text = await response.text();
+
+    try {
+      const data = JSON.parse(text);
+
+      if (data.status !== 200)
+        console.log("🚀 ~ AppleMDM ~ sendCommand ~ data:", data);
+
+      return data;
+    } catch (error) {
+      console.warn("🚀 ~ AppleMDM ~ sendCommand ~ text:", text);
+      throw error;
+    }
   }
 
   async init() {
@@ -65,7 +81,6 @@ export class AppleMDM implements IMDM {
           body: JSON.stringify({
             mobile: MDM_USERNAME,
             password: MDM_PASSWORD,
-            rememberMe: true,
           }),
         });
         const { data } = await response.json();
@@ -81,7 +96,11 @@ export class AppleMDM implements IMDM {
     if (this.query.brand !== "apple") throw new Error("invalid_brand");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/device/queryPage", {
+      const {
+        data: {
+          rows: [device],
+        },
+      } = await this.sendCommand("/mdm/saas/device/queryPage", {
         possessor: this.query.serialNumber ? "" : this.query.applicationId,
         useStatusList: [],
         assignStatusList: [],
@@ -93,11 +112,6 @@ export class AppleMDM implements IMDM {
         startDateValue: "",
         endDateValue: "",
       });
-      const {
-        data: {
-          rows: [device],
-        },
-      } = await response.json();
 
       if (
         this.query.serialNumber &&
@@ -141,7 +155,7 @@ export class AppleMDM implements IMDM {
       );
       return device;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
     }
   }
 
@@ -151,11 +165,10 @@ export class AppleMDM implements IMDM {
     if (!deviceId && !this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
+      const { data } = await this.sendCommand(
         "/mdm/saas/deviceInfo/getByDeviceId",
         { deviceId: deviceId || this.query.mdmId }
       );
-      const { data } = await response.json();
       return data;
     } catch (error) {
       console.warn(error);
@@ -166,15 +179,14 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/device/getEscrowKey", {
-        id: this.query.mdmId,
-      });
       const {
         data: { escrowKey },
-      } = await response.json();
+      } = await this.sendCommand("/mdm/saas/device/getEscrowKey", {
+        id: this.query.mdmId,
+      });
       return escrowKey;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
     }
   }
 
@@ -185,16 +197,14 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/device/setLose", {
+      const data = await this.sendCommand("/mdm/saas/device/setLose", {
         losePhone: phoneNumber,
         loseContent: content,
         id: this.query.mdmId,
       });
-      const data = await response.json();
-      console.log("enableLostMode:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return [false, undefined];
     }
   }
@@ -205,17 +215,14 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
-        "/mdm/saas/device/renewRegulation",
-        { id: this.query.mdmId }
-      );
-      const data = await response.json();
-      console.log("disableLostMode:", data);
+      const data = await this.sendCommand("/mdm/saas/device/renewRegulation", {
+        id: this.query.mdmId,
+      });
       if (data.status !== 200)
         throw new Error(ERRORS[data.message] || data.message);
       return [true, data.data.commandId];
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return [false, (error as Error).message];
     }
   }
@@ -224,15 +231,13 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         "/mdm/saas/deviceLocationNewest/deviceLocationSync",
         { deviceId: this.query.mdmId }
       );
-      const data = await response.json();
-      console.log("refreshLocation:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -240,13 +245,13 @@ export class AppleMDM implements IMDM {
   async getLocations() {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
-    const response = await this.sendCommand(
-      "/mdm/saas/deviceLocationRecord/queryPage",
-      { limit: 10, page: 1, deviceId: this.query.mdmId }
-    );
     const {
       data: { rows },
-    } = await response.json();
+    } = await this.sendCommand("/mdm/saas/deviceLocationRecord/queryPage", {
+      limit: 10,
+      page: 1,
+      deviceId: this.query.mdmId,
+    });
     return rows as DeviceLocation[];
   }
 
@@ -272,7 +277,7 @@ export class AppleMDM implements IMDM {
         forceWiFiPowerOn: false,
       });
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
     }
   }
 
@@ -280,14 +285,12 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
+      const data = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
         id: this.query.mdmId,
       });
-      const data = await response.json();
-      console.log("removeMDM:", data);
       return [11001009, 200].includes(data.status);
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -296,15 +299,12 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
-        "/mdm/saas/device/setClearPasscode",
-        { id: this.query.mdmId }
-      );
-      const data = await response.json();
-      console.log("removePassword:", data);
+      const data = await this.sendCommand("/mdm/saas/device/setClearPasscode", {
+        id: this.query.mdmId,
+      });
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -313,15 +313,13 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/device/setRent", {
+      const data = await this.sendCommand("/mdm/saas/device/setRent", {
         id: this.query.mdmId,
         rentIdentifierId: 81,
       });
-      const data = await response.json();
-      console.log("hideApp:", data);
       return [data.status === 200, data.data?.commandId];
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return [false, undefined];
     }
   }
@@ -337,18 +335,16 @@ export class AppleMDM implements IMDM {
           return [key, value ? "false" : "true"];
         })
       );
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         "/mdm/saas/device/setFunctionRestrict",
         {
           id: this.query.mdmId,
           functionRestrictData: JSON.stringify(formattedPermissions),
         }
       );
-      const data = await response.json();
-      console.log("setPermissions:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -357,15 +353,12 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
-        "/mdm/saas/device/deleteHttpProxy",
-        { id: this.query.mdmId }
-      );
-      const data = await response.json();
-      console.log("disableProxy:", data);
+      const data = await this.sendCommand("/mdm/saas/device/deleteHttpProxy", {
+        id: this.query.mdmId,
+      });
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -374,15 +367,12 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
-        "/mdm/saas/device/enableHttpProxy",
-        { id: this.query.mdmId }
-      );
-      const data = await response.json();
-      console.log("enableProxy:", data);
+      const data = await this.sendCommand("/mdm/saas/device/enableHttpProxy", {
+        id: this.query.mdmId,
+      });
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -391,15 +381,13 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/wallpager/save", {
+      const data = await this.sendCommand("/mdm/saas/wallpager/save", {
         deviceId: this.query.mdmId,
         wallpager: wallpaper,
       });
-      const data = await response.json();
-      console.log("uploadWallpaper:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -408,45 +396,37 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand("/mdm/saas/wallpager/change", {
+      const data = await this.sendCommand("/mdm/saas/wallpager/change", {
         deviceId: this.query.mdmId,
         wallgerStatus: changeable,
       });
-      const data = await response.json();
-      console.log("setWallpaper:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
 
   async getCredit() {
-    let response = await this.sendCommand(
+    let { data: price } = await this.sendCommand(
       "/merchant/saas/merchant/getMerchantMdmPrice",
-      {}
-    );
-    const { data: price } = await response.json();
-    response = await this.sendCommand(
-      "/merchant/saas/mdmBalance/getByMerchantId",
       {}
     );
     const {
       data: { rechargeBalance },
-    } = await response.json();
+    } = await this.sendCommand("/merchant/saas/mdmBalance/getByMerchantId", {});
     return { credit: rechargeBalance / price };
   }
 
   async getOperationHistory() {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
-    const response = await this.sendCommand(
+    const {
+      data: { rows },
+    } = await this.sendCommand(
       "/mdm/saas/deviceOperationLog/getDeviceOperationLogList",
       { limit: 10, page: 1, deviceId: this.query.mdmId }
     );
-    const {
-      data: { rows },
-    } = await response.json();
     const tasks = rows.filter(
       (row: OperationHistory) => row.commandId !== null
     );
@@ -459,10 +439,10 @@ export class AppleMDM implements IMDM {
   }
 
   async getCommand(commandId: number) {
-    const response = await this.sendCommand("/mdm/saas/command/getCommand", {
-      id: commandId,
-    });
-    const { status, data } = await response.json();
+    const { status, data } = await this.sendCommand(
+      "/mdm/saas/command/getCommand",
+      { id: commandId }
+    );
 
     if (status !== 200)
       return { id: commandId, doIt: DoIt.abandoned } as Command;
@@ -474,18 +454,16 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         "/mdm/saas/device/setUsbItunesStatus",
         {
           id: this.query.mdmId,
           usbItunesStatus: 1,
         }
       );
-      const data = await response.json();
-      console.log("disableUSB:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -494,18 +472,16 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         "/mdm/saas/device/setUsbItunesStatus",
         {
           id: this.query.mdmId,
           usbItunesStatus: 0,
         }
       );
-      const data = await response.json();
-      console.log("enableUSB:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -514,15 +490,12 @@ export class AppleMDM implements IMDM {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 
     try {
-      const response = await this.sendCommand(
-        "/mdm/saas/device/scheduleOSUpdate",
-        { id: this.query.mdmId }
-      );
-      const data = await response.json();
-      console.log("updateOS:", data);
+      const data = await this.sendCommand("/mdm/saas/device/scheduleOSUpdate", {
+        id: this.query.mdmId,
+      });
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
@@ -535,14 +508,12 @@ export class AppleMDM implements IMDM {
 
       if (!device) return false;
 
-      const response = await fetch(
+      const data = await fetch(
         `https://mrsh.ishalou.net/api/mdm/admin/device/deleteCmd?serialNumber=${device.serialNumber}`
       );
-      const data = await response.json();
-      console.log("clearCommand:", data);
       return data.status === 200;
     } catch (error) {
-      console.warn(error);
+      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
       return false;
     }
   }
