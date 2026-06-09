@@ -54,15 +54,16 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       body: JSON.stringify(data),
     });
 
+    const text = await response.text();
+
     if (!response.ok) {
       if (response.status === 429 && retry < 3) {
         await sleep(1000);
         return this.sendCommand(url, data, retry + 1);
       }
-      throw new Error("network_error");
+      console.log(text);
+      throw new Error(`network_error_${response.status}`);
     }
-
-    const text = await response.text();
 
     try {
       const data = JSON.parse(text);
@@ -72,7 +73,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
 
       return data;
     } catch (error) {
-      console.warn("🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ text:", text);
+      console.log(text);
       throw error;
     }
   }
@@ -150,7 +151,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `getUSBItunesStatus ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -161,7 +164,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `getHttpProxyStatus ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -191,7 +196,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         (this.query.serialNumber &&
           this.query.serialNumber !== device.sserialno)
       ) {
-        throw new Error("device_not_found");
+        throw new Error(
+          `device_not_found_${this.query.serialNumber || this.query.applicationId}`
+        );
       }
 
       this.query.serialNumber = device.sserialno;
@@ -229,7 +236,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         lastOnlineTime: dayjs(device.tlastusetime).format("YYYYMMDDHHmmss"),
       };
     } catch (error) {
-      console.warn(error);
+      console.warn(
+        `getDevice ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -251,7 +260,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         })
       ) as unknown as DevicePermissions;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `getFunctionRestrictions ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -267,7 +278,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return code.passCode;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `getEscrowKey ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -285,7 +298,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `enableLostMode ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -300,7 +315,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `disableLostMode ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -331,7 +348,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `removeMDM ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -344,7 +363,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `removePassword ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -360,7 +381,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `hideApp ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -376,7 +399,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `disableHideApp ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -399,7 +424,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `setPermissions ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -412,7 +439,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `disableProxy ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -425,7 +454,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `enableProxy ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -445,7 +476,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `setWallpaper ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -458,7 +491,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `disableUSB ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -471,7 +506,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `enableUSB ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -483,7 +520,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `updateOS ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -495,7 +534,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       } = await this.sendCommand("/balance/query");
       return { credit: balance.apple as number };
     } catch (error) {
-      console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+      console.warn(
+        `getCredit ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return { credit: 0 };
     }
   }
