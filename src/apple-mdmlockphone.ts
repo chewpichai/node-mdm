@@ -57,8 +57,16 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     const text = await response.text();
 
     if (!response.ok) {
-      if (response.status === 429 && retry < 3) {
-        await sleep(1000);
+      if (retry < 3) {
+        if (response.status === 429) await sleep(1000);
+        else if (response.status === 402) {
+          this.token = null;
+          this.refreshToken = null;
+          const cache = getCache();
+          cache.del(this.tokenKey);
+          cache.del(this.refreshKey);
+          await this.init();
+        }
         return this.sendCommand(url, data, retry + 1);
       }
       console.log(text);
