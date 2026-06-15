@@ -192,7 +192,12 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         size: 10,
       });
 
-      if (body.code !== 200) throw new Error("device_not_found");
+      if (body.code !== 200) {
+        console.log(body);
+        throw new Error(
+          `device_not_found_${this.query.serialNumber || this.query.applicationId}`
+        );
+      }
 
       const {
         data: { records },
@@ -204,6 +209,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         (this.query.serialNumber &&
           this.query.serialNumber !== device.sserialno)
       ) {
+        console.log(this.query.serialNumber, device?.sserialno);
         throw new Error(
           `device_not_found_${this.query.serialNumber || this.query.applicationId}`
         );

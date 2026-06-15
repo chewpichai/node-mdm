@@ -164,13 +164,16 @@ class AppleMDMLockPhoneMDM {
                     : this.query.applicationId,
                 size: 10,
             });
-            if (body.code !== 200)
-                throw new Error("device_not_found");
+            if (body.code !== 200) {
+                console.log(body);
+                throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
+            }
             const { data: { records }, } = body;
             const device = records.filter((d) => d.isdelete === 0).at(0);
             if (!device ||
                 (this.query.serialNumber &&
                     this.query.serialNumber !== device.sserialno)) {
+                console.log(this.query.serialNumber, device?.sserialno);
                 throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
             }
             this.query.serialNumber = device.sserialno;

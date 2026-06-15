@@ -91,8 +91,10 @@ class AppleMDM {
                 startDateValue: "",
                 endDateValue: "",
             });
-            if (this.query.serialNumber &&
-                device?.serialNumber !== this.query.serialNumber) {
+            if (!device ||
+                (this.query.serialNumber &&
+                    this.query.serialNumber !== device?.serialNumber)) {
+                console.log(this.query.serialNumber, device.sserialno);
                 throw new Error("device_not_found");
             }
             return device;
