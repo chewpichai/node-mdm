@@ -38,4 +38,6 @@ export declare class AppleMDMLockPhoneMDM implements IMDM {
     getCredit(): Promise<{
         credit: number;
     }>;
+    lockMacbook(phoneNumber: string, content: string, pin: string): Promise<boolean>;
+    restartDevice(): Promise<boolean>;
 }

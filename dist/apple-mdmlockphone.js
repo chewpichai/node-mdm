@@ -452,5 +452,32 @@ class AppleMDMLockPhoneMDM {
             return { credit: 0 };
         }
     }
+    async lockMacbook(phoneNumber, content, pin) {
+        try {
+            const data = await this.sendCommand("/mac/lock", {
+                lostMidInfo: content,
+                lostPhoneNum: phoneNumber,
+                serialNo: this.query.serialNumber,
+                pin,
+            });
+            return data.code === 200;
+        }
+        catch (error) {
+            console.warn(`lockMacbook ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            return false;
+        }
+    }
+    async restartDevice() {
+        try {
+            const data = await this.sendCommand("/device/restart", {
+                serialNo: this.query.serialNumber,
+            });
+            return data.code === 200;
+        }
+        catch (error) {
+            console.warn(`restartDevice ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            return false;
+        }
+    }
 }
 exports.AppleMDMLockPhoneMDM = AppleMDMLockPhoneMDM;
