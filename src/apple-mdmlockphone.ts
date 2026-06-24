@@ -555,7 +555,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     }
   }
 
-  async lockMacbook(phoneNumber: string, content: string, pin: string) {
+  async lockMac(phoneNumber: string, content: string, pin: string) {
     try {
       const data = await this.sendCommand("/mac/lock", {
         lostMidInfo: content,

@@ -452,7 +452,7 @@ class AppleMDMLockPhoneMDM {
             return { credit: 0 };
         }
     }
-    async lockMacbook(phoneNumber, content, pin) {
+    async lockMac(phoneNumber, content, pin) {
         try {
             const data = await this.sendCommand("/mac/lock", {
                 lostMidInfo: content,
