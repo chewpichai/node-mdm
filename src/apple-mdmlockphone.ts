@@ -207,7 +207,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       if (
         !device ||
         (this.query.serialNumber &&
-          this.query.serialNumber !== device.sserialno)
+          this.query.serialNumber !== device?.sserialno)
       ) {
         console.log(this.query.serialNumber, device?.sserialno);
         throw new Error(
