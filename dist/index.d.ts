@@ -26,6 +26,6 @@ import { AppleMDM } from "./apple";
 import { AppleChewLabxMDM } from "./apple-chewlabx";
 import { AppleMDMLockPhoneMDM } from "./apple-mdmlockphone";
 import { AppleSeekDreamMDM } from "./apple-seekdream";
-export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AppleMDM | AppleChewLabxMDM | AppleMDMLockPhoneMDM | AppleSeekDreamMDM | AndroidSeekDreamMDM>;
+export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AndroidSeekDreamMDM | AppleMDM | AppleChewLabxMDM | AppleMDMLockPhoneMDM | AppleSeekDreamMDM>;
 export { DeviceStatus, Wallpaper } from "./types";
 export { AndroidMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, AppleMDMLockPhoneMDM, AppleSeekDreamMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };

@@ -52,11 +52,12 @@ export type DevicePermissions = {
     forceWiFiPowerOn: boolean;
 };
 export type MDMQuery = {
-    brand: "apple" | "android" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone" | "apple-seekdream";
+    brand: "apple" | "android" | "android-oem" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone" | "apple-seekdream";
     mdmId?: number;
     serialNumber: string;
     applicationId: string;
     merchantId?: string;
+    imei?: string;
 };
 export type Wallpaper = {
     id: number;

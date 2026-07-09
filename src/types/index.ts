@@ -60,6 +60,7 @@ export type MDMQuery = {
   brand:
     | "apple"
     | "android"
+    | "android-oem"
     | "android-seekdream"
     | "apple-chewlabx"
     | "apple-mdmlockphone"
@@ -68,6 +69,7 @@ export type MDMQuery = {
   serialNumber: string;
   applicationId: string;
   merchantId?: string;
+  imei?: string;
 };
 
 export type Wallpaper = {
