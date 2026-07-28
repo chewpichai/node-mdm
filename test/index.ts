@@ -1,5 +1,6 @@
 require("dotenv").config();
 import {
+  AndroidOEMMDM,
   AppleChewLabxMDM,
   AppleMDM,
   AppleMDMLockPhoneMDM,
@@ -174,12 +175,26 @@ const testAppleMDMLockPhoneMDMDevices = async () => {
   }
 };
 
+const testAndroidOEMMDM = async () => {
+  const mdm = (await getMDM({
+    applicationId: "",
+    serialNumber: "",
+    brand: "android-oem",
+    imei: "359860650626017",
+  })) as AndroidOEMMDM;
+
+  // Get mdmId from device.
+  const device = await mdm.getDevice();
+  console.log("Device", device);
+};
+
 (async () => {
   // await testAppleMDM();
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  await testAppleMDMLockPhoneMDM();
+  // await testAppleMDMLockPhoneMDM();
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
+  await testAndroidOEMMDM();
 })();

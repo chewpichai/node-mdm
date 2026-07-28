@@ -21,11 +21,13 @@ export interface IMDM {
     }>;
 }
 import { AndroidMDM } from "./android";
+import { AndroidOEMMDM } from "./android-oem";
 import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
 import { AppleChewLabxMDM } from "./apple-chewlabx";
 import { AppleMDMLockPhoneMDM } from "./apple-mdmlockphone";
 import { AppleSeekDreamMDM } from "./apple-seekdream";
-export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AndroidSeekDreamMDM | AppleMDM | AppleChewLabxMDM | AppleMDMLockPhoneMDM | AppleSeekDreamMDM>;
+export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AndroidSeekDreamMDM | AppleMDM | AppleChewLabxMDM | AppleMDMLockPhoneMDM | AppleSeekDreamMDM | AndroidOEMMDM>;
+export { logger } from "./lib/logger";
 export { DeviceStatus, Wallpaper } from "./types";
-export { AndroidMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, AppleMDMLockPhoneMDM, AppleSeekDreamMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };
+export { AndroidMDM, AndroidOEMMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, AppleMDMLockPhoneMDM, AppleSeekDreamMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };

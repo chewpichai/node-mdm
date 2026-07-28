@@ -4,6 +4,7 @@ exports.AppleMDM = void 0;
 exports.sleep = sleep;
 const _1 = require(".");
 const cache_1 = require("./lib/cache");
+const logger_1 = require("./lib/logger");
 const types_1 = require("./types");
 const MDM_URL = process.env.MDM_ISHALOU_URL;
 const MDM_USERNAME = process.env.MDM_ISHALOU_USERNAME;
@@ -43,11 +44,11 @@ class AppleMDM {
         try {
             const data = JSON.parse(text);
             if (data.status !== 200)
-                console.log("🚀 ~ AppleMDM ~ sendCommand ~ data:", data);
+                logger_1.logger.log(`🚀 ~ ${this.query.serialNumber} ~ sendCommand ~ data:`, data);
             return data;
         }
         catch (error) {
-            console.warn("🚀 ~ AppleMDM ~ sendCommand ~ text:", text);
+            logger_1.logger.warn(`🚀 ~ ${this.query.serialNumber} ~ sendCommand ~ text:`, text);
             throw error;
         }
     }
@@ -94,13 +95,13 @@ class AppleMDM {
             if (!device ||
                 (this.query.serialNumber &&
                     this.query.serialNumber !== device?.serialNumber)) {
-                console.log(this.query.serialNumber, device?.serialNumber);
+                logger_1.logger.log(this.query.serialNumber, device?.serialNumber);
                 throw new Error("device_not_found");
             }
             return device;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getDevice() {
@@ -126,7 +127,7 @@ class AppleMDM {
             return device;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getDeviceDetail(deviceId) {
@@ -137,7 +138,7 @@ class AppleMDM {
             return data;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
         }
     }
     async getEscrowKey() {
@@ -150,7 +151,7 @@ class AppleMDM {
             return escrowKey;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -165,7 +166,7 @@ class AppleMDM {
             return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -181,7 +182,7 @@ class AppleMDM {
             return [true, data.data.commandId];
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, error.message];
         }
     }
@@ -193,7 +194,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -230,7 +231,7 @@ class AppleMDM {
             });
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async removeMDM(password) {
@@ -243,7 +244,7 @@ class AppleMDM {
             return [11001009, 200].includes(data.status);
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -257,7 +258,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -272,7 +273,7 @@ class AppleMDM {
             return [data.status === 200, data.data?.commandId];
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -292,7 +293,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -306,7 +307,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -320,7 +321,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -335,7 +336,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -350,7 +351,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -384,7 +385,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -399,7 +400,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -413,7 +414,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -428,7 +429,7 @@ class AppleMDM {
             return data.status === 200;
         }
         catch (error) {
-            console.warn(`serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }

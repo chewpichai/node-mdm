@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidOEMMDM = void 0;
+const infinix_1 = __importDefault(require("./lib/android/infinix"));
 class AndroidOEMMDM {
     static async getInstance(query) {
         const instance = new AndroidOEMMDM(query);
@@ -16,6 +20,8 @@ class AndroidOEMMDM {
         throw new Error("not_implemented");
     }
     async init() {
+        const data = await infinix_1.default.getDeviceStatus(this.query.imei);
+        console.log("🚀 ~ AndroidOEMMDM ~ init ~ data:", data);
         throw new Error("not_implemented");
     }
     async getDevice() {

@@ -40,6 +40,7 @@ export interface IMDM {
 }
 
 import { AndroidMDM } from "./android";
+import { AndroidOEMMDM } from "./android-oem";
 import { AndroidSeekDreamMDM } from "./android-seekdream";
 import { AppleMDM } from "./apple";
 import { AppleChewLabxMDM } from "./apple-chewlabx";
@@ -54,6 +55,8 @@ export async function getMDM(query: MDMQuery) {
       return await AndroidMDM.getInstance(query);
     case "android-seekdream":
       return await AndroidSeekDreamMDM.getInstance(query);
+    case "android-oem":
+      return await AndroidOEMMDM.getInstance(query);
     case "apple":
       return await AppleMDM.getInstance(query);
     case "apple-mdmlockphone":
@@ -65,9 +68,11 @@ export async function getMDM(query: MDMQuery) {
   }
 }
 
+export { logger } from "./lib/logger";
 export { DeviceStatus, Wallpaper } from "./types";
 export {
   AndroidMDM,
+  AndroidOEMMDM,
   AndroidSeekDreamMDM,
   AppleChewLabxMDM,
   AppleMDM,

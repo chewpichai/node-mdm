@@ -1,4 +1,5 @@
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
+import infinix from "./lib/android/infinix";
 
 export class AndroidOEMMDM implements IMDM {
   tokenKey: string;
@@ -22,6 +23,8 @@ export class AndroidOEMMDM implements IMDM {
   }
 
   async init() {
+    const data = await infinix.getDeviceStatus(this.query.imei!);
+    console.log("🚀 ~ AndroidOEMMDM ~ init ~ data:", data);
     throw new Error("not_implemented");
   }
 

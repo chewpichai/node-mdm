@@ -18,6 +18,9 @@ declare global {
       MDM_SEEKDREAM_PASSWORD: string;
       MDM_SEEKDREAM_API_KEY: string;
       MDM_SEEKDREAM_ROLE: "agent" | "mch" | "staff";
+      REALME_CARRIER_CODE: string;
+      REALME_TOKEN: string;
+      INFINIX_API_KEY: string;
     }
   }
 }
