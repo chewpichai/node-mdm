@@ -288,6 +288,8 @@ class AppleMDMLockPhoneMDM {
             const data = await this.sendCommand("/unbindOnce", {
                 appid: MDM_APPID,
                 serialNo: this.query.serialNumber,
+                removeProfile: true,
+                unbindABM: true,
             });
             return data.code === 200;
         }

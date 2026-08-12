@@ -359,6 +359,8 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const data = await this.sendCommand("/unbindOnce", {
         appid: MDM_APPID,
         serialNo: this.query.serialNumber,
+        removeProfile: true,
+        unbindABM: true,
       });
       return data.code === 200;
     } catch (error) {
