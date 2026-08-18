@@ -241,6 +241,7 @@ class AppleMDM {
             const data = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
                 id: this.query.mdmId,
             });
+            logger_1.logger.log(`removeMDM: ${this.query.serialNumber}`);
             return [11001009, 200].includes(data.status);
         }
         catch (error) {

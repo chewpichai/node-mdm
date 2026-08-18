@@ -8,6 +8,7 @@ import {
   MDMQuery,
 } from ".";
 import { getCache } from "./lib/cache";
+import { logger } from "./lib/logger";
 
 const MDM_URL = process.env.MDM_MDMLOCKPHONE_URL;
 const MDM_APPID = process.env.MDM_MDMLOCKPHONE_APPID;
@@ -69,7 +70,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         }
         return this.sendCommand(url, data, retry + 1);
       }
-      console.log(text);
+      logger.log(text);
       throw new Error(`network_error_${response.status}`);
     }
 
@@ -77,11 +78,11 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const data = JSON.parse(text);
 
       if (data.code !== 200)
-        console.log("🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ data:", data);
+        logger.log("🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ data:", data);
 
       return data;
     } catch (error) {
-      console.log(text);
+      logger.log(text);
       throw error;
     }
   }
@@ -159,7 +160,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `getUSBItunesStatus ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
     }
@@ -172,7 +173,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `getHttpProxyStatus ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
     }
@@ -193,7 +194,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
 
       if (body.code !== 200) {
-        console.log(body);
+        logger.log(body);
         throw new Error(
           `device_not_found_${this.query.serialNumber || this.query.applicationId}`
         );
@@ -209,7 +210,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         (this.query.serialNumber &&
           this.query.serialNumber !== device?.sserialno)
       ) {
-        console.log(this.query.serialNumber, device?.sserialno);
+        logger.log(this.query.serialNumber, device?.sserialno);
         throw new Error(
           `device_not_found_${this.query.serialNumber || this.query.applicationId}`
         );
@@ -250,7 +251,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         lastOnlineTime: dayjs(device.tlastusetime).format("YYYYMMDDHHmmss"),
       };
     } catch (error) {
-      console.warn(
+      logger.warn(
         `getDevice ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
     }
@@ -274,7 +275,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         })
       ) as unknown as DevicePermissions;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `getFunctionRestrictions ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
     }
@@ -292,7 +293,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return code.passCode;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `getEscrowKey ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
     }
@@ -312,7 +313,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(
+      logger.warn(
         `enableLostMode ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return [false, undefined];
@@ -329,7 +330,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(
+      logger.warn(
         `disableLostMode ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return [false, undefined];
@@ -362,9 +363,10 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         removeProfile: true,
         unbindABM: true,
       });
+      logger.log(`removeMDM: ${this.query.serialNumber}`);
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `removeMDM ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -379,7 +381,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `removePassword ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -397,7 +399,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(
+      logger.warn(
         `hideApp ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return [false, undefined];
@@ -415,7 +417,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(
+      logger.warn(
         `disableHideApp ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return [false, undefined];
@@ -440,7 +442,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `setPermissions ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -455,7 +457,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `disableProxy ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -470,7 +472,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `enableProxy ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -492,7 +494,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `setWallpaper ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -507,7 +509,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `disableUSB ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -522,7 +524,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `enableUSB ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -536,7 +538,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `updateOS ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -550,7 +552,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       } = await this.sendCommand("/balance/query");
       return { credit: balance.apple as number };
     } catch (error) {
-      console.warn(
+      logger.warn(
         `getCredit ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return { credit: 0 };
@@ -567,7 +569,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `lockMacbook ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
@@ -581,7 +583,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       });
       return data.code === 200;
     } catch (error) {
-      console.warn(
+      logger.warn(
         `restartDevice ~ serailNumber: ${this.query.serialNumber}, error: ${error}`
       );
       return false;
