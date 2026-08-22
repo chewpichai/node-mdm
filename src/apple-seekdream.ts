@@ -238,6 +238,10 @@ export class AppleSeekDreamMDM implements IMDM {
     throw new Error("not_implemented");
   }
 
+  async disableHideApp(): Promise<[boolean, number | string | undefined]> {
+    return this.disableLostMode();
+  }
+
   async setPermissions(permissions: DevicePermissions) {
     throw new Error("not_implemented");
   }

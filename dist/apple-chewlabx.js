@@ -196,6 +196,9 @@ class AppleChewLabxMDM {
             return [false, undefined];
         }
     }
+    async disableHideApp() {
+        return this.disableLostMode();
+    }
     async setPermissions(permissions) {
         try {
             await this.sendCommand(`/devices/${this.query.serialNumber}/restrictions`, permissions, "PUT");

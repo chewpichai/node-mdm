@@ -61,6 +61,10 @@ export class AndroidOEMMDM implements IMDM {
     return [false, undefined];
   }
 
+  async disableHideApp(): Promise<[boolean, number | string | undefined]> {
+    return [false, undefined];
+  }
+
   async uploadWallpaper(wallpaper: string) {
     return true;
   }

@@ -17,6 +17,7 @@ export declare class AndroidMDM implements IMDM {
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
     hideApp(): Promise<[boolean, number | undefined]>;
+    disableHideApp(): Promise<[boolean, number | string | undefined]>;
     uploadWallpaper(wallpaper: string): Promise<boolean>;
     setWallpaper(): Promise<boolean>;
     setADB(enabled: boolean): Promise<boolean>;

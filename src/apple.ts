@@ -334,6 +334,10 @@ export class AppleMDM implements IMDM {
     }
   }
 
+  async disableHideApp(): Promise<[boolean, number | string | undefined]> {
+    return this.disableLostMode();
+  }
+
   async setPermissions(permissions: DevicePermissions) {
     if (!this.query.mdmId) throw new Error("mdm_id_not_found");
 

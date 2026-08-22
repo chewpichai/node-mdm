@@ -188,6 +188,9 @@ class AppleSeekDreamMDM {
     async hideApp() {
         throw new Error("not_implemented");
     }
+    async disableHideApp() {
+        return this.disableLostMode();
+    }
     async setPermissions(permissions) {
         throw new Error("not_implemented");
     }

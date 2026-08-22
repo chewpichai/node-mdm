@@ -32,6 +32,8 @@ export interface IMDM {
 
   hideApp: () => Promise<[boolean, number | undefined]>;
 
+  disableHideApp: () => Promise<[boolean, number | string | undefined]>;
+
   uploadWallpaper: (wallpaper: string) => Promise<boolean>;
 
   setWallpaper: (changeable: boolean, wallpaperId?: number) => Promise<boolean>;

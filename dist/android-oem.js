@@ -45,6 +45,9 @@ class AndroidOEMMDM {
     async hideApp() {
         return [false, undefined];
     }
+    async disableHideApp() {
+        return [false, undefined];
+    }
     async uploadWallpaper(wallpaper) {
         return true;
     }

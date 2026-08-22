@@ -21,6 +21,7 @@ export declare class AppleSeekDreamMDM implements IMDM {
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
     hideApp(): Promise<[boolean, number | undefined]>;
+    disableHideApp(): Promise<[boolean, number | string | undefined]>;
     setPermissions(permissions: DevicePermissions): Promise<void>;
     disableProxy(): Promise<void>;
     enableProxy(): Promise<void>;

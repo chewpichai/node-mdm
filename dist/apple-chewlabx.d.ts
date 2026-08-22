@@ -19,6 +19,7 @@ export declare class AppleChewLabxMDM implements IMDM {
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
     hideApp(): Promise<[boolean, number | undefined]>;
+    disableHideApp(): Promise<[boolean, number | string | undefined]>;
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     setWallpaper(changeable: boolean, wallpaper?: number | File): Promise<boolean>;
     updateOS(): Promise<boolean>;

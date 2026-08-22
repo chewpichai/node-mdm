@@ -26,7 +26,7 @@ export declare class AppleMDMLockPhoneMDM implements IMDM {
     removeMDM(password: string): Promise<boolean>;
     removePassword(): Promise<boolean>;
     hideApp(): Promise<[boolean, number | undefined]>;
-    disableHideApp(): Promise<[boolean, number | undefined]>;
+    disableHideApp(): Promise<[boolean, number | string | undefined]>;
     setPermissions(permissions: DevicePermissions): Promise<boolean>;
     disableProxy(): Promise<boolean>;
     enableProxy(): Promise<boolean>;

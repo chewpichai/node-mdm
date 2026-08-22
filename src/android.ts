@@ -183,6 +183,10 @@ export class AndroidMDM implements IMDM {
     return [false, undefined];
   }
 
+  async disableHideApp(): Promise<[boolean, number | string | undefined]> {
+    return this.disableLostMode();
+  }
+
   async uploadWallpaper(wallpaper: string) {
     return true;
   }

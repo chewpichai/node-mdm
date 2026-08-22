@@ -278,6 +278,9 @@ class AppleMDM {
             return [false, undefined];
         }
     }
+    async disableHideApp() {
+        return this.disableLostMode();
+    }
     async setPermissions(permissions) {
         if (!this.query.mdmId)
             throw new Error("mdm_id_not_found");

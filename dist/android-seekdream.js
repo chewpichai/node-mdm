@@ -215,6 +215,9 @@ class AndroidSeekDreamMDM {
     async hideApp() {
         return [false, undefined];
     }
+    async disableHideApp() {
+        return this.disableLostMode();
+    }
     async uploadWallpaper(wallpaper) {
         return true;
     }

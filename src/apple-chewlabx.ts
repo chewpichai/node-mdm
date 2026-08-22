@@ -258,6 +258,10 @@ export class AppleChewLabxMDM implements IMDM {
     }
   }
 
+  async disableHideApp(): Promise<[boolean, number | string | undefined]> {
+    return this.disableLostMode();
+  }
+
   async setPermissions(permissions: DevicePermissions) {
     try {
       await this.sendCommand(

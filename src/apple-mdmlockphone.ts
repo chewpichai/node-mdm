@@ -406,7 +406,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     }
   }
 
-  async disableHideApp(): Promise<[boolean, number | undefined]> {
+  async disableHideApp(): Promise<[boolean, number | string | undefined]> {
     if (this.query.brand !== "apple-mdmlockphone")
       throw new Error("invalid_brand");
 
