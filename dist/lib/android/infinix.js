@@ -59,13 +59,29 @@ async function sendCommand(url, body) {
     console.log("🚀 ~ sendCommand ~ data:", data);
     return data;
 }
+async function uploadDevice(imei) {
+    let data = await sendCommand("/api/partner/lock/v1/imei/input", {
+        imeiInfo: JSON.stringify([
+            { imei, model: "", orderNum: "", ram: "", rom: "" },
+        ]),
+        apiKey: API_KEY,
+        preLockFlag: true,
+    });
+    console.log("🚀 ~ uploadDevice ~ data:", data);
+    const isSuccess = data.message === "Success";
+    if (isSuccess)
+        return 200;
+    if ([50015, 50078, 50052].includes(data[0].errCode))
+        return 461;
+    return data[0].errCode;
+}
 async function getDeviceStatus(imei) {
     const data = await sendCommand("/api/partner/lock/v1/findLockState", {
         imei,
         apiKey: API_KEY,
     });
     console.log("🚀 ~ getDeviceStatus ~ data:", data);
-    return data;
+    return data.data.lockState;
 }
 async function lockDevice(imei, phone, message) {
     const data = await sendCommand("/api/partner/anti-theft/v1/submit", {
@@ -74,7 +90,7 @@ async function lockDevice(imei, phone, message) {
         apiKey: API_KEY,
     });
     console.log("🚀 ~ lockDevice ~ data:", data);
-    return data;
+    return data.code === 200;
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/api/partner/anti-theft/v1/close", {
@@ -82,7 +98,7 @@ async function unlockDevice(imei) {
         apiKey: API_KEY,
     });
     console.log("🚀 ~ unlockDevice ~ data:", data);
-    return data;
+    return data.code === 200;
 }
 async function sendMessage(imei, phone, message) {
     const data = await sendCommand("/api/partner/push/v1/sendPushInfo", {
@@ -93,7 +109,7 @@ async function sendMessage(imei, phone, message) {
         pushType: 1,
     });
     console.log("🚀 ~ sendMessage ~ data:", data);
-    return data;
+    return data.code === 200;
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/api/partner/lock/v1/removeLock", {
@@ -101,9 +117,10 @@ async function completeDevice(imei) {
         apiKey: API_KEY,
     });
     console.log("🚀 ~ completeDevice ~ data:", data);
-    return data;
+    return data.code === 200;
 }
 exports.default = {
+    uploadDevice,
     getDeviceStatus,
     lockDevice,
     unlockDevice,

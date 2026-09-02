@@ -28,13 +28,30 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
   return data;
 }
 
-async function getDeviceStatus(imei: string) {
+async function uploadDevice(imei: string): Promise<number> {
+  let data = await sendCommand("/api/partner/lock/v1/imei/input", {
+    imeiInfo: JSON.stringify([
+      { imei, model: "", orderNum: "", ram: "", rom: "" },
+    ]),
+    apiKey: API_KEY,
+    preLockFlag: true,
+  });
+  console.log("🚀 ~ uploadDevice ~ data:", data);
+  const isSuccess = data.message === "Success";
+  if (isSuccess) return 200;
+
+  if ([50015, 50078, 50052].includes(data[0].errCode)) return 461;
+
+  return data[0].errCode;
+}
+
+async function getDeviceStatus(imei: string): Promise<string> {
   const data = await sendCommand("/api/partner/lock/v1/findLockState", {
     imei,
     apiKey: API_KEY,
   });
   console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  return data;
+  return data.data.lockState;
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
@@ -44,7 +61,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     apiKey: API_KEY,
   });
   console.log("🚀 ~ lockDevice ~ data:", data);
-  return data;
+  return data.code === 200;
 }
 
 async function unlockDevice(imei: string) {
@@ -53,7 +70,7 @@ async function unlockDevice(imei: string) {
     apiKey: API_KEY,
   });
   console.log("🚀 ~ unlockDevice ~ data:", data);
-  return data;
+  return data.code === 200;
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -65,7 +82,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     pushType: 1,
   });
   console.log("🚀 ~ sendMessage ~ data:", data);
-  return data;
+  return data.code === 200;
 }
 
 async function completeDevice(imei: string) {
@@ -74,10 +91,11 @@ async function completeDevice(imei: string) {
     apiKey: API_KEY,
   });
   console.log("🚀 ~ completeDevice ~ data:", data);
-  return data;
+  return data.code === 200;
 }
 
 export default {
+  uploadDevice,
   getDeviceStatus,
   lockDevice,
   unlockDevice,

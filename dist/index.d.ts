@@ -1,4 +1,4 @@
-import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery } from "./types";
+import { DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, OEM_BRANDS } from "./types";
 export interface IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -31,4 +31,4 @@ import { AppleSeekDreamMDM } from "./apple-seekdream";
 export declare function getMDM(query: MDMQuery): Promise<AndroidMDM | AndroidSeekDreamMDM | AppleMDM | AppleChewLabxMDM | AppleMDMLockPhoneMDM | AppleSeekDreamMDM | AndroidOEMMDM>;
 export { logger } from "./lib/logger";
 export { DeviceStatus, Wallpaper } from "./types";
-export { AndroidMDM, AndroidOEMMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, AppleMDMLockPhoneMDM, AppleSeekDreamMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, };
+export { AndroidMDM, AndroidOEMMDM, AndroidSeekDreamMDM, AppleChewLabxMDM, AppleMDM, AppleMDMLockPhoneMDM, AppleSeekDreamMDM, DeviceLocation, DevicePermissions, MDMDevice, MDMDeviceDetail, MDMQuery, OEM_BRANDS, };

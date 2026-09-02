@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppleSeekDreamMDM = exports.AppleMDMLockPhoneMDM = exports.AppleMDM = exports.AppleChewLabxMDM = exports.AndroidSeekDreamMDM = exports.AndroidOEMMDM = exports.AndroidMDM = exports.DeviceStatus = exports.logger = void 0;
+exports.OEM_BRANDS = exports.AppleSeekDreamMDM = exports.AppleMDMLockPhoneMDM = exports.AppleMDM = exports.AppleChewLabxMDM = exports.AndroidSeekDreamMDM = exports.AndroidOEMMDM = exports.AndroidMDM = exports.DeviceStatus = exports.logger = void 0;
 exports.getMDM = getMDM;
+const types_1 = require("./types");
+Object.defineProperty(exports, "OEM_BRANDS", { enumerable: true, get: function () { return types_1.OEM_BRANDS; } });
 const android_1 = require("./android");
 Object.defineProperty(exports, "AndroidMDM", { enumerable: true, get: function () { return android_1.AndroidMDM; } });
 const android_oem_1 = require("./android-oem");
@@ -38,5 +40,5 @@ async function getMDM(query) {
 }
 var logger_1 = require("./lib/logger");
 Object.defineProperty(exports, "logger", { enumerable: true, get: function () { return logger_1.logger; } });
-var types_1 = require("./types");
-Object.defineProperty(exports, "DeviceStatus", { enumerable: true, get: function () { return types_1.DeviceStatus; } });
+var types_2 = require("./types");
+Object.defineProperty(exports, "DeviceStatus", { enumerable: true, get: function () { return types_2.DeviceStatus; } });

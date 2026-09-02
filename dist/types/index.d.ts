@@ -51,6 +51,7 @@ export type DevicePermissions = {
     allowVPNCreation: boolean;
     forceWiFiPowerOn: boolean;
 };
+export declare const OEM_BRANDS: readonly ["xiaomi", "realme", "infinix", "techno"];
 export type MDMQuery = {
     brand: "apple" | "android" | "android-oem" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone" | "apple-seekdream";
     mdmId?: number;
@@ -58,6 +59,7 @@ export type MDMQuery = {
     applicationId: string;
     merchantId?: string;
     imei?: string;
+    subBrand?: (typeof OEM_BRANDS)[number];
 };
 export type Wallpaper = {
     id: number;

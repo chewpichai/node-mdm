@@ -56,6 +56,8 @@ export type DevicePermissions = {
   forceWiFiPowerOn: boolean;
 };
 
+export const OEM_BRANDS = ["xiaomi", "realme", "infinix", "techno"] as const;
+
 export type MDMQuery = {
   brand:
     | "apple"
@@ -70,6 +72,7 @@ export type MDMQuery = {
   applicationId: string;
   merchantId?: string;
   imei?: string;
+  subBrand?: (typeof OEM_BRANDS)[number];
 };
 
 export type Wallpaper = {

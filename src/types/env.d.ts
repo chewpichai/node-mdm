@@ -21,6 +21,8 @@ declare global {
       REALME_CARRIER_CODE: string;
       REALME_TOKEN: string;
       INFINIX_API_KEY: string;
+      XIAOMI_API_KEY: string;
+      XIAOMI_TENANT_ID: string;
     }
   }
 }

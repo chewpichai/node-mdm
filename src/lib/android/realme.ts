@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import { sleep } from "../../apple";
 
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
@@ -28,10 +29,49 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
   return data;
 }
 
-async function getDeviceStatus(imei: string) {
+async function uploadDevice(imei: string): Promise<number> {
+  let data = await sendCommand("/flexiblePackage/upload", {
+    deviceUid: imei,
+    productName: "",
+    operationType: 1,
+  });
+  console.log("🚀 ~ uploadDevice ~ data:", data);
+  let isSuccess = data.message === "SUCCESS";
+  if (!isSuccess) return 400;
+
+  await sleep(5000);
+  data = await sendCommand("/package/bindPackage", {
+    deviceUid: imei,
+    type: 1,
+  });
+  console.log("🚀 ~ bindPackage ~ data:", data);
+  isSuccess = data.message === "SUCCESS";
+  if (isSuccess) return 200;
+
+  return data.error.code;
+}
+
+async function getDeviceStatus(imei: string): Promise<string> {
   const data = await sendCommand("/getStatus", { deviceUid: imei });
   console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  return data;
+  switch (data.status) {
+    case 0:
+      return "active";
+    case 1:
+      return "locked";
+    case 2:
+      return "locking";
+    case 3:
+      return "completed";
+    case 4:
+      return "completing";
+    case 5:
+      return "unlocking";
+    case 7:
+      return "activating";
+    default:
+      return "unknown";
+  }
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
@@ -41,13 +81,13 @@ async function lockDevice(imei: string, phone: string, message: string) {
     message,
   });
   console.log("🚀 ~ lockDevice ~ data:", data);
-  return data;
+  return data.result === "SUCCESS";
 }
 
 async function unlockDevice(imei: string) {
   const data = await sendCommand("/unlock", { deviceUid: imei });
   console.log("🚀 ~ unlockDevice ~ data:", data);
-  return data;
+  return data.result === "SUCCESS";
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -57,16 +97,17 @@ async function sendMessage(imei: string, phone: string, message: string) {
     message,
   });
   console.log("🚀 ~ sendMessage ~ data:", data);
-  return data;
+  return data.result === "SUCCESS";
 }
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/complete", { deviceUid: imei });
   console.log("🚀 ~ completeDevice ~ data:", data);
-  return data;
+  return data.result === "SUCCESS";
 }
 
 export default {
+  uploadDevice,
   getDeviceStatus,
   lockDevice,
   unlockDevice,

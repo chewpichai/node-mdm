@@ -4,6 +4,7 @@ import {
   MDMDevice,
   MDMDeviceDetail,
   MDMQuery,
+  OEM_BRANDS,
 } from "./types";
 
 export interface IMDM {
@@ -85,4 +86,5 @@ export {
   MDMDevice,
   MDMDeviceDetail,
   MDMQuery,
+  OEM_BRANDS,
 };
