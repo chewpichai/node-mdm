@@ -56,7 +56,13 @@ export type DevicePermissions = {
   forceWiFiPowerOn: boolean;
 };
 
-export const OEM_BRANDS = ["xiaomi", "realme", "infinix", "techno"] as const;
+export const OEM_BRANDS = [
+  "xiaomi",
+  "realme",
+  "infinix",
+  "techno",
+  "vivo",
+] as const;
 
 export type MDMQuery = {
   brand:

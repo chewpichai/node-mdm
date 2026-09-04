@@ -23,6 +23,12 @@ declare global {
       INFINIX_API_KEY: string;
       XIAOMI_API_KEY: string;
       XIAOMI_TENANT_ID: string;
+      VIVO_CLIENT_ID: string;
+      VIVO_CLIENT_SECRET: string;
+      VIVO_MANUFACTURER: string;
+      VIVO_AES_IV: string;
+      VIVO_AES_KEY: string;
+      VIVO_BASE_URL: string;
     }
   }
 }

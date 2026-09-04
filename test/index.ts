@@ -180,12 +180,13 @@ const testAndroidOEMMDM = async () => {
     applicationId: "",
     serialNumber: "",
     brand: "android-oem",
-    imei: "359860650626017",
+    imei: "867389089965353",
+    subBrand: "vivo",
   })) as AndroidOEMMDM;
 
   // Get mdmId from device.
-  const device = await mdm.getDevice();
-  console.log("Device", device);
+  const status = await mdm.enroll();
+  console.log("status", status);
 };
 
 (async () => {

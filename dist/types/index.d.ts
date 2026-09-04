@@ -51,7 +51,7 @@ export type DevicePermissions = {
     allowVPNCreation: boolean;
     forceWiFiPowerOn: boolean;
 };
-export declare const OEM_BRANDS: readonly ["xiaomi", "realme", "infinix", "techno"];
+export declare const OEM_BRANDS: readonly ["xiaomi", "realme", "infinix", "techno", "vivo"];
 export type MDMQuery = {
     brand: "apple" | "android" | "android-oem" | "android-seekdream" | "apple-chewlabx" | "apple-mdmlockphone" | "apple-seekdream";
     mdmId?: number;
