@@ -173,7 +173,9 @@ class AppleMDMLockPhoneMDM {
             const device = records.filter((d) => d.isdelete === 0).at(0);
             if (!device ||
                 (this.query.serialNumber &&
-                    this.query.serialNumber !== device?.sserialno)) {
+                    this.query.serialNumber !== device?.sserialno) ||
+                (device.contractCode &&
+                    device.contractCode !== this.query.applicationId)) {
                 logger_1.logger.log(this.query.serialNumber, device?.sserialno);
                 throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
             }

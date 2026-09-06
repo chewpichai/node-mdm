@@ -71,8 +71,8 @@ const testAppleChewLabxMDM = async () => {
 
 const testAppleMDMLockPhoneMDM = async () => {
   const mdm = (await getMDM({
-    applicationId: "",
-    serialNumber: "LR02XJQ0MY",
+    applicationId: "60072609006012",
+    serialNumber: "G2QX5YK677",
     brand: "apple-mdmlockphone",
   })) as AppleMDMLockPhoneMDM;
   console.log(mdm);
@@ -194,8 +194,8 @@ const testAndroidOEMMDM = async () => {
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  // await testAppleMDMLockPhoneMDM();
+  await testAppleMDMLockPhoneMDM();
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
-  await testAndroidOEMMDM();
+  // await testAndroidOEMMDM();
 })();
