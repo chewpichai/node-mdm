@@ -47,8 +47,7 @@ async function uploadDevice(imei) {
     });
     console.log("🚀 ~ uploadDevice ~ data:", data);
     let isSuccess = data.deviceList[0].resultCode === "SUCCESS";
-    if (!isSuccess &&
-        data.deviceList[0].resultCode === "DEVICE_UID_NOT_VALID_LUHN")
+    if (!isSuccess)
         return 461;
     await (0, apple_1.sleep)(5000);
     data = await sendCommand("/service/activate", {

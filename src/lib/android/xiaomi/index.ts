@@ -54,11 +54,7 @@ async function uploadDevice(imei: string): Promise<number> {
   });
   console.log("🚀 ~ uploadDevice ~ data:", data);
   let isSuccess = data.deviceList[0].resultCode === "SUCCESS";
-  if (
-    !isSuccess &&
-    data.deviceList[0].resultCode === "DEVICE_UID_NOT_VALID_LUHN"
-  )
-    return 461;
+  if (!isSuccess) return 461;
 
   await sleep(5000);
   data = await sendCommand("/service/activate", {
