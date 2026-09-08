@@ -1,4 +1,6 @@
+import dayjs from "dayjs";
 import { sleep } from "../../../apple";
+import { MDMAndroidOEMDevice } from "../../../types";
 import { getCache } from "../../cache";
 
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
@@ -71,13 +73,22 @@ async function uploadDevice(imei: string): Promise<number> {
   return 200;
 }
 
-async function getDeviceStatus(imei: string): Promise<string> {
+async function getDevice(
+  imei: string
+): Promise<MDMAndroidOEMDevice | undefined> {
   const data = await sendCommand("/query/devices", {
     deviceList: [{ deviceUid: imei }],
   });
-  console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  const status: string = data.deviceResponseList[0].stateInfo;
-  return status.toLowerCase();
+  console.log("🚀 ~ getDevice ~ data:", data);
+  const device = data.deviceResponseList[0];
+  if (device.resultCode) return;
+  return {
+    id: imei,
+    status: device.stateInfo.toLowerCase(),
+    modelName: device.deviceMarketName,
+    createTime: dayjs(device.createdTimeStamp).format("YYYYMMDDHHmmss"),
+    lastOnlineTime: dayjs(device.lastCheckIn).format("YYYYMMDDHHmmss"),
+  };
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
@@ -130,7 +141,7 @@ async function completeDevice(imei: string) {
 
 export default {
   uploadDevice,
-  getDeviceStatus,
+  getDevice,
   lockDevice,
   unlockDevice,
   sendMessage,

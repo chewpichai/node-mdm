@@ -32,15 +32,20 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VTrustOpenAPI = exports.VTrustControlType = void 0;
 exports.uploadDevice = uploadDevice;
+exports.getDevice = getDevice;
 exports.getDeviceStatus = getDeviceStatus;
 exports.lockDevice = lockDevice;
 exports.unlockDevice = unlockDevice;
 exports.sendMessage = sendMessage;
 exports.completeDevice = completeDevice;
 const crypto = __importStar(require("crypto"));
+const dayjs_1 = __importDefault(require("dayjs"));
 var VTrustControlType;
 (function (VTrustControlType) {
     VTrustControlType[VTrustControlType["LOCK"] = 1] = "LOCK";
@@ -272,10 +277,23 @@ async function uploadDevice(imei) {
         return 200;
     return 461;
 }
-async function getDeviceStatus(imei) {
+async function getDevice(imei) {
     const data = await getClient().queryDeviceInfo(imei);
-    console.log("🚀 ~ getDeviceStatus ~ data:", data);
-    switch (data?.data?.status) {
+    console.log("🚀 ~ getDevice ~ data:", data);
+    if (data.message !== "SUCCESS" || !data.data)
+        return;
+    const device = data.data;
+    const status = await getDeviceStatus(device.status);
+    return {
+        id: imei,
+        status,
+        modelName: device.externalModel,
+        createTime: (0, dayjs_1.default)(device.activateTime).format("YYYYMMDDHHmmss"),
+        lastOnlineTime: (0, dayjs_1.default)(device.lastInteraction).format("YYYYMMDDHHmmss"),
+    };
+}
+async function getDeviceStatus(status) {
+    switch (status) {
         case 1:
             return "active";
         case 2:
@@ -320,6 +338,7 @@ async function completeDevice(imei) {
 }
 exports.default = {
     uploadDevice,
+    getDevice,
     getDeviceStatus,
     lockDevice,
     unlockDevice,

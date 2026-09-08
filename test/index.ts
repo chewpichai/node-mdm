@@ -180,12 +180,12 @@ const testAndroidOEMMDM = async () => {
     applicationId: "",
     serialNumber: "",
     brand: "android-oem",
-    imei: "867389089965353",
+    imei: "868831089938715",
     subBrand: "vivo",
   })) as AndroidOEMMDM;
 
   // Get mdmId from device.
-  const status = await mdm.enroll();
+  const status = await mdm.getAndroidOEMDevice();
   console.log("status", status);
 };
 
@@ -194,8 +194,8 @@ const testAndroidOEMMDM = async () => {
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  await testAppleMDMLockPhoneMDM();
+  // await testAppleMDMLockPhoneMDM();
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
-  // await testAndroidOEMMDM();
+  await testAndroidOEMMDM();
 })();

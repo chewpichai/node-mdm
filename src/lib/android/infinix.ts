@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import { MDMAndroidOEMDevice } from "../../types";
 
 const BASE_URL = "https://paytrigger.transsion-os.com/PayTrigger";
 const API_KEY = process.env.INFINIX_API_KEY;
@@ -45,13 +46,57 @@ async function uploadDevice(imei: string): Promise<number> {
   return data[0].errCode;
 }
 
+async function getDevice(
+  imei: string
+): Promise<MDMAndroidOEMDevice | undefined> {
+  const data = await sendCommand("/api/partner/model/v1/get", {
+    imei,
+    apiKey: API_KEY,
+  });
+  console.log("🚀 ~ getDevice ~ data:", data);
+  if (data.message.toLowerCase() !== "success") return;
+  const device = data.data;
+  const [status, lockStatus] = await Promise.all([
+    getDeviceStatus(imei),
+    getDeviceLockStatus(imei),
+  ]);
+  return {
+    id: imei,
+    status: status === "active" ? lockStatus : status,
+    modelName: `${device.modelMarketName} (${device.ram}+${device.rom}GB)`,
+    createTime: "",
+    lastOnlineTime: "",
+  };
+}
+
 async function getDeviceStatus(imei: string): Promise<string> {
   const data = await sendCommand("/api/partner/lock/v1/findLockState", {
     imei,
     apiKey: API_KEY,
   });
   console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  return data.data.lockState;
+  switch (data.data.serverState) {
+    case 500:
+      return "activating";
+    case 1000:
+      return "activating";
+    case 2000:
+      return "activating";
+    case 3000:
+      return "active";
+    default:
+      return "unknown";
+  }
+}
+
+async function getDeviceLockStatus(imei: string): Promise<string> {
+  const data = await sendCommand("/api/partner/anti-theft/v1/status", {
+    imei,
+    apiKey: API_KEY,
+  });
+  console.log("🚀 ~ getDeviceLockStatus ~ data:", data);
+  if (data.code !== 200 && data.data.operationStatus === "ON") return "locked";
+  return "active";
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
@@ -96,7 +141,7 @@ async function completeDevice(imei: string) {
 
 export default {
   uploadDevice,
-  getDeviceStatus,
+  getDevice,
   lockDevice,
   unlockDevice,
   sendMessage,

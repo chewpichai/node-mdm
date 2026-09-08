@@ -60,7 +60,7 @@ export const OEM_BRANDS = [
   "xiaomi",
   "realme",
   "infinix",
-  "techno",
+  "tecno",
   "vivo",
 ] as const;
 
@@ -135,4 +135,12 @@ export type Command = {
   modifyTime: string;
   commandItem: number;
   commandName: string;
+};
+
+export type MDMAndroidOEMDevice = {
+  id: string;
+  status: string;
+  modelName: string;
+  createTime: string;
+  lastOnlineTime?: string;
 };

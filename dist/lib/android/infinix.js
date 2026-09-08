@@ -75,13 +75,55 @@ async function uploadDevice(imei) {
         return 461;
     return data[0].errCode;
 }
+async function getDevice(imei) {
+    const data = await sendCommand("/api/partner/model/v1/get", {
+        imei,
+        apiKey: API_KEY,
+    });
+    console.log("🚀 ~ getDevice ~ data:", data);
+    if (data.message.toLowerCase() !== "success")
+        return;
+    const device = data.data;
+    const [status, lockStatus] = await Promise.all([
+        getDeviceStatus(imei),
+        getDeviceLockStatus(imei),
+    ]);
+    return {
+        id: imei,
+        status: status === "active" ? lockStatus : status,
+        modelName: `${device.modelMarketName} (${device.ram}+${device.rom}GB)`,
+        createTime: "",
+        lastOnlineTime: "",
+    };
+}
 async function getDeviceStatus(imei) {
     const data = await sendCommand("/api/partner/lock/v1/findLockState", {
         imei,
         apiKey: API_KEY,
     });
     console.log("🚀 ~ getDeviceStatus ~ data:", data);
-    return data.data.lockState;
+    switch (data.data.serverState) {
+        case 500:
+            return "activating";
+        case 1000:
+            return "activating";
+        case 2000:
+            return "activating";
+        case 3000:
+            return "active";
+        default:
+            return "unknown";
+    }
+}
+async function getDeviceLockStatus(imei) {
+    const data = await sendCommand("/api/partner/anti-theft/v1/status", {
+        imei,
+        apiKey: API_KEY,
+    });
+    console.log("🚀 ~ getDeviceLockStatus ~ data:", data);
+    if (data.code !== 200 && data.data.operationStatus === "ON")
+        return "locked";
+    return "active";
 }
 async function lockDevice(imei, phone, message) {
     const data = await sendCommand("/api/partner/anti-theft/v1/submit", {
@@ -121,7 +163,7 @@ async function completeDevice(imei) {
 }
 exports.default = {
     uploadDevice,
-    getDeviceStatus,
+    getDevice,
     lockDevice,
     unlockDevice,
     sendMessage,

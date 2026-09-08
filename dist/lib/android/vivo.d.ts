@@ -1,3 +1,4 @@
+import { MDMAndroidOEMDevice } from "../../types";
 export interface VTrustOpenAPIOptions {
     clientId?: string;
     clientSecret?: string;
@@ -95,6 +96,9 @@ export declare class VTrustOpenAPI {
      */
     queryDeviceInfo(imei: string): Promise<VTrustResponse<{
         status: number;
+        externalModel: string;
+        activateTime: number;
+        lastInteraction: number;
     }>>;
     /**
      * Release a device from control (not reversible)
@@ -110,13 +114,15 @@ export declare class VTrustOpenAPI {
     delete(imei: string): Promise<VTrustResponse>;
 }
 export declare function uploadDevice(imei: string): Promise<number>;
-export declare function getDeviceStatus(imei: string): Promise<string>;
+export declare function getDevice(imei: string): Promise<MDMAndroidOEMDevice | undefined>;
+export declare function getDeviceStatus(status: number): Promise<string>;
 export declare function lockDevice(imei: string, phone: string, message: string): Promise<boolean>;
 export declare function unlockDevice(imei: string): Promise<boolean>;
 export declare function sendMessage(imei: string, phone: string, message: string): Promise<boolean>;
 export declare function completeDevice(imei: string): Promise<boolean>;
 declare const _default: {
     uploadDevice: typeof uploadDevice;
+    getDevice: typeof getDevice;
     getDeviceStatus: typeof getDeviceStatus;
     lockDevice: typeof lockDevice;
     unlockDevice: typeof unlockDevice;

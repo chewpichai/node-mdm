@@ -64,12 +64,12 @@ class AndroidOEMMDM {
     async getDevice() {
         throw new Error("not_implemented");
     }
-    async getDeviceStatus() {
+    async getAndroidOEMDevice() {
         if (!this.query.imei)
             throw new Error("imei_required");
         if (!this.oem)
             throw new Error("oem_not_found");
-        return this.oem.getDeviceStatus(this.query.imei);
+        return this.oem.getDevice(this.query.imei);
     }
     async enableLostMode(phoneNumber, content) {
         if (!this.query.imei)

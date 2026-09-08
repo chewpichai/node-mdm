@@ -13,7 +13,7 @@ exports.OEM_BRANDS = [
     "xiaomi",
     "realme",
     "infinix",
-    "techno",
+    "tecno",
     "vivo",
 ];
 var DoIt;

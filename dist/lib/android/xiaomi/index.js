@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const dayjs_1 = __importDefault(require("dayjs"));
 const apple_1 = require("../../../apple");
 const cache_1 = require("../../cache");
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
@@ -63,13 +67,21 @@ async function uploadDevice(imei) {
         return 201;
     return 200;
 }
-async function getDeviceStatus(imei) {
+async function getDevice(imei) {
     const data = await sendCommand("/query/devices", {
         deviceList: [{ deviceUid: imei }],
     });
-    console.log("🚀 ~ getDeviceStatus ~ data:", data);
-    const status = data.deviceResponseList[0].stateInfo;
-    return status.toLowerCase();
+    console.log("🚀 ~ getDevice ~ data:", data);
+    const device = data.deviceResponseList[0];
+    if (device.resultCode)
+        return;
+    return {
+        id: imei,
+        status: device.stateInfo.toLowerCase(),
+        modelName: device.deviceMarketName,
+        createTime: (0, dayjs_1.default)(device.createdTimeStamp).format("YYYYMMDDHHmmss"),
+        lastOnlineTime: (0, dayjs_1.default)(device.lastCheckIn).format("YYYYMMDDHHmmss"),
+    };
 }
 async function lockDevice(imei, phone, message) {
     const data = await sendCommand("/device/lock/", {
@@ -113,7 +125,7 @@ async function completeDevice(imei) {
 }
 exports.default = {
     uploadDevice,
-    getDeviceStatus,
+    getDevice,
     lockDevice,
     unlockDevice,
     sendMessage,

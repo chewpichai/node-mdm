@@ -1,4 +1,6 @@
 import * as crypto from "crypto";
+import dayjs from "dayjs";
+import { MDMAndroidOEMDevice } from "../../types";
 
 export interface VTrustOpenAPIOptions {
   clientId?: string;
@@ -283,9 +285,14 @@ export class VTrustOpenAPI {
    *
    * @param imei - Device imei
    */
-  public async queryDeviceInfo(
-    imei: string
-  ): Promise<VTrustResponse<{ status: number }>> {
+  public async queryDeviceInfo(imei: string): Promise<
+    VTrustResponse<{
+      status: number;
+      externalModel: string;
+      activateTime: number;
+      lastInteraction: number;
+    }>
+  > {
     return this.post(`/openapi/v2/${MANUFACTURER}/device/info`, {
       deviceId: imei,
     });
@@ -332,10 +339,25 @@ export async function uploadDevice(imei: string): Promise<number> {
   return 461;
 }
 
-export async function getDeviceStatus(imei: string): Promise<string> {
+export async function getDevice(
+  imei: string
+): Promise<MDMAndroidOEMDevice | undefined> {
   const data = await getClient().queryDeviceInfo(imei);
-  console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  switch (data?.data?.status) {
+  console.log("🚀 ~ getDevice ~ data:", data);
+  if (data.message !== "SUCCESS" || !data.data) return;
+  const device = data.data;
+  const status = await getDeviceStatus(device.status as number);
+  return {
+    id: imei,
+    status,
+    modelName: device.externalModel,
+    createTime: dayjs(device.activateTime).format("YYYYMMDDHHmmss"),
+    lastOnlineTime: dayjs(device.lastInteraction).format("YYYYMMDDHHmmss"),
+  };
+}
+
+export async function getDeviceStatus(status: number): Promise<string> {
+  switch (status) {
     case 1:
       return "active";
     case 2:
@@ -393,6 +415,7 @@ export async function completeDevice(imei: string): Promise<boolean> {
 
 export default {
   uploadDevice,
+  getDevice,
   getDeviceStatus,
   lockDevice,
   unlockDevice,

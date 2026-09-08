@@ -1,5 +1,7 @@
 import * as crypto from "crypto";
+import dayjs from "dayjs";
 import { sleep } from "../../apple";
+import { MDMAndroidOEMDevice } from "../../types";
 
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
@@ -51,27 +53,19 @@ async function uploadDevice(imei: string): Promise<number> {
   return data.error.code;
 }
 
-async function getDeviceStatus(imei: string): Promise<string> {
-  const data = await sendCommand("/getStatus", { deviceUid: imei });
-  console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  switch (data.status) {
-    case 0:
-      return "active";
-    case 1:
-      return "locked";
-    case 2:
-      return "locking";
-    case 3:
-      return "completed";
-    case 4:
-      return "completing";
-    case 5:
-      return "unlocking";
-    case 7:
-      return "activating";
-    default:
-      return "unknown";
-  }
+async function getDevice(
+  imei: string
+): Promise<MDMAndroidOEMDevice | undefined> {
+  const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
+  console.log("🚀 ~ getDevice ~ data:", data);
+  if (data.message !== "SUCCESS") return;
+  return {
+    id: imei,
+    status: data.status.toLowerCase(),
+    modelName: data.model,
+    createTime: dayjs(data.statusActivatedDate).format("YYYYMMDDHHmmss"),
+    lastOnlineTime: dayjs(data.lastSyncTime).format("YYYYMMDDHHmmss"),
+  };
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
@@ -108,7 +102,7 @@ async function completeDevice(imei: string) {
 
 export default {
   uploadDevice,
-  getDeviceStatus,
+  getDevice,
   lockDevice,
   unlockDevice,
   sendMessage,

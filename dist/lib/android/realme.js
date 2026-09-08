@@ -32,8 +32,12 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
+const dayjs_1 = __importDefault(require("dayjs"));
 const apple_1 = require("../../apple");
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
@@ -81,27 +85,18 @@ async function uploadDevice(imei) {
         return 200;
     return data.error.code;
 }
-async function getDeviceStatus(imei) {
-    const data = await sendCommand("/getStatus", { deviceUid: imei });
-    console.log("🚀 ~ getDeviceStatus ~ data:", data);
-    switch (data.status) {
-        case 0:
-            return "active";
-        case 1:
-            return "locked";
-        case 2:
-            return "locking";
-        case 3:
-            return "completed";
-        case 4:
-            return "completing";
-        case 5:
-            return "unlocking";
-        case 7:
-            return "activating";
-        default:
-            return "unknown";
-    }
+async function getDevice(imei) {
+    const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
+    console.log("🚀 ~ getDevice ~ data:", data);
+    if (data.message !== "SUCCESS")
+        return;
+    return {
+        id: imei,
+        status: data.status.toLowerCase(),
+        modelName: data.model,
+        createTime: (0, dayjs_1.default)(data.statusActivatedDate).format("YYYYMMDDHHmmss"),
+        lastOnlineTime: (0, dayjs_1.default)(data.lastSyncTime).format("YYYYMMDDHHmmss"),
+    };
 }
 async function lockDevice(imei, phone, message) {
     const data = await sendCommand("/lock", {
@@ -133,7 +128,7 @@ async function completeDevice(imei) {
 }
 exports.default = {
     uploadDevice,
-    getDeviceStatus,
+    getDevice,
     lockDevice,
     unlockDevice,
     sendMessage,

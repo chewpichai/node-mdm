@@ -1,5 +1,6 @@
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
 import * as OEM from "./lib/android";
+import { MDMAndroidOEMDevice } from "./types";
 
 export class AndroidOEMMDM implements IMDM {
   tokenKey: string;
@@ -8,7 +9,7 @@ export class AndroidOEMMDM implements IMDM {
   oem:
     | {
         uploadDevice: (imei: string) => Promise<number>;
-        getDeviceStatus: (imei: string) => Promise<string>;
+        getDevice: (imei: string) => Promise<MDMAndroidOEMDevice | undefined>;
         lockDevice: (
           imei: string,
           phone: string,
@@ -57,11 +58,11 @@ export class AndroidOEMMDM implements IMDM {
     throw new Error("not_implemented");
   }
 
-  async getDeviceStatus(): Promise<string> {
+  async getAndroidOEMDevice(): Promise<MDMAndroidOEMDevice | undefined> {
     if (!this.query.imei) throw new Error("imei_required");
     if (!this.oem) throw new Error("oem_not_found");
 
-    return this.oem.getDeviceStatus(this.query.imei);
+    return this.oem.getDevice(this.query.imei);
   }
 
   async enableLostMode(

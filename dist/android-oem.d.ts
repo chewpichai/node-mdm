@@ -1,11 +1,12 @@
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
+import { MDMAndroidOEMDevice } from "./types";
 export declare class AndroidOEMMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
     query: MDMQuery;
     oem: {
         uploadDevice: (imei: string) => Promise<number>;
-        getDeviceStatus: (imei: string) => Promise<string>;
+        getDevice: (imei: string) => Promise<MDMAndroidOEMDevice | undefined>;
         lockDevice: (imei: string, phone: string, message: string) => Promise<boolean>;
         unlockDevice: (imei: string) => Promise<boolean>;
         sendMessage: (imei: string, phone: string, message: string) => Promise<boolean>;
@@ -17,7 +18,7 @@ export declare class AndroidOEMMDM implements IMDM {
     init(): Promise<void>;
     enroll(): Promise<number>;
     getDevice(): Promise<MDMDevice | undefined>;
-    getDeviceStatus(): Promise<string>;
+    getAndroidOEMDevice(): Promise<MDMAndroidOEMDevice | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
     disableLostMode(): Promise<[
         true,
