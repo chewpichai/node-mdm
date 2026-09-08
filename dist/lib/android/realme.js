@@ -64,10 +64,10 @@ async function sendCommand(url, body) {
     console.log("🚀 ~ sendCommand ~ data:", data);
     return data;
 }
-async function uploadDevice(imei) {
+async function uploadDevice(imei, productCode) {
     let data = await sendCommand("/flexiblePackage/upload", {
         deviceUid: imei,
-        productName: "",
+        productName: productCode,
         operationType: 1,
     });
     console.log("🚀 ~ uploadDevice ~ data:", data);

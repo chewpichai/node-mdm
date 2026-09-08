@@ -5,7 +5,7 @@ export declare class AndroidOEMMDM implements IMDM {
     token: string | null | undefined;
     query: MDMQuery;
     oem: {
-        uploadDevice: (imei: string) => Promise<number>;
+        uploadDevice: (imei: string, productCode?: string) => Promise<number>;
         getDevice: (imei: string) => Promise<MDMAndroidOEMDevice | undefined>;
         lockDevice: (imei: string, phone: string, message: string) => Promise<boolean>;
         unlockDevice: (imei: string) => Promise<boolean>;

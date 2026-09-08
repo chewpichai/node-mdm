@@ -79,6 +79,7 @@ export type MDMQuery = {
   merchantId?: string;
   imei?: string;
   subBrand?: (typeof OEM_BRANDS)[number];
+  productCode?: string;
 };
 
 export type Wallpaper = {

@@ -31,10 +31,13 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
   return data;
 }
 
-async function uploadDevice(imei: string): Promise<number> {
+async function uploadDevice(
+  imei: string,
+  productCode?: string
+): Promise<number> {
   let data = await sendCommand("/flexiblePackage/upload", {
     deviceUid: imei,
-    productName: "",
+    productName: productCode,
     operationType: 1,
   });
   console.log("🚀 ~ uploadDevice ~ data:", data);

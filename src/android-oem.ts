@@ -8,7 +8,7 @@ export class AndroidOEMMDM implements IMDM {
   query: MDMQuery;
   oem:
     | {
-        uploadDevice: (imei: string) => Promise<number>;
+        uploadDevice: (imei: string, productCode?: string) => Promise<number>;
         getDevice: (imei: string) => Promise<MDMAndroidOEMDevice | undefined>;
         lockDevice: (
           imei: string,
@@ -51,7 +51,7 @@ export class AndroidOEMMDM implements IMDM {
     if (!this.query.imei) throw new Error("imei_required");
     if (!this.oem) throw new Error("oem_not_found");
 
-    return this.oem.uploadDevice(this.query.imei);
+    return this.oem.uploadDevice(this.query.imei, this.query.productCode);
   }
 
   async getDevice(): Promise<MDMDevice | undefined> {
