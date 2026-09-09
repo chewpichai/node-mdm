@@ -90,12 +90,13 @@ async function getDevice(imei) {
     console.log("🚀 ~ getDevice ~ data:", data);
     if (data.message !== "SUCCESS")
         return;
+    const device = data.data.list[0];
     return {
         id: imei,
-        status: data.status.toLowerCase(),
-        modelName: data.model,
-        createTime: (0, dayjs_1.default)(data.statusActivatedDate).format("YYYYMMDDHHmmss"),
-        lastOnlineTime: (0, dayjs_1.default)(data.lastSyncTime).format("YYYYMMDDHHmmss"),
+        status: device.status.toLowerCase(),
+        modelName: device.marketingName,
+        createTime: (0, dayjs_1.default)(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
+        lastOnlineTime: (0, dayjs_1.default)(device.lastSyncTime).format("YYYYMMDDHHmmss"),
     };
 }
 async function lockDevice(imei, phone, message) {
