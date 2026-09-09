@@ -95,7 +95,7 @@ async function getDeviceLockStatus(imei: string): Promise<string> {
     apiKey: API_KEY,
   });
   console.log("🚀 ~ getDeviceLockStatus ~ data:", data);
-  if (data.code !== 200 && data.data.operationStatus === "ON") return "locked";
+  if (data.code === 200 && data.data.operationStatus === "ON") return "locked";
   return "active";
 }
 

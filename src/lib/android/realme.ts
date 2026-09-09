@@ -62,12 +62,13 @@ async function getDevice(
   const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
   console.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS") return;
+  const device = data.data.list[0];
   return {
     id: imei,
-    status: data.status.toLowerCase(),
-    modelName: data.model,
-    createTime: dayjs(data.statusActivatedDate).format("YYYYMMDDHHmmss"),
-    lastOnlineTime: dayjs(data.lastSyncTime).format("YYYYMMDDHHmmss"),
+    status: device.status.toLowerCase(),
+    modelName: device.marketingName,
+    createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
+    lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
   };
 }
 
