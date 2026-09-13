@@ -1,19 +1,9 @@
-import * as crypto from "crypto";
 import dayjs from "dayjs";
-import { sleep } from "../../apple";
-import { MDMAndroidOEMDevice } from "../../types";
+import { MDMAndroidOEMDevice } from "../../../types";
+import { oGuardSign, possefySign } from "./sign";
 
-const BASE_URL = "https://ilockcardf-isp.realme.com";
-const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
-const TOKEN = process.env.REALME_TOKEN;
-
-function getSign(body: string): string {
-  const dataToSign = `${body},${CARRIER_CODE},${TOKEN}`;
-  return crypto
-    .createHash("sha256")
-    .update(dataToSign, "utf8")
-    .digest("base64");
-}
+const BASE_URL = "https://ilockcardf-isp.apps.coloros.com";
+const CARRIER_CODE = process.env.OPPO_CARRIER_CODE;
 
 async function sendCommand(url: string, body: Record<string, unknown>) {
   const response = await fetch(`${BASE_URL}${url}`, {
@@ -23,7 +13,7 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
       "Content-Type": "application/json",
       "x-carrier-code": CARRIER_CODE,
       "x-transactionId": Date.now().toString(),
-      "x-sign": getSign(JSON.stringify(body)),
+      "x-sign": oGuardSign(JSON.stringify(body)),
     },
   });
   const data = await response.json();
@@ -35,25 +25,25 @@ async function uploadDevice(
   imei: string,
   productCode?: string
 ): Promise<number> {
-  let data = await sendCommand("/flexiblePackage/upload", {
-    deviceUid: imei,
-    productName: productCode,
-    operationType: 1,
-  });
+  const { timestamp, signature } = possefySign(JSON.stringify({ imei }));
+  const response = await fetch(
+    "https://openapi.possefy.co.th/api/v1/sleasing/device-validate-imei",
+    {
+      method: "POST",
+      body: JSON.stringify({ imei }),
+      headers: {
+        "Content-Type": "application/json",
+        "App-Timestamp": timestamp,
+        "App-Signature": signature,
+      },
+    }
+  );
+  const data = await response.json();
   console.log("🚀 ~ uploadDevice ~ data:", data);
-  let isSuccess = data.message === "SUCCESS";
-  if (!isSuccess) return 400;
+  if (data.success) return 200;
+  if (data.code === "NOT_FOUND") return 461;
 
-  await sleep(5000);
-  data = await sendCommand("/package/bindPackage", {
-    deviceUid: imei,
-    type: 1,
-  });
-  console.log("🚀 ~ bindPackage ~ data:", data);
-  isSuccess = data.message === "SUCCESS";
-  if (isSuccess) return 200;
-
-  return data.error.code;
+  return 400;
 }
 
 async function getDevice(
@@ -65,7 +55,7 @@ async function getDevice(
   const device = data.data.list[0];
   return {
     id: imei,
-    status: getDeviceStatus(device.status),
+    status: getDeviceStatus(device.status.toLowerCase()),
     modelName: device.marketingName,
     createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
@@ -73,18 +63,18 @@ async function getDevice(
 }
 
 function getDeviceStatus(status: string) {
-  switch (status.toLowerCase()) {
+  switch (status) {
     case "normal":
       return "active";
     default:
-      return status.toLowerCase();
+      return status;
   }
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
   const data = await sendCommand("/lock", {
     deviceUid: imei,
-    tel: phone,
+    title: phone,
     message,
   });
   console.log("🚀 ~ lockDevice ~ data:", data);
@@ -100,7 +90,7 @@ async function unlockDevice(imei: string) {
 async function sendMessage(imei: string, phone: string, message: string) {
   const data = await sendCommand("/sendMessage", {
     deviceUid: imei,
-    tel: phone,
+    title: phone,
     message,
   });
   console.log("🚀 ~ sendMessage ~ data:", data);

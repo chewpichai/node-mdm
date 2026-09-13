@@ -1,4 +1,4 @@
-import * as crypto from "crypto";
+import crypto from "crypto";
 import dayjs from "dayjs";
 import { MDMAndroidOEMDevice } from "../../types";
 
@@ -33,7 +33,7 @@ export interface VTrustResponse<T = any> {
   data?: T;
 }
 
-const BASE_URL = process.env.VIVO_BASE_URL;
+const BASE_URL = "https://asia-vgcmdm-openapi-tha.vivoglobal.com";
 const CLIENT_ID = process.env.VIVO_CLIENT_ID;
 const CLIENT_SECRET = process.env.VIVO_CLIENT_SECRET;
 const MANUFACTURER = process.env.VIVO_MANUFACTURER;
@@ -331,7 +331,7 @@ function getClient(): VTrustOpenAPI {
   return defaultClient;
 }
 
-export async function uploadDevice(imei: string): Promise<number> {
+async function uploadDevice(imei: string): Promise<number> {
   const data = await getClient().enroll(imei);
   console.log("🚀 ~ uploadDevice ~ data:", data);
   const isSuccess = data.message === "SUCCESS";
@@ -339,14 +339,14 @@ export async function uploadDevice(imei: string): Promise<number> {
   return 461;
 }
 
-export async function getDevice(
+async function getDevice(
   imei: string
 ): Promise<MDMAndroidOEMDevice | undefined> {
   const data = await getClient().queryDeviceInfo(imei);
   console.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || !data.data) return;
   const device = data.data;
-  const status = await getDeviceStatus(device.status as number);
+  const status = getDeviceStatus(device.status as number);
   return {
     id: imei,
     status,
@@ -356,7 +356,7 @@ export async function getDevice(
   };
 }
 
-export async function getDeviceStatus(status: number): Promise<string> {
+function getDeviceStatus(status: number) {
   switch (status) {
     case 1:
       return "active";
@@ -381,7 +381,7 @@ export async function getDeviceStatus(status: number): Promise<string> {
   }
 }
 
-export async function lockDevice(
+async function lockDevice(
   imei: string,
   phone: string,
   message: string
@@ -391,13 +391,13 @@ export async function lockDevice(
   return data.message === "SUCCESS";
 }
 
-export async function unlockDevice(imei: string): Promise<boolean> {
+async function unlockDevice(imei: string): Promise<boolean> {
   const data = await getClient().control(imei, 2);
   console.log("🚀 ~ unlockDevice ~ data:", data);
   return data.message === "SUCCESS";
 }
 
-export async function sendMessage(
+async function sendMessage(
   imei: string,
   phone: string,
   message: string
@@ -407,7 +407,7 @@ export async function sendMessage(
   return data.message === "SUCCESS";
 }
 
-export async function completeDevice(imei: string): Promise<boolean> {
+async function completeDevice(imei: string): Promise<boolean> {
   const data = await getClient().completeContract(imei);
   console.log("🚀 ~ completeDevice ~ data:", data);
   return data.message === "SUCCESS";
@@ -416,7 +416,6 @@ export async function completeDevice(imei: string): Promise<boolean> {
 export default {
   uploadDevice,
   getDevice,
-  getDeviceStatus,
   lockDevice,
   unlockDevice,
   sendMessage,

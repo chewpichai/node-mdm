@@ -28,7 +28,13 @@ declare global {
       VIVO_MANUFACTURER: string;
       VIVO_AES_IV: string;
       VIVO_AES_KEY: string;
-      VIVO_BASE_URL: string;
+      OPPO_CLIENT_SECRET: string;
+      OPPO_CARRIER_CODE: string;
+      OPPO_TOKEN: string;
+      MI_GUARD_PUBLIC_KEY: string;
+      MI_GUARD_PRIVATE_KEY: string;
+      MI_GUARD_MI_PUBLIC_KEY: string;
+      MI_GUARD_MI_PRIVATE_KEY: string;
     }
   }
 }

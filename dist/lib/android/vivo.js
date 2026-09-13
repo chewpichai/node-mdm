@@ -1,50 +1,10 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VTrustOpenAPI = exports.VTrustControlType = void 0;
-exports.uploadDevice = uploadDevice;
-exports.getDevice = getDevice;
-exports.getDeviceStatus = getDeviceStatus;
-exports.lockDevice = lockDevice;
-exports.unlockDevice = unlockDevice;
-exports.sendMessage = sendMessage;
-exports.completeDevice = completeDevice;
-const crypto = __importStar(require("crypto"));
+const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 var VTrustControlType;
 (function (VTrustControlType) {
@@ -52,7 +12,7 @@ var VTrustControlType;
     VTrustControlType[VTrustControlType["UNLOCK"] = 2] = "UNLOCK";
     VTrustControlType[VTrustControlType["SET_LOCK_TIME"] = 3] = "SET_LOCK_TIME";
 })(VTrustControlType || (exports.VTrustControlType = VTrustControlType = {}));
-const BASE_URL = process.env.VIVO_BASE_URL;
+const BASE_URL = "https://asia-vgcmdm-openapi-tha.vivoglobal.com";
 const CLIENT_ID = process.env.VIVO_CLIENT_ID;
 const CLIENT_SECRET = process.env.VIVO_CLIENT_SECRET;
 const MANUFACTURER = process.env.VIVO_MANUFACTURER;
@@ -64,8 +24,8 @@ class VTrustOpenAPI {
      */
     generateHeaders(body) {
         const timestamp = Date.now().toString();
-        const transactionId = crypto.randomUUID();
-        const signature = crypto
+        const transactionId = crypto_1.default.randomUUID();
+        const signature = crypto_1.default
             .createHash("sha256")
             .update(transactionId + CLIENT_ID + timestamp + body + CLIENT_SECRET, "utf8")
             .digest("hex");
@@ -89,7 +49,7 @@ class VTrustOpenAPI {
             : key.length === 24
                 ? "aes-192-gcm"
                 : "aes-256-gcm";
-        const cipher = crypto.createCipheriv(algorithm, key, iv);
+        const cipher = crypto_1.default.createCipheriv(algorithm, key, iv);
         const ciphertext = Buffer.concat([
             cipher.update(data, "utf8"),
             cipher.final(),
@@ -112,7 +72,7 @@ class VTrustOpenAPI {
         const nonce = buf.subarray(0, iv.length);
         const tag = buf.subarray(buf.length - 16);
         const ciphertext = buf.subarray(iv.length, buf.length - 16);
-        const decipher = crypto.createDecipheriv(algorithm, key, nonce);
+        const decipher = crypto_1.default.createDecipheriv(algorithm, key, nonce);
         decipher.setAuthTag(tag);
         return Buffer.concat([
             decipher.update(ciphertext),
@@ -283,7 +243,7 @@ async function getDevice(imei) {
     if (data.message !== "SUCCESS" || !data.data)
         return;
     const device = data.data;
-    const status = await getDeviceStatus(device.status);
+    const status = getDeviceStatus(device.status);
     return {
         id: imei,
         status,
@@ -292,7 +252,7 @@ async function getDevice(imei) {
         lastOnlineTime: (0, dayjs_1.default)(device.lastInteraction).format("YYYYMMDDHHmmss"),
     };
 }
-async function getDeviceStatus(status) {
+function getDeviceStatus(status) {
     switch (status) {
         case 1:
             return "active";
@@ -339,7 +299,6 @@ async function completeDevice(imei) {
 exports.default = {
     uploadDevice,
     getDevice,
-    getDeviceStatus,
     lockDevice,
     unlockDevice,
     sendMessage,

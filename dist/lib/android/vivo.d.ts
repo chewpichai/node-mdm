@@ -113,17 +113,15 @@ export declare class VTrustOpenAPI {
      */
     delete(imei: string): Promise<VTrustResponse>;
 }
-export declare function uploadDevice(imei: string): Promise<number>;
-export declare function getDevice(imei: string): Promise<MDMAndroidOEMDevice | undefined>;
-export declare function getDeviceStatus(status: number): Promise<string>;
-export declare function lockDevice(imei: string, phone: string, message: string): Promise<boolean>;
-export declare function unlockDevice(imei: string): Promise<boolean>;
-export declare function sendMessage(imei: string, phone: string, message: string): Promise<boolean>;
-export declare function completeDevice(imei: string): Promise<boolean>;
+declare function uploadDevice(imei: string): Promise<number>;
+declare function getDevice(imei: string): Promise<MDMAndroidOEMDevice | undefined>;
+declare function lockDevice(imei: string, phone: string, message: string): Promise<boolean>;
+declare function unlockDevice(imei: string): Promise<boolean>;
+declare function sendMessage(imei: string, phone: string, message: string): Promise<boolean>;
+declare function completeDevice(imei: string): Promise<boolean>;
 declare const _default: {
     uploadDevice: typeof uploadDevice;
     getDevice: typeof getDevice;
-    getDeviceStatus: typeof getDeviceStatus;
     lockDevice: typeof lockDevice;
     unlockDevice: typeof unlockDevice;
     sendMessage: typeof sendMessage;
