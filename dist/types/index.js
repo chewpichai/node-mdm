@@ -15,6 +15,7 @@ exports.OEM_BRANDS = [
     "infinix",
     "tecno",
     "vivo",
+    "oppo",
 ];
 var DoIt;
 (function (DoIt) {

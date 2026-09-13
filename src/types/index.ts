@@ -62,6 +62,7 @@ export const OEM_BRANDS = [
   "infinix",
   "tecno",
   "vivo",
+  "oppo",
 ] as const;
 
 export type MDMQuery = {
