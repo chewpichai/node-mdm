@@ -80,7 +80,7 @@ async function uploadDevice(imei, productCode) {
         type: 1,
     });
     console.log("🚀 ~ bindPackage ~ data:", data);
-    isSuccess = data.message === "SUCCESS";
+    isSuccess = data.result === "SUCCESS";
     if (isSuccess)
         return 200;
     return data.error.code;
@@ -88,13 +88,13 @@ async function uploadDevice(imei, productCode) {
 async function getDevice(imei) {
     const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
     console.log("🚀 ~ getDevice ~ data:", data);
-    if (data.message !== "SUCCESS")
+    if (data.message !== "SUCCESS" || data.data.list.length === 0)
         return;
     const device = data.data.list[0];
     return {
         id: imei,
         status: getDeviceStatus(device.status),
-        modelName: device.marketingName,
+        modelName: device.marketingName || device.model,
         createTime: (0, dayjs_1.default)(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastSyncTime).format("YYYYMMDDHHmmss"),
     };

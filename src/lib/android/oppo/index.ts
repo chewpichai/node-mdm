@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { sleep } from "../../../apple";
 import { MDMAndroidOEMDevice } from "../../../types";
 import { oGuardSign, possefySign } from "./sign";
 
@@ -21,10 +22,7 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
   return data;
 }
 
-async function uploadDevice(
-  imei: string,
-  productCode?: string
-): Promise<number> {
+async function uploadDevice(imei: string): Promise<number> {
   const { timestamp, signature } = possefySign(JSON.stringify({ imei }));
   const response = await fetch(
     "https://openapi.possefy.co.th/api/v1/sleasing/device-validate-imei",
@@ -38,12 +36,23 @@ async function uploadDevice(
       },
     }
   );
-  const data = await response.json();
+  if (response.status !== 200) return response.status;
+  let data = await response.json();
   console.log("🚀 ~ uploadDevice ~ data:", data);
-  if (data.success) return 200;
+  let isSuccess = data.success;
   if (data.code === "NOT_FOUND") return 461;
+  if (!isSuccess) return 400;
 
-  return 400;
+  await sleep(5000);
+  data = await sendCommand("/setmeal/choose", {
+    deviceUid: imei,
+    type: 1,
+  });
+  console.log("🚀 ~ bindPackage ~ data:", data);
+  isSuccess = data.result === "SUCCESS";
+  if (isSuccess) return 200;
+
+  return data.error?.code || 400;
 }
 
 async function getDevice(
@@ -51,12 +60,12 @@ async function getDevice(
 ): Promise<MDMAndroidOEMDevice | undefined> {
   const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
   console.log("🚀 ~ getDevice ~ data:", data);
-  if (data.message !== "SUCCESS") return;
+  if (data.message !== "SUCCESS" || data.data.list.length === 0) return;
   const device = data.data.list[0];
   return {
     id: imei,
     status: getDeviceStatus(device.status.toLowerCase()),
-    modelName: device.marketingName,
+    modelName: device.marketingName || device.model,
     createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
   };

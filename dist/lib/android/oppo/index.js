@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dayjs_1 = __importDefault(require("dayjs"));
+const apple_1 = require("../../../apple");
 const sign_1 = require("./sign");
 const BASE_URL = "https://ilockcardf-isp.apps.coloros.com";
 const CARRIER_CODE = process.env.OPPO_CARRIER_CODE;
@@ -22,7 +23,7 @@ async function sendCommand(url, body) {
     console.log("🚀 ~ sendCommand ~ data:", data);
     return data;
 }
-async function uploadDevice(imei, productCode) {
+async function uploadDevice(imei) {
     const { timestamp, signature } = (0, sign_1.possefySign)(JSON.stringify({ imei }));
     const response = await fetch("https://openapi.possefy.co.th/api/v1/sleasing/device-validate-imei", {
         method: "POST",
@@ -33,24 +34,36 @@ async function uploadDevice(imei, productCode) {
             "App-Signature": signature,
         },
     });
-    const data = await response.json();
+    if (response.status !== 200)
+        return response.status;
+    let data = await response.json();
     console.log("🚀 ~ uploadDevice ~ data:", data);
-    if (data.success)
-        return 200;
+    let isSuccess = data.success;
     if (data.code === "NOT_FOUND")
         return 461;
-    return 400;
+    if (!isSuccess)
+        return 400;
+    await (0, apple_1.sleep)(5000);
+    data = await sendCommand("/setmeal/choose", {
+        deviceUid: imei,
+        type: 1,
+    });
+    console.log("🚀 ~ bindPackage ~ data:", data);
+    isSuccess = data.result === "SUCCESS";
+    if (isSuccess)
+        return 200;
+    return data.error?.code || 400;
 }
 async function getDevice(imei) {
     const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
     console.log("🚀 ~ getDevice ~ data:", data);
-    if (data.message !== "SUCCESS")
+    if (data.message !== "SUCCESS" || data.data.list.length === 0)
         return;
     const device = data.data.list[0];
     return {
         id: imei,
         status: getDeviceStatus(device.status.toLowerCase()),
-        modelName: device.marketingName,
+        modelName: device.marketingName || device.model,
         createTime: (0, dayjs_1.default)(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastSyncTime).format("YYYYMMDDHHmmss"),
     };
