@@ -93,18 +93,18 @@ async function getDevice(imei) {
     const device = data.data.list[0];
     return {
         id: imei,
-        status: getDeviceStatus(device.status),
+        status: getDeviceStatus(device.status.toLowerCase()),
         modelName: device.marketingName || device.model,
         createTime: (0, dayjs_1.default)(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastSyncTime).format("YYYYMMDDHHmmss"),
     };
 }
 function getDeviceStatus(status) {
-    switch (status.toLowerCase()) {
+    switch (status) {
         case "normal":
             return "active";
         default:
-            return status.toLowerCase();
+            return status;
     }
 }
 async function lockDevice(imei, phone, message) {

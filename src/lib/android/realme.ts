@@ -65,7 +65,7 @@ async function getDevice(
   const device = data.data.list[0];
   return {
     id: imei,
-    status: getDeviceStatus(device.status),
+    status: getDeviceStatus(device.status.toLowerCase()),
     modelName: device.marketingName || device.model,
     createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
@@ -73,11 +73,11 @@ async function getDevice(
 }
 
 function getDeviceStatus(status: string) {
-  switch (status.toLowerCase()) {
+  switch (status) {
     case "normal":
       return "active";
     default:
-      return status.toLowerCase();
+      return status;
   }
 }
 

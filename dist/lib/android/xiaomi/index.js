@@ -77,11 +77,21 @@ async function getDevice(imei) {
         return;
     return {
         id: imei,
-        status: device.stateInfo.toLowerCase(),
+        status: getDeviceStatus(device.stateInfo.toLowerCase()),
         modelName: device.deviceMarketName,
         createTime: (0, dayjs_1.default)(device.createdTimeStamp).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastCheckIn).format("YYYYMMDDHHmmss"),
     };
+}
+function getDeviceStatus(status) {
+    switch (status) {
+        case "ready for use":
+            return "activating";
+        case "released":
+            return "completed";
+        default:
+            return status;
+    }
 }
 async function lockDevice(imei, phone, message) {
     const data = await sendCommand("/device/lock/", {
