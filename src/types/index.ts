@@ -57,12 +57,13 @@ export type DevicePermissions = {
 };
 
 export const OEM_BRANDS = [
-  "xiaomi",
-  "realme",
   "infinix",
+  "iqoo",
+  "oppo",
+  "realme",
   "tecno",
   "vivo",
-  "oppo",
+  "xiaomi",
 ] as const;
 
 export type MDMQuery = {

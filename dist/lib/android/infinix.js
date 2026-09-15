@@ -32,8 +32,12 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
+const dayjs_1 = __importDefault(require("dayjs"));
 const BASE_URL = "https://paytrigger.transsion-os.com/PayTrigger";
 const API_KEY = process.env.INFINIX_API_KEY;
 function getSign(body) {
@@ -60,9 +64,10 @@ async function sendCommand(url, body) {
     return data;
 }
 async function uploadDevice(imei) {
+    const expiration = (0, dayjs_1.default)().add(1, "year").unix();
     let data = await sendCommand("/api/partner/lock/v1/imei/input", {
         imeiInfo: JSON.stringify([
-            { imei, model: "", orderNum: "", ram: "", rom: "" },
+            { imei, model: "", orderNum: "", ram: "", rom: "", expiration },
         ]),
         apiKey: API_KEY,
         preLockFlag: true,

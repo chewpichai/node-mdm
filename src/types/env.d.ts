@@ -31,10 +31,11 @@ declare global {
       OPPO_CLIENT_SECRET: string;
       OPPO_CARRIER_CODE: string;
       OPPO_TOKEN: string;
+      MI_GUARD_APP_ID: string;
+      MI_GUARD_ORG_NO: string;
       MI_GUARD_PUBLIC_KEY: string;
       MI_GUARD_PRIVATE_KEY: string;
       MI_GUARD_MI_PUBLIC_KEY: string;
-      MI_GUARD_MI_PRIVATE_KEY: string;
     }
   }
 }

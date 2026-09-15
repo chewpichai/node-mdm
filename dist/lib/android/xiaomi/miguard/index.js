@@ -7,15 +7,16 @@ exports.decompressGzip = decompressGzip;
 exports.getSignContent = getSignContent;
 exports.testEncryptedAndSignature = testEncryptedAndSignature;
 const zlib_1 = __importDefault(require("zlib"));
-const postRequest_1 = require("./postRequest");
 const aesUtils_1 = require("./aesUtils");
-const rsaUtils_1 = require("./rsaUtils");
-const partnerResponse_1 = require("./partnerResponse");
 const errorCode_1 = require("./errorCode");
+const partnerResponse_1 = require("./partnerResponse");
+const postRequest_1 = require("./postRequest");
+const rsaUtils_1 = require("./rsaUtils");
+const APP_ID = process.env.MI_GUARD_APP_ID;
+const ORG_NO = process.env.MI_GUARD_ORG_NO;
 const PUBLIC_KEY = process.env.MI_GUARD_PUBLIC_KEY;
 const PRIVATE_KEY = process.env.MI_GUARD_PRIVATE_KEY;
 const MI_PUBLIC_KEY = process.env.MI_GUARD_MI_PUBLIC_KEY;
-const MI_PRIVATE_KEY = process.env.MI_GUARD_MI_PRIVATE_KEY;
 /**
  * Compresses string with GZIP, matching Java's GZIPOutputStream.
  */
@@ -140,7 +141,7 @@ function getPostParams(appId, requestId, method, params, compressed) {
         throw new Error("Failed to encrypt params with AES key");
     }
     paramsMap["params"] = encryptedParams;
-    const sign = signByPrivateKey(paramsMap, MI_PRIVATE_KEY);
+    const sign = signByPrivateKey(paramsMap, PRIVATE_KEY);
     if (!sign) {
         throw new Error("Failed to generate signature with MiFi private key");
     }
@@ -197,7 +198,7 @@ function parseResponse(content) {
     const response = new partnerResponse_1.PartnerResponse(raw);
     const verified = response.verifySign(PUBLIC_KEY);
     if (verified) {
-        decrypt(response, MI_PRIVATE_KEY);
+        decrypt(response, PRIVATE_KEY);
     }
     else {
         console.warn("parseResponse signature verification failed!");
@@ -205,28 +206,14 @@ function parseResponse(content) {
     return JSON.stringify(response.toJSON());
 }
 function testEncryptedAndSignature() {
-    const params = { openId: "openId" };
-    const postParams = getPostParams("123", "123", "test", params, true);
-    console.log("postParams : " + JSON.stringify(postParams, null, 2));
-    const parsedPostParams = parseRequest(JSON.stringify(postParams));
-    console.log("\nparsedPostParams : " + parsedPostParams);
-    const responseParams = { data: "data" };
-    const response = getResponse(responseParams);
-    console.log("\nresponse : " + JSON.stringify(response, null, 2));
-    const parsedResponse = parseResponse(JSON.stringify(response));
-    console.log("\nparsedResponse : " + parsedResponse);
+    sendCommand("https://staging-merchant-api.ginstal.xiaomi.com/v1/partner");
 }
-async function sendCommand(url = "") {
-    if (!url) {
-        console.log("testPost skipped: no URL provided.");
-        return;
-    }
+async function sendCommand(url) {
     const params = {
-        name: "xxx",
-        openId: "2.0:4TtXp7WoqYiwpKbLi9GStHqcDhQ=",
-        hashCode: "xxx",
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: "868506080036129",
     };
-    const postParams = getPostParams("1000054", "123", "mi.user.register.status", params, false);
+    const postParams = getPostParams(APP_ID, "123", "mi.lock.device.status", params, false);
     const formBody = new URLSearchParams(postParams);
     const res = await fetch(url, {
         method: "POST",
@@ -236,6 +223,7 @@ async function sendCommand(url = "") {
         body: formBody.toString(),
     });
     const bodyText = await res.text();
+    console.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
     const parsedResponse = parseResponse(bodyText);
     console.log("parsedResponse : " + parsedResponse);
 }

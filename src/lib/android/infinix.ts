@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import dayjs from "dayjs";
 import { MDMAndroidOEMDevice } from "../../types";
 
 const BASE_URL = "https://paytrigger.transsion-os.com/PayTrigger";
@@ -30,9 +31,10 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
 }
 
 async function uploadDevice(imei: string): Promise<number> {
+  const expiration = dayjs().add(1, "year").unix();
   let data = await sendCommand("/api/partner/lock/v1/imei/input", {
     imeiInfo: JSON.stringify([
-      { imei, model: "", orderNum: "", ram: "", rom: "" },
+      { imei, model: "", orderNum: "", ram: "", rom: "", expiration },
     ]),
     apiKey: API_KEY,
     preLockFlag: true,

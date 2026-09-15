@@ -10,12 +10,13 @@ var DeviceStatus;
     DeviceStatus[DeviceStatus["RENT_LOCKED"] = 4] = "RENT_LOCKED";
 })(DeviceStatus || (exports.DeviceStatus = DeviceStatus = {}));
 exports.OEM_BRANDS = [
-    "xiaomi",
-    "realme",
     "infinix",
+    "iqoo",
+    "oppo",
+    "realme",
     "tecno",
     "vivo",
-    "oppo",
+    "xiaomi",
 ];
 var DoIt;
 (function (DoIt) {
