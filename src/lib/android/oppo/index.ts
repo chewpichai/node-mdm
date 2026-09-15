@@ -6,6 +6,22 @@ import { oGuardSign, possefySign } from "./sign";
 const BASE_URL = "https://ilockcardf-isp.apps.coloros.com";
 const CARRIER_CODE = process.env.OPPO_CARRIER_CODE;
 
+async function validateDevice(imei: string): Promise<Response> {
+  const { timestamp, signature } = possefySign(JSON.stringify({ imei }));
+  return fetch(
+    "https://openapi.possefy.co.th/api/v1/sleasing/device-validate-imei",
+    {
+      method: "POST",
+      body: JSON.stringify({ imei }),
+      headers: {
+        "Content-Type": "application/json",
+        "App-Timestamp": timestamp,
+        "App-Signature": signature,
+      },
+    }
+  );
+}
+
 async function sendCommand(url: string, body: Record<string, unknown>) {
   const response = await fetch(`${BASE_URL}${url}`, {
     method: "POST",
@@ -23,25 +39,13 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
 }
 
 async function uploadDevice(imei: string): Promise<number> {
-  const { timestamp, signature } = possefySign(JSON.stringify({ imei }));
-  const response = await fetch(
-    "https://openapi.possefy.co.th/api/v1/sleasing/device-validate-imei",
-    {
-      method: "POST",
-      body: JSON.stringify({ imei }),
-      headers: {
-        "Content-Type": "application/json",
-        "App-Timestamp": timestamp,
-        "App-Signature": signature,
-      },
-    }
-  );
+  const response = await validateDevice(imei);
   if (response.status !== 200) return response.status;
+
   let data = await response.json();
   console.log("🚀 ~ uploadDevice ~ data:", data);
   let isSuccess = data.success;
-  if (data.code === "NOT_FOUND") return 461;
-  if (!isSuccess) return 400;
+  if (!isSuccess) return data.code === "NOT_FOUND" ? 461 : 400;
 
   await sleep(5000);
   data = await sendCommand("/setmeal/choose", {
@@ -58,6 +62,11 @@ async function uploadDevice(imei: string): Promise<number> {
 async function getDevice(
   imei: string
 ): Promise<MDMAndroidOEMDevice | undefined> {
+  let modelName = null;
+  const response = await validateDevice(imei);
+  if (response.status === 200)
+    modelName = (await response.json()).data?.model_name;
+
   const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
   console.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || data.data.list.length === 0) return;
@@ -65,7 +74,7 @@ async function getDevice(
   return {
     id: imei,
     status: getDeviceStatus(device.status.toLowerCase()),
-    modelName: device.marketingName || device.model,
+    modelName: modelName || device.model,
     createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
   };
