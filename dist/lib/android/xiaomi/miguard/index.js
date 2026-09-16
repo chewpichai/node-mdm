@@ -122,7 +122,7 @@ function getPostParams(appId, requestId, method, params, compressed) {
         method,
     };
     const key = aesUtils_1.AESUtils.generateAESKey();
-    const encryptedKey = rsaUtils_1.RSAUtils.encryptByPublicKey(key, PUBLIC_KEY);
+    const encryptedKey = rsaUtils_1.RSAUtils.encryptByPublicKey(key, MI_PUBLIC_KEY);
     if (!encryptedKey) {
         throw new Error("Failed to encrypt AES key with partner public key");
     }
@@ -196,7 +196,7 @@ function getResponse(params) {
 function parseResponse(content) {
     const raw = JSON.parse(content);
     const response = new partnerResponse_1.PartnerResponse(raw);
-    const verified = response.verifySign(PUBLIC_KEY);
+    const verified = response.verifySign(MI_PUBLIC_KEY);
     if (verified) {
         decrypt(response, PRIVATE_KEY);
     }
@@ -216,6 +216,13 @@ async function sendCommand(url) {
     const postParams = getPostParams(APP_ID, "123", "mi.lock.device.status", params, false);
     const formBody = new URLSearchParams(postParams);
     const res = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: formBody.toString(),
+    });
+    console.log({
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",

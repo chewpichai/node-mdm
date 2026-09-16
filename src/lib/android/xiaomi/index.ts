@@ -55,7 +55,7 @@ async function uploadDevice(imei: string): Promise<number> {
     ],
   });
   console.log("🚀 ~ uploadDevice ~ data:", data);
-  let isSuccess = data.deviceList[0].resultCode === "SUCCESS";
+  let isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
   if (!isSuccess) return 461;
 
   await sleep(5000);
@@ -67,6 +67,7 @@ async function uploadDevice(imei: string): Promise<number> {
       },
     ],
   });
+  console.log("🚀 ~ activateDevice ~ data:", data);
   isSuccess = data.serviceList[0].resultCode === "SUCCESS";
   if (isSuccess) return 201;
 

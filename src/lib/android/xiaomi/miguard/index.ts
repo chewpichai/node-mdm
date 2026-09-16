@@ -148,7 +148,7 @@ function getPostParams(
   };
 
   const key = AESUtils.generateAESKey();
-  const encryptedKey = RSAUtils.encryptByPublicKey(key, PUBLIC_KEY);
+  const encryptedKey = RSAUtils.encryptByPublicKey(key, MI_PUBLIC_KEY);
   if (!encryptedKey) {
     throw new Error("Failed to encrypt AES key with partner public key");
   }
@@ -233,7 +233,7 @@ function getResponse(params: Record<string, any>): Record<string, string> {
 function parseResponse(content: string): string {
   const raw = JSON.parse(content);
   const response = new PartnerResponse(raw);
-  const verified = response.verifySign(PUBLIC_KEY);
+  const verified = response.verifySign(MI_PUBLIC_KEY);
 
   if (verified) {
     decrypt(response, PRIVATE_KEY);
@@ -268,7 +268,13 @@ async function sendCommand(url: string): Promise<void> {
     },
     body: formBody.toString(),
   });
-
+  console.log({
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: formBody.toString(),
+  });
   const bodyText = await res.text();
   console.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
   const parsedResponse = parseResponse(bodyText);

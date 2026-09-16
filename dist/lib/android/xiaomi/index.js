@@ -50,7 +50,7 @@ async function uploadDevice(imei) {
         ],
     });
     console.log("🚀 ~ uploadDevice ~ data:", data);
-    let isSuccess = data.deviceList[0].resultCode === "SUCCESS";
+    let isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
     if (!isSuccess)
         return 461;
     await (0, apple_1.sleep)(5000);
@@ -62,6 +62,7 @@ async function uploadDevice(imei) {
             },
         ],
     });
+    console.log("🚀 ~ activateDevice ~ data:", data);
     isSuccess = data.serviceList[0].resultCode === "SUCCESS";
     if (isSuccess)
         return 201;
