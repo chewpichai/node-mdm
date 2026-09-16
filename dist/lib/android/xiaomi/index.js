@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dayjs_1 = __importDefault(require("dayjs"));
-const apple_1 = require("../../../apple");
 const cache_1 = require("../../cache");
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
 const API_KEY = process.env.XIAOMI_API_KEY;
@@ -35,11 +34,10 @@ async function sendCommand(url, body, method = "POST") {
         },
     });
     const data = await response.json();
-    console.log("🚀 ~ sendCommand ~ data:", data);
     return data;
 }
 async function uploadDevice(imei) {
-    let data = await sendCommand("/inventory/upload", {
+    const data = await sendCommand("/inventory/upload", {
         deviceList: [
             {
                 deviceUid: imei,
@@ -50,23 +48,8 @@ async function uploadDevice(imei) {
         ],
     });
     console.log("🚀 ~ uploadDevice ~ data:", data);
-    let isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
-    if (!isSuccess)
-        return 461;
-    await (0, apple_1.sleep)(5000);
-    data = await sendCommand("/service/activate", {
-        deviceList: [
-            {
-                deviceUid: imei,
-                serviceList: [{ serviceName: "deviceFinancing" }],
-            },
-        ],
-    });
-    console.log("🚀 ~ activateDevice ~ data:", data);
-    isSuccess = data.serviceList[0].resultCode === "SUCCESS";
-    if (isSuccess)
-        return 201;
-    return 200;
+    const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
+    return isSuccess ? 200 : 461;
 }
 async function getDevice(imei) {
     const data = await sendCommand("/query/devices", {

@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import { sleep } from "../../../apple";
 import { MDMAndroidOEMDevice } from "../../../types";
 import { getCache } from "../../cache";
 
@@ -39,12 +38,11 @@ async function sendCommand(
     },
   });
   const data = await response.json();
-  console.log("🚀 ~ sendCommand ~ data:", data);
   return data;
 }
 
 async function uploadDevice(imei: string): Promise<number> {
-  let data = await sendCommand("/inventory/upload", {
+  const data = await sendCommand("/inventory/upload", {
     deviceList: [
       {
         deviceUid: imei,
@@ -55,23 +53,9 @@ async function uploadDevice(imei: string): Promise<number> {
     ],
   });
   console.log("🚀 ~ uploadDevice ~ data:", data);
-  let isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
-  if (!isSuccess) return 461;
+  const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
 
-  await sleep(5000);
-  data = await sendCommand("/service/activate", {
-    deviceList: [
-      {
-        deviceUid: imei,
-        serviceList: [{ serviceName: "deviceFinancing" }],
-      },
-    ],
-  });
-  console.log("🚀 ~ activateDevice ~ data:", data);
-  isSuccess = data.serviceList[0].resultCode === "SUCCESS";
-  if (isSuccess) return 201;
-
-  return 200;
+  return isSuccess ? 200 : 461;
 }
 
 async function getDevice(

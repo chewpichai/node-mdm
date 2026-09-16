@@ -60,7 +60,6 @@ async function sendCommand(url, body) {
         },
     });
     const data = await response.json();
-    console.log("🚀 ~ sendCommand ~ data:", data);
     return data;
 }
 async function uploadDevice(imei) {

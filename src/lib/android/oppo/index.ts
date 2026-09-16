@@ -34,7 +34,6 @@ async function sendCommand(url: string, body: Record<string, unknown>) {
     },
   });
   const data = await response.json();
-  console.log("🚀 ~ sendCommand ~ data:", data);
   return data;
 }
 

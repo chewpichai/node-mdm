@@ -148,7 +148,7 @@ function getPostParams(
   };
 
   const key = AESUtils.generateAESKey();
-  const encryptedKey = RSAUtils.encryptByPublicKey(key, MI_PUBLIC_KEY);
+  const encryptedKey = RSAUtils.encryptByPublicKey(key, PUBLIC_KEY);
   if (!encryptedKey) {
     throw new Error("Failed to encrypt AES key with partner public key");
   }
@@ -204,7 +204,7 @@ function getResponse(params: Record<string, any>): Record<string, string> {
   };
 
   const key = AESUtils.generateAESKey();
-  const encryptedKey = RSAUtils.encryptByPublicKey(key, MI_PUBLIC_KEY);
+  const encryptedKey = RSAUtils.encryptByPublicKey(key, PUBLIC_KEY);
   if (!encryptedKey) {
     throw new Error("Failed to encrypt AES key with MiFi public key");
   }
@@ -262,13 +262,6 @@ async function sendCommand(url: string): Promise<void> {
   );
   const formBody = new URLSearchParams(postParams);
   const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-    },
-    body: formBody.toString(),
-  });
-  console.log({
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
