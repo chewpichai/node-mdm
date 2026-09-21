@@ -7,7 +7,7 @@ import {
   AppleSeekDreamMDM,
   getMDM,
 } from "../dist";
-import { testEncryptedAndSignature } from "../dist/lib/android/xiaomi/miguard";
+import miguard from "../dist/lib/android/xiaomi/miguard";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
@@ -199,5 +199,5 @@ const testAndroidOEMMDM = async () => {
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
   // await testAndroidOEMMDM();
-  testEncryptedAndSignature();
+  await miguard.getDevice("868506080036129");
 })();

@@ -63,21 +63,19 @@ async function sendCommand(url, body) {
     return data;
 }
 async function uploadDevice(imei) {
-    const expiration = (0, dayjs_1.default)().add(1, "year").unix();
+    const expiration = (0, dayjs_1.default)().add(2, "year").unix();
     let data = await sendCommand("/api/partner/lock/v1/imei/input", {
-        imeiInfo: JSON.stringify([
-            { imei, model: "", orderNum: "", ram: "", rom: "", expiration },
-        ]),
+        imeiInfo: JSON.stringify([{ imei, expiration }]),
         apiKey: API_KEY,
-        preLockFlag: true,
+        preLockFlag: false,
     });
     console.log("🚀 ~ uploadDevice ~ data:", data);
-    const isSuccess = data.message === "Success";
+    const isSuccess = data.code === 200;
     if (isSuccess)
         return 200;
-    if ([50015, 50078, 50052].includes(data[0].errCode))
+    if (data.code === 50021)
         return 461;
-    return data[0].errCode;
+    return data.code;
 }
 async function getDevice(imei) {
     const data = await sendCommand("/api/partner/model/v1/get", {

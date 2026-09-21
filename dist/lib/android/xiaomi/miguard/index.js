@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decompressGzip = decompressGzip;
 exports.getSignContent = getSignContent;
-exports.testEncryptedAndSignature = testEncryptedAndSignature;
+const dayjs_1 = __importDefault(require("dayjs"));
 const zlib_1 = __importDefault(require("zlib"));
 const aesUtils_1 = require("./aesUtils");
 const errorCode_1 = require("./errorCode");
@@ -86,14 +86,14 @@ function partnerDecrypt(request, partnerPrivateKey) {
 /**
  * Decrypts the data field in PartnerResponse using MiFi private key.
  */
-function decrypt(response, mifiPrivateKey) {
+function decrypt(response, privateKey) {
     if (!response.encrypted) {
         return true;
     }
     if (!response.key) {
         return false;
     }
-    const key = rsaUtils_1.RSAUtils.decryptByPrivateKey(response.key, mifiPrivateKey);
+    const key = rsaUtils_1.RSAUtils.decryptByPrivateKey(response.key, privateKey);
     if (!key) {
         response.setCode(errorCode_1.ErrorCode.ERROR_DECRYPT.code);
         response.desc = errorCode_1.ErrorCode.ERROR_DECRYPT.desc;
@@ -122,7 +122,7 @@ function getPostParams(appId, requestId, method, params, compressed) {
         method,
     };
     const key = aesUtils_1.AESUtils.generateAESKey();
-    const encryptedKey = rsaUtils_1.RSAUtils.encryptByPublicKey(key, PUBLIC_KEY);
+    const encryptedKey = rsaUtils_1.RSAUtils.encryptByPublicKey(key, MI_PUBLIC_KEY);
     if (!encryptedKey) {
         throw new Error("Failed to encrypt AES key with partner public key");
     }
@@ -203,17 +203,11 @@ function parseResponse(content) {
     else {
         console.warn("parseResponse signature verification failed!");
     }
-    return JSON.stringify(response.toJSON());
+    return response.toJSON();
 }
-function testEncryptedAndSignature() {
-    sendCommand("https://staging-merchant-api.ginstal.xiaomi.com/v1/partner");
-}
-async function sendCommand(url) {
-    const params = {
-        financialOrgNo: ORG_NO,
-        deviceRegisterNo: "868506080036129",
-    };
-    const postParams = getPostParams(APP_ID, "123", "mi.lock.device.status", params, false);
+async function sendCommand(method, params) {
+    const postParams = getPostParams(APP_ID, "123", method, params, false);
+    const url = "https://staging-merchant-api.ginstal.xiaomi.com/v1/partner";
     const formBody = new URLSearchParams(postParams);
     const res = await fetch(url, {
         method: "POST",
@@ -225,5 +219,85 @@ async function sendCommand(url) {
     const bodyText = await res.text();
     console.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
     const parsedResponse = parseResponse(bodyText);
-    console.log("parsedResponse : " + parsedResponse);
+    console.log("parsedResponse : " + JSON.stringify(parsedResponse));
+    return JSON.parse(parsedResponse.data);
 }
+async function uploadDevice(imei) {
+    const data = await sendCommand("mi.lock.device.register", {
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: imei,
+    });
+    console.log("🚀 ~ uploadDevice ~ data:", data);
+}
+async function getDevice(imei) {
+    const data = await sendCommand("mi.lock.device.status", {
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: imei,
+    });
+    console.log("🚀 ~ getDevice ~ data:", data);
+    return {
+        id: imei,
+        status: getDeviceStatus(data.content.financialStatus),
+        modelName: "",
+        createTime: "",
+        lastOnlineTime: (0, dayjs_1.default)(data.content.lastContractTime).format("YYYYMMDDHHmmss"),
+    };
+}
+function getDeviceStatus(status) {
+    switch (status) {
+        case "register":
+            return "activating";
+        case "released":
+            return "completed";
+        default:
+            return status;
+    }
+}
+async function lockDevice(imei, phone, message) {
+    const data = await sendCommand("mi.lock.device.policy.send", {
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: imei,
+        policyNo: "lock",
+        title: phone,
+        content: message,
+    });
+    console.log("🚀 ~ lockDevice ~ data:", data);
+    return data.msg === "success";
+}
+async function unlockDevice(imei) {
+    const data = await sendCommand("mi.lock.device.policy.send", {
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: imei,
+        policyNo: "unlock",
+    });
+    console.log("🚀 ~ unlockDevice ~ data:", data);
+    return data.msg === "success";
+}
+async function sendMessage(imei, phone, message) {
+    const data = await sendCommand("mi.lock.device.policy.send", {
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: imei,
+        policyNo: "pop_notify",
+        title: phone,
+        content: message,
+    });
+    console.log("🚀 ~ sendMessage ~ data:", data);
+    return data.msg === "success";
+}
+async function completeDevice(imei) {
+    const data = await sendCommand("mi.lock.device.policy.send", {
+        financialOrgNo: ORG_NO,
+        deviceRegisterNo: imei,
+        policyNo: "release",
+    });
+    console.log("🚀 ~ completeDevice ~ data:", data);
+    return data.msg === "success";
+}
+exports.default = {
+    uploadDevice,
+    getDevice,
+    lockDevice,
+    unlockDevice,
+    sendMessage,
+    completeDevice,
+};

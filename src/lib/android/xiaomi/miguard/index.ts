@@ -1,4 +1,6 @@
+import dayjs from "dayjs";
 import zlib from "zlib";
+import { MDMAndroidOEMDevice } from "../../../../types";
 import { AESUtils } from "./aesUtils";
 import { ErrorCode } from "./errorCode";
 import { PartnerResponse } from "./partnerResponse";
@@ -10,6 +12,12 @@ const ORG_NO = process.env.MI_GUARD_ORG_NO;
 const PUBLIC_KEY = process.env.MI_GUARD_PUBLIC_KEY;
 const PRIVATE_KEY = process.env.MI_GUARD_PRIVATE_KEY;
 const MI_PUBLIC_KEY = process.env.MI_GUARD_MI_PUBLIC_KEY;
+type FinancialStatus =
+  | "unknown"
+  | "register"
+  | "active"
+  | "locked"
+  | "released";
 
 /**
  * Compresses string with GZIP, matching Java's GZIPOutputStream.
@@ -98,7 +106,7 @@ function partnerDecrypt(
 /**
  * Decrypts the data field in PartnerResponse using MiFi private key.
  */
-function decrypt(response: PartnerResponse, mifiPrivateKey: string): boolean {
+function decrypt(response: PartnerResponse, privateKey: string): boolean {
   if (!response.encrypted) {
     return true;
   }
@@ -107,7 +115,7 @@ function decrypt(response: PartnerResponse, mifiPrivateKey: string): boolean {
     return false;
   }
 
-  const key = RSAUtils.decryptByPrivateKey(response.key, mifiPrivateKey);
+  const key = RSAUtils.decryptByPrivateKey(response.key, privateKey);
   if (!key) {
     response.setCode(ErrorCode.ERROR_DECRYPT.code);
     response.desc = ErrorCode.ERROR_DECRYPT.desc;
@@ -148,7 +156,7 @@ function getPostParams(
   };
 
   const key = AESUtils.generateAESKey();
-  const encryptedKey = RSAUtils.encryptByPublicKey(key, PUBLIC_KEY);
+  const encryptedKey = RSAUtils.encryptByPublicKey(key, MI_PUBLIC_KEY);
   if (!encryptedKey) {
     throw new Error("Failed to encrypt AES key with partner public key");
   }
@@ -230,7 +238,7 @@ function getResponse(params: Record<string, any>): Record<string, string> {
 /**
  * Parses and decrypts a PartnerResponse JSON string.
  */
-function parseResponse(content: string): string {
+function parseResponse(content: string) {
   const raw = JSON.parse(content);
   const response = new PartnerResponse(raw);
   const verified = response.verifySign(MI_PUBLIC_KEY);
@@ -241,25 +249,24 @@ function parseResponse(content: string): string {
     console.warn("parseResponse signature verification failed!");
   }
 
-  return JSON.stringify(response.toJSON());
-}
-
-function testEncryptedAndSignature(): void {
-  sendCommand("https://staging-merchant-api.ginstal.xiaomi.com/v1/partner");
-}
-
-async function sendCommand(url: string): Promise<void> {
-  const params: Record<string, any> = {
-    financialOrgNo: ORG_NO,
-    deviceRegisterNo: "868506080036129",
+  return response.toJSON() as {
+    success: boolean;
+    code: number;
+    desc: string;
+    encrypted: boolean;
+    key: string;
+    timestamp: number;
+    sign: string;
+    data: string;
   };
-  const postParams = getPostParams(
-    APP_ID,
-    "123",
-    "mi.lock.device.status",
-    params,
-    false
-  );
+}
+
+async function sendCommand<T>(
+  method: string,
+  params: Record<string, any>
+): Promise<T> {
+  const postParams = getPostParams(APP_ID, "123", method, params, false);
+  const url = "https://staging-merchant-api.ginstal.xiaomi.com/v1/partner";
   const formBody = new URLSearchParams(postParams);
   const res = await fetch(url, {
     method: "POST",
@@ -271,7 +278,116 @@ async function sendCommand(url: string): Promise<void> {
   const bodyText = await res.text();
   console.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
   const parsedResponse = parseResponse(bodyText);
-  console.log("parsedResponse : " + parsedResponse);
+  console.log("parsedResponse : " + JSON.stringify(parsedResponse));
+  return JSON.parse(parsedResponse.data);
 }
 
-export { testEncryptedAndSignature };
+async function uploadDevice(imei: string): Promise<void> {
+  const data = await sendCommand<{ code: number; msg: string }>(
+    "mi.lock.device.register",
+    {
+      financialOrgNo: ORG_NO,
+      deviceRegisterNo: imei,
+    }
+  );
+  console.log("🚀 ~ uploadDevice ~ data:", data);
+}
+
+async function getDevice(
+  imei: string
+): Promise<MDMAndroidOEMDevice | undefined> {
+  const data = await sendCommand<{
+    code: number;
+    msg: string;
+    content: { financialStatus: FinancialStatus; lastContractTime: number };
+  }>("mi.lock.device.status", {
+    financialOrgNo: ORG_NO,
+    deviceRegisterNo: imei,
+  });
+  console.log("🚀 ~ getDevice ~ data:", data);
+  return {
+    id: imei,
+    status: getDeviceStatus(data.content.financialStatus),
+    modelName: "",
+    createTime: "",
+    lastOnlineTime: dayjs(data.content.lastContractTime).format(
+      "YYYYMMDDHHmmss"
+    ),
+  };
+}
+
+function getDeviceStatus(status: FinancialStatus) {
+  switch (status) {
+    case "register":
+      return "activating";
+    case "released":
+      return "completed";
+    default:
+      return status;
+  }
+}
+
+async function lockDevice(imei: string, phone: string, message: string) {
+  const data = await sendCommand<{ code: number; msg: string }>(
+    "mi.lock.device.policy.send",
+    {
+      financialOrgNo: ORG_NO,
+      deviceRegisterNo: imei,
+      policyNo: "lock",
+      title: phone,
+      content: message,
+    }
+  );
+  console.log("🚀 ~ lockDevice ~ data:", data);
+  return data.msg === "success";
+}
+
+async function unlockDevice(imei: string) {
+  const data = await sendCommand<{ code: number; msg: string }>(
+    "mi.lock.device.policy.send",
+    {
+      financialOrgNo: ORG_NO,
+      deviceRegisterNo: imei,
+      policyNo: "unlock",
+    }
+  );
+  console.log("🚀 ~ unlockDevice ~ data:", data);
+  return data.msg === "success";
+}
+
+async function sendMessage(imei: string, phone: string, message: string) {
+  const data = await sendCommand<{ code: number; msg: string }>(
+    "mi.lock.device.policy.send",
+    {
+      financialOrgNo: ORG_NO,
+      deviceRegisterNo: imei,
+      policyNo: "pop_notify",
+      title: phone,
+      content: message,
+    }
+  );
+  console.log("🚀 ~ sendMessage ~ data:", data);
+  return data.msg === "success";
+}
+
+async function completeDevice(imei: string) {
+  const data = await sendCommand<{ code: number; msg: string }>(
+    "mi.lock.device.policy.send",
+    {
+      financialOrgNo: ORG_NO,
+      deviceRegisterNo: imei,
+      policyNo: "release",
+    }
+  );
+  console.log("🚀 ~ completeDevice ~ data:", data);
+  return data.msg === "success";
+}
+
+export default {
+  uploadDevice,
+  getDevice,
+  lockDevice,
+  unlockDevice,
+  sendMessage,
+  completeDevice,
+};
