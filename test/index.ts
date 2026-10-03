@@ -199,5 +199,5 @@ const testAndroidOEMMDM = async () => {
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
   // await testAndroidOEMMDM();
-  await miguard.getDevice("868506080036129");
+  await miguard.sendMessage("868506080036129", "", "");
 })();

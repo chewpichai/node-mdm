@@ -361,7 +361,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     {
       financialOrgNo: ORG_NO,
       deviceRegisterNo: imei,
-      policyNo: "pop_notify",
+      policyNo: "common_notify",
       title: phone,
       content: message,
     }

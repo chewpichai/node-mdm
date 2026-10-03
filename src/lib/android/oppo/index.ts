@@ -44,7 +44,15 @@ async function uploadDevice(imei: string): Promise<number> {
   let data = await response.json();
   console.log("🚀 ~ uploadDevice ~ data:", data);
   let isSuccess = data.success;
-  if (!isSuccess) return data.code === "NOT_FOUND" ? 461 : 400;
+  if (!isSuccess)
+    switch (data.code) {
+      case "NOT_IN_CHANNEL":
+        return 466;
+      case "NOT_FOUND":
+        return 461;
+      default:
+        return 400;
+    }
 
   await sleep(5000);
   data = await sendCommand("/setmeal/choose", {

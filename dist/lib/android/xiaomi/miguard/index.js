@@ -277,7 +277,7 @@ async function sendMessage(imei, phone, message) {
     const data = await sendCommand("mi.lock.device.policy.send", {
         financialOrgNo: ORG_NO,
         deviceRegisterNo: imei,
-        policyNo: "pop_notify",
+        policyNo: "common_notify",
         title: phone,
         content: message,
     });
