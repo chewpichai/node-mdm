@@ -1,9 +1,14 @@
 export declare enum DeviceStatus {
-    UNREGULATED = 0,
-    SUPERVISED = 1,
-    DEREGULATED = 2,
-    LOST_LOCKED = 3,
-    RENT_LOCKED = 4
+    unknown = "unknown",
+    activating = "activating",
+    active = "active",
+    completing = "completing",
+    completed = "completed",
+    lock = "lock",
+    locked = "locked",
+    unlocking = "unlocking",
+    unauthorized = "unauthorized",
+    rent = "rent"
 }
 export type MDMDevice = {
     id: number;

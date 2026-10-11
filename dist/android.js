@@ -77,7 +77,7 @@ class AndroidMDM {
             }
             return {
                 id: device.id,
-                deviceStatus: _1.DeviceStatus.SUPERVISED,
+                deviceStatus: _1.DeviceStatus.active,
                 description: "",
                 serialNumber: device.serial,
                 activationLockStatus: 1,

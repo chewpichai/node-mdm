@@ -62,9 +62,6 @@ class AndroidOEMMDM {
         return this.oem.uploadDevice(this.query.imei, this.query.productCode);
     }
     async getDevice() {
-        throw new Error("not_implemented");
-    }
-    async getAndroidOEMDevice() {
         if (!this.query.imei)
             throw new Error("imei_required");
         if (!this.oem)

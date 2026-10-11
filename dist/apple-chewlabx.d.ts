@@ -1,4 +1,4 @@
-import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
+import { DeviceLocation, DevicePermissions, DeviceStatus, IMDM, MDMDevice, MDMQuery } from ".";
 export declare class AppleChewLabxMDM implements IMDM {
     tokenKey: string;
     token: string | null | undefined;
@@ -8,6 +8,7 @@ export declare class AppleChewLabxMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown> | FormData, method?: "GET" | "POST" | "PUT" | "DELETE"): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
+    getDeviceStatus(status: string): DeviceStatus;
     getEscrowKey(): Promise<string | undefined>;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
     disableLostMode(): Promise<[

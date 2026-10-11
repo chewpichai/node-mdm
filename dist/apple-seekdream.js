@@ -86,7 +86,7 @@ class AppleSeekDreamMDM {
             const [imei] = device.IMEI.split(",");
             return {
                 id: device.id,
-                deviceStatus: _1.DeviceStatus.SUPERVISED,
+                deviceStatus: _1.DeviceStatus.active,
                 description: device.device_description,
                 serialNumber: device.serial,
                 activationLockStatus: 0,

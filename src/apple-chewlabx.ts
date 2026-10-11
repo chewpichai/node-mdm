@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import {
   DeviceLocation,
   DevicePermissions,
+  DeviceStatus,
   IMDM,
   MDMDevice,
   MDMQuery,
@@ -104,14 +105,7 @@ export class AppleChewLabxMDM implements IMDM {
           ])
         )
       );
-
-      const statusMap: Record<string, MDMDevice["deviceStatus"]> = {
-        normal: 0,
-        deleted: 2,
-        lost_mode: 3,
-        hide_apps: 4,
-      };
-      const deviceStatus = statusMap[device.status] ?? 1;
+      const deviceStatus = this.getDeviceStatus(device.status);
 
       return {
         id: device.id,
@@ -133,6 +127,21 @@ export class AppleChewLabxMDM implements IMDM {
       };
     } catch (error) {
       console.warn(error);
+    }
+  }
+
+  getDeviceStatus(status: string): DeviceStatus {
+    switch (status) {
+      case "normal":
+        return DeviceStatus.active;
+      case "deleted":
+        return DeviceStatus.completed;
+      case "lost_mode":
+        return DeviceStatus.locked;
+      case "hide_apps":
+        return DeviceStatus.rent;
+      default:
+        return DeviceStatus.unknown;
     }
   }
 

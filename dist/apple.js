@@ -99,10 +99,25 @@ class AppleMDM {
                 logger_1.logger.log(this.query.serialNumber, device?.serialNumber);
                 throw new Error("device_not_found");
             }
+            device.deviceStatus = this.getDeviceStatus(device.deviceStatus);
             return device;
         }
         catch (error) {
             logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
+        }
+    }
+    getDeviceStatus(status) {
+        switch (status) {
+            case 1:
+                return _1.DeviceStatus.active;
+            case 2:
+                return _1.DeviceStatus.completed;
+            case 3:
+                return _1.DeviceStatus.locked;
+            case 4:
+                return _1.DeviceStatus.rent;
+            default:
+                return _1.DeviceStatus.unknown;
         }
     }
     async getDevice() {
@@ -111,7 +126,7 @@ class AppleMDM {
         try {
             const device = await this._getDevice();
             this.query.mdmId = device?.id;
-            if (device?.deviceStatus === _1.DeviceStatus.UNREGULATED) {
+            if (device?.deviceStatus === _1.DeviceStatus.unknown) {
                 await this.enableSupervision();
                 const _device = await this._getDevice();
                 if (!_device)

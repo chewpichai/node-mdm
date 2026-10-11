@@ -116,10 +116,10 @@ class AndroidSeekDreamMDM {
         const LOST_MODE = 8;
         const RENT_MODE = 1024;
         if (flag & LOST_MODE)
-            return types_1.DeviceStatus.LOST_LOCKED;
+            return types_1.DeviceStatus.locked;
         if (flag & RENT_MODE)
-            return types_1.DeviceStatus.RENT_LOCKED;
-        return types_1.DeviceStatus.SUPERVISED;
+            return types_1.DeviceStatus.rent;
+        return types_1.DeviceStatus.active;
     }
     async enableLostMode(phoneNumber, content) {
         if (this.query.brand !== "android-seekdream")

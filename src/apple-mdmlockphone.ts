@@ -144,12 +144,12 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         serialNo: this.query.serialNumber,
       });
       return lostModeStatus === "1"
-        ? DeviceStatus.LOST_LOCKED
+        ? DeviceStatus.locked
         : rentModeStatus === "1"
-          ? DeviceStatus.RENT_LOCKED
-          : DeviceStatus.SUPERVISED;
+          ? DeviceStatus.rent
+          : DeviceStatus.active;
     } catch (error) {
-      return DeviceStatus.UNREGULATED;
+      return DeviceStatus.unknown;
     }
   }
 

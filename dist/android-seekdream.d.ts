@@ -9,7 +9,7 @@ export declare class AndroidSeekDreamMDM implements IMDM {
     sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
-    getDeviceStatus(flag: number): DeviceStatus.SUPERVISED | DeviceStatus.LOST_LOCKED | DeviceStatus.RENT_LOCKED;
+    getDeviceStatus(flag: number): DeviceStatus.active | DeviceStatus.locked | DeviceStatus.rent;
     enableLostMode(phoneNumber: string, content: string): Promise<[boolean, number | undefined]>;
     disableLostMode(): Promise<[
         true,

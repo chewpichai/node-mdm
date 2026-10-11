@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { MDMAndroidOEMDevice } from "../../../types";
+import { DeviceStatus, MDMDevice } from "../../../types";
 import { getCache } from "../../cache";
 
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
@@ -58,32 +58,43 @@ async function uploadDevice(imei: string): Promise<number> {
   return isSuccess ? 200 : 461;
 }
 
-async function getDevice(
-  imei: string
-): Promise<MDMAndroidOEMDevice | undefined> {
+async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/query/devices", {
     deviceList: [{ deviceUid: imei }],
   });
   console.log("🚀 ~ getDevice ~ data:", data);
   const device = data.deviceResponseList[0];
   if (device.resultCode) return;
+
   return {
-    id: imei,
-    status: getDeviceStatus(device.stateInfo.toLowerCase()),
-    modelName: device.deviceMarketName,
+    id: 0,
+    deviceStatus: getDeviceStatus(device.stateInfo.toLowerCase()),
+    phoneModel: device.deviceMarketName,
+    description: "",
+    serialNumber: imei,
+    imei,
+    activationLockStatus: 0,
+    functionRestrictData: "",
+    httpProxyStatus: 0,
+    commandContentList: [],
+    deviceAssignedBy: "",
+    color: "",
+    usbItunesStatus: 0,
+    deviceCapacity: "",
+    osVersion: "",
     createTime: dayjs(device.createdTimeStamp).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastCheckIn).format("YYYYMMDDHHmmss"),
   };
 }
 
-function getDeviceStatus(status: string) {
+function getDeviceStatus(status: string): DeviceStatus {
   switch (status) {
     case "ready for use":
-      return "activating";
+      return DeviceStatus.activating;
     case "released":
-      return "completed";
+      return DeviceStatus.completed;
     default:
-      return status;
+      return status as DeviceStatus;
   }
 }
 

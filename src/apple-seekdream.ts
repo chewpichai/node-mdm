@@ -108,7 +108,7 @@ export class AppleSeekDreamMDM implements IMDM {
 
       return {
         id: device.id,
-        deviceStatus: DeviceStatus.SUPERVISED,
+        deviceStatus: DeviceStatus.active,
         description: device.device_description,
         serialNumber: device.serial,
         activationLockStatus: 0,

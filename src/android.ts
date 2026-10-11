@@ -84,7 +84,7 @@ export class AndroidMDM implements IMDM {
 
       return {
         id: device.id,
-        deviceStatus: DeviceStatus.SUPERVISED,
+        deviceStatus: DeviceStatus.active,
         description: "",
         serialNumber: device.serial,
         activationLockStatus: 1,

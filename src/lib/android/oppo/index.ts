@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { sleep } from "../../../apple";
-import { MDMAndroidOEMDevice } from "../../../types";
+import { DeviceStatus, MDMDevice } from "../../../types";
 import { oGuardSign, possefySign } from "./sign";
 
 const BASE_URL = "https://ilockcardf-isp.apps.coloros.com";
@@ -66,9 +66,7 @@ async function uploadDevice(imei: string): Promise<number> {
   return data.error?.code || 400;
 }
 
-async function getDevice(
-  imei: string
-): Promise<MDMAndroidOEMDevice | undefined> {
+async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   let modelName = null;
   const response = await validateDevice(imei);
   if (response.status === 200)
@@ -78,21 +76,34 @@ async function getDevice(
   console.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || data.data.list.length === 0) return;
   const device = data.data.list[0];
+
   return {
-    id: imei,
-    status: getDeviceStatus(device.status.toLowerCase()),
-    modelName: modelName || device.model,
+    id: 0,
+    deviceStatus: getDeviceStatus(device.status.toLowerCase()),
+    phoneModel: modelName || device.model,
+    description: "",
+    serialNumber: imei,
+    imei,
+    activationLockStatus: 0,
+    functionRestrictData: "",
+    httpProxyStatus: 0,
+    commandContentList: [],
+    deviceAssignedBy: "",
+    color: "",
+    usbItunesStatus: 0,
+    deviceCapacity: "",
+    osVersion: "",
     createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
   };
 }
 
-function getDeviceStatus(status: string) {
+function getDeviceStatus(status: string): DeviceStatus {
   switch (status) {
     case "normal":
-      return "active";
+      return DeviceStatus.active;
     default:
-      return status;
+      return status as DeviceStatus;
   }
 }
 

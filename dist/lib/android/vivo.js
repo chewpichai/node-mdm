@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VTrustOpenAPI = exports.VTrustControlType = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
+const types_1 = require("../../types");
 var VTrustControlType;
 (function (VTrustControlType) {
     VTrustControlType[VTrustControlType["LOCK"] = 1] = "LOCK";
@@ -245,9 +246,21 @@ async function getDevice(imei) {
     const device = data.data;
     const status = getDeviceStatus(device.status);
     return {
-        id: imei,
-        status,
-        modelName: device.externalModel,
+        id: 0,
+        deviceStatus: status,
+        phoneModel: device.externalModel,
+        description: "",
+        serialNumber: imei,
+        imei,
+        activationLockStatus: 0,
+        functionRestrictData: "",
+        httpProxyStatus: 0,
+        commandContentList: [],
+        deviceAssignedBy: "",
+        color: "",
+        usbItunesStatus: 0,
+        deviceCapacity: "",
+        osVersion: "",
         createTime: (0, dayjs_1.default)(device.activateTime).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastInteraction).format("YYYYMMDDHHmmss"),
     };
@@ -255,25 +268,25 @@ async function getDevice(imei) {
 function getDeviceStatus(status) {
     switch (status) {
         case 1:
-            return "active";
+            return types_1.DeviceStatus.active;
         case 2:
-            return "active";
+            return types_1.DeviceStatus.active;
         case 3:
-            return "lock";
+            return types_1.DeviceStatus.lock;
         case 4:
-            return "locked";
+            return types_1.DeviceStatus.locked;
         case 5:
-            return "unlocking";
+            return types_1.DeviceStatus.unlocking;
         case 6:
-            return "completed";
+            return types_1.DeviceStatus.completed;
         case 7:
-            return "completing";
+            return types_1.DeviceStatus.completing;
         case 8:
-            return "activating";
+            return types_1.DeviceStatus.activating;
         case 9:
-            return "unauthorized";
+            return types_1.DeviceStatus.unauthorized;
         default:
-            return "unknown";
+            return types_1.DeviceStatus.unknown;
     }
 }
 async function lockDevice(imei, phone, message) {

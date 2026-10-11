@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import dayjs from "dayjs";
-import { MDMAndroidOEMDevice } from "../../types";
+import { DeviceStatus, MDMDevice } from "../../types";
 
 export interface VTrustOpenAPIOptions {
   clientId?: string;
@@ -339,45 +339,56 @@ async function uploadDevice(imei: string): Promise<number> {
   return 461;
 }
 
-async function getDevice(
-  imei: string
-): Promise<MDMAndroidOEMDevice | undefined> {
+async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await getClient().queryDeviceInfo(imei);
   console.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || !data.data) return;
   const device = data.data;
   const status = getDeviceStatus(device.status as number);
+
   return {
-    id: imei,
-    status,
-    modelName: device.externalModel,
+    id: 0,
+    deviceStatus: status,
+    phoneModel: device.externalModel,
+    description: "",
+    serialNumber: imei,
+    imei,
+    activationLockStatus: 0,
+    functionRestrictData: "",
+    httpProxyStatus: 0,
+    commandContentList: [],
+    deviceAssignedBy: "",
+    color: "",
+    usbItunesStatus: 0,
+    deviceCapacity: "",
+    osVersion: "",
     createTime: dayjs(device.activateTime).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastInteraction).format("YYYYMMDDHHmmss"),
   };
 }
 
-function getDeviceStatus(status: number) {
+function getDeviceStatus(status: number): DeviceStatus {
   switch (status) {
     case 1:
-      return "active";
+      return DeviceStatus.active;
     case 2:
-      return "active";
+      return DeviceStatus.active;
     case 3:
-      return "lock";
+      return DeviceStatus.lock;
     case 4:
-      return "locked";
+      return DeviceStatus.locked;
     case 5:
-      return "unlocking";
+      return DeviceStatus.unlocking;
     case 6:
-      return "completed";
+      return DeviceStatus.completed;
     case 7:
-      return "completing";
+      return DeviceStatus.completing;
     case 8:
-      return "activating";
+      return DeviceStatus.activating;
     case 9:
-      return "unauthorized";
+      return DeviceStatus.unauthorized;
     default:
-      return "unknown";
+      return DeviceStatus.unknown;
   }
 }
 

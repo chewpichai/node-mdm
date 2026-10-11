@@ -1,4 +1,4 @@
-import { DeviceLocation, DevicePermissions, IMDM, MDMDevice, MDMQuery } from ".";
+import { DeviceLocation, DevicePermissions, DeviceStatus, IMDM, MDMDevice, MDMQuery } from ".";
 import { Command, MDMDeviceDetail, OperationHistory } from "./types";
 export declare function sleep(ms: number): Promise<unknown>;
 export declare class AppleMDM implements IMDM {
@@ -10,6 +10,7 @@ export declare class AppleMDM implements IMDM {
     sendCommand(url: string, body: Record<string, unknown>): Promise<any>;
     init(): Promise<void>;
     _getDevice(): Promise<MDMDevice | undefined>;
+    getDeviceStatus(status: Number): DeviceStatus;
     getDevice(): Promise<MDMDevice | undefined>;
     getDeviceDetail(deviceId?: number): Promise<MDMDeviceDetail | undefined>;
     getEscrowKey(): Promise<string | undefined>;

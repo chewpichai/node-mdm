@@ -130,9 +130,26 @@ export class AppleMDM implements IMDM {
         throw new Error("device_not_found");
       }
 
+      device.deviceStatus = this.getDeviceStatus(device.deviceStatus);
+
       return device;
     } catch (error) {
       logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
+    }
+  }
+
+  getDeviceStatus(status: Number): DeviceStatus {
+    switch (status) {
+      case 1:
+        return DeviceStatus.active;
+      case 2:
+        return DeviceStatus.completed;
+      case 3:
+        return DeviceStatus.locked;
+      case 4:
+        return DeviceStatus.rent;
+      default:
+        return DeviceStatus.unknown;
     }
   }
 
@@ -142,7 +159,7 @@ export class AppleMDM implements IMDM {
       const device = await this._getDevice();
       this.query.mdmId = device?.id;
 
-      if (device?.deviceStatus === DeviceStatus.UNREGULATED) {
+      if (device?.deviceStatus === DeviceStatus.unknown) {
         await this.enableSupervision();
         const _device = await this._getDevice();
         if (!_device) throw new Error("device_not_found");

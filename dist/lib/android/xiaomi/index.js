@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dayjs_1 = __importDefault(require("dayjs"));
+const types_1 = require("../../../types");
 const cache_1 = require("../../cache");
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
 const API_KEY = process.env.XIAOMI_API_KEY;
@@ -60,9 +61,21 @@ async function getDevice(imei) {
     if (device.resultCode)
         return;
     return {
-        id: imei,
-        status: getDeviceStatus(device.stateInfo.toLowerCase()),
-        modelName: device.deviceMarketName,
+        id: 0,
+        deviceStatus: getDeviceStatus(device.stateInfo.toLowerCase()),
+        phoneModel: device.deviceMarketName,
+        description: "",
+        serialNumber: imei,
+        imei,
+        activationLockStatus: 0,
+        functionRestrictData: "",
+        httpProxyStatus: 0,
+        commandContentList: [],
+        deviceAssignedBy: "",
+        color: "",
+        usbItunesStatus: 0,
+        deviceCapacity: "",
+        osVersion: "",
         createTime: (0, dayjs_1.default)(device.createdTimeStamp).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastCheckIn).format("YYYYMMDDHHmmss"),
     };
@@ -70,9 +83,9 @@ async function getDevice(imei) {
 function getDeviceStatus(status) {
     switch (status) {
         case "ready for use":
-            return "activating";
+            return types_1.DeviceStatus.activating;
         case "released":
-            return "completed";
+            return types_1.DeviceStatus.completed;
         default:
             return status;
     }

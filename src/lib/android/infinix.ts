@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
-import { MDMAndroidOEMDevice } from "../../types";
+import { DeviceStatus, MDMDevice } from "../../types";
 
 const BASE_URL = "https://paytrigger.transsion-os.com/PayTrigger";
 const API_KEY = process.env.INFINIX_API_KEY;
@@ -45,9 +45,7 @@ async function uploadDevice(imei: string): Promise<number> {
   return data.code;
 }
 
-async function getDevice(
-  imei: string
-): Promise<MDMAndroidOEMDevice | undefined> {
+async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/api/partner/model/v1/get", {
     imei,
     apiKey: API_KEY,
@@ -59,16 +57,29 @@ async function getDevice(
     getDeviceStatus(imei),
     getDeviceLockStatus(imei),
   ]);
+
   return {
-    id: imei,
-    status: status === "active" ? lockStatus : status,
-    modelName: `${device.modelMarketName} (${device.ram}+${device.rom}GB)`,
+    id: 0,
+    deviceStatus: status === "active" ? lockStatus : status,
+    phoneModel: `${device.modelMarketName} (${device.ram}+${device.rom}GB)`,
+    description: "",
+    serialNumber: imei,
+    imei,
+    activationLockStatus: 0,
+    functionRestrictData: "",
+    httpProxyStatus: 0,
+    commandContentList: [],
+    deviceAssignedBy: "",
+    color: "",
+    usbItunesStatus: 0,
+    deviceCapacity: "",
+    osVersion: "",
     createTime: "",
     lastOnlineTime: "",
   };
 }
 
-async function getDeviceStatus(imei: string): Promise<string> {
+async function getDeviceStatus(imei: string): Promise<DeviceStatus> {
   const data = await sendCommand("/api/partner/lock/v1/findLockState", {
     imei,
     apiKey: API_KEY,
@@ -76,26 +87,27 @@ async function getDeviceStatus(imei: string): Promise<string> {
   console.log("🚀 ~ getDeviceStatus ~ data:", data);
   switch (data.data.serverState) {
     case 500:
-      return "activating";
+      return DeviceStatus.activating;
     case 1000:
-      return "activating";
+      return DeviceStatus.activating;
     case 2000:
-      return "activating";
+      return DeviceStatus.activating;
     case 3000:
-      return "active";
+      return DeviceStatus.active;
     default:
-      return "unknown";
+      return DeviceStatus.unknown;
   }
 }
 
-async function getDeviceLockStatus(imei: string): Promise<string> {
+async function getDeviceLockStatus(imei: string): Promise<DeviceStatus> {
   const data = await sendCommand("/api/partner/anti-theft/v1/status", {
     imei,
     apiKey: API_KEY,
   });
   console.log("🚀 ~ getDeviceLockStatus ~ data:", data);
-  if (data.code === 200 && data.data.operationStatus === "ON") return "locked";
-  return "active";
+  if (data.code === 200 && data.data.operationStatus === "ON")
+    return DeviceStatus.locked;
+  return DeviceStatus.active;
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {

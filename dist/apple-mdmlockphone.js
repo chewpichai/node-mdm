@@ -122,13 +122,13 @@ class AppleMDMLockPhoneMDM {
                 serialNo: this.query.serialNumber,
             });
             return lostModeStatus === "1"
-                ? _1.DeviceStatus.LOST_LOCKED
+                ? _1.DeviceStatus.locked
                 : rentModeStatus === "1"
-                    ? _1.DeviceStatus.RENT_LOCKED
-                    : _1.DeviceStatus.SUPERVISED;
+                    ? _1.DeviceStatus.rent
+                    : _1.DeviceStatus.active;
         }
         catch (error) {
-            return _1.DeviceStatus.UNREGULATED;
+            return _1.DeviceStatus.unknown;
         }
     }
     async getUSBItunesStatus() {

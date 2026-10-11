@@ -1,6 +1,5 @@
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
 import * as OEM from "./lib/android";
-import { MDMAndroidOEMDevice } from "./types";
 
 export class AndroidOEMMDM implements IMDM {
   tokenKey: string;
@@ -9,7 +8,7 @@ export class AndroidOEMMDM implements IMDM {
   oem:
     | {
         uploadDevice: (imei: string, productCode?: string) => Promise<number>;
-        getDevice: (imei: string) => Promise<MDMAndroidOEMDevice | undefined>;
+        getDevice: (imei: string) => Promise<MDMDevice | undefined>;
         lockDevice: (
           imei: string,
           phone: string,
@@ -55,10 +54,6 @@ export class AndroidOEMMDM implements IMDM {
   }
 
   async getDevice(): Promise<MDMDevice | undefined> {
-    throw new Error("not_implemented");
-  }
-
-  async getAndroidOEMDevice(): Promise<MDMAndroidOEMDevice | undefined> {
     if (!this.query.imei) throw new Error("imei_required");
     if (!this.oem) throw new Error("oem_not_found");
 

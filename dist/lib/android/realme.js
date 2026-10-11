@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const apple_1 = require("../../apple");
+const types_1 = require("../../types");
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
 const TOKEN = process.env.REALME_TOKEN;
@@ -91,9 +92,21 @@ async function getDevice(imei) {
         return;
     const device = data.data.list[0];
     return {
-        id: imei,
-        status: getDeviceStatus(device.status.toLowerCase()),
-        modelName: device.marketingName || device.model,
+        id: 0,
+        deviceStatus: getDeviceStatus(device.status.toLowerCase()),
+        phoneModel: device.marketingName || device.model,
+        description: "",
+        serialNumber: imei,
+        imei,
+        activationLockStatus: 0,
+        functionRestrictData: "",
+        httpProxyStatus: 0,
+        commandContentList: [],
+        deviceAssignedBy: "",
+        color: "",
+        usbItunesStatus: 0,
+        deviceCapacity: "",
+        osVersion: "",
         createTime: (0, dayjs_1.default)(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
         lastOnlineTime: (0, dayjs_1.default)(device.lastSyncTime).format("YYYYMMDDHHmmss"),
     };
@@ -101,7 +114,7 @@ async function getDevice(imei) {
 function getDeviceStatus(status) {
     switch (status) {
         case "normal":
-            return "active";
+            return types_1.DeviceStatus.active;
         default:
             return status;
     }

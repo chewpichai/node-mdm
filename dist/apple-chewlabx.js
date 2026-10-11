@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppleChewLabxMDM = void 0;
 const dayjs_1 = __importDefault(require("dayjs"));
+const _1 = require(".");
 const cache_1 = require("./lib/cache");
 const MDM_URL = process.env.MDM_CHEWLABX_URL;
 const MDM_USERNAME = process.env.MDM_CHEWLABX_USERNAME;
@@ -78,13 +79,7 @@ class AppleChewLabxMDM {
                 key,
                 value ? "true" : "false",
             ])));
-            const statusMap = {
-                normal: 0,
-                deleted: 2,
-                lost_mode: 3,
-                hide_apps: 4,
-            };
-            const deviceStatus = statusMap[device.status] ?? 1;
+            const deviceStatus = this.getDeviceStatus(device.status);
             return {
                 id: device.id,
                 deviceStatus,
@@ -106,6 +101,20 @@ class AppleChewLabxMDM {
         }
         catch (error) {
             console.warn(error);
+        }
+    }
+    getDeviceStatus(status) {
+        switch (status) {
+            case "normal":
+                return _1.DeviceStatus.active;
+            case "deleted":
+                return _1.DeviceStatus.completed;
+            case "lost_mode":
+                return _1.DeviceStatus.locked;
+            case "hide_apps":
+                return _1.DeviceStatus.rent;
+            default:
+                return _1.DeviceStatus.unknown;
         }
     }
     async getEscrowKey() {

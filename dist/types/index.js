@@ -3,11 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DoIt = exports.OEM_BRANDS = exports.DeviceStatus = void 0;
 var DeviceStatus;
 (function (DeviceStatus) {
-    DeviceStatus[DeviceStatus["UNREGULATED"] = 0] = "UNREGULATED";
-    DeviceStatus[DeviceStatus["SUPERVISED"] = 1] = "SUPERVISED";
-    DeviceStatus[DeviceStatus["DEREGULATED"] = 2] = "DEREGULATED";
-    DeviceStatus[DeviceStatus["LOST_LOCKED"] = 3] = "LOST_LOCKED";
-    DeviceStatus[DeviceStatus["RENT_LOCKED"] = 4] = "RENT_LOCKED";
+    DeviceStatus["unknown"] = "unknown";
+    DeviceStatus["activating"] = "activating";
+    DeviceStatus["active"] = "active";
+    DeviceStatus["completing"] = "completing";
+    DeviceStatus["completed"] = "completed";
+    DeviceStatus["lock"] = "lock";
+    DeviceStatus["locked"] = "locked";
+    DeviceStatus["unlocking"] = "unlocking";
+    DeviceStatus["unauthorized"] = "unauthorized";
+    DeviceStatus["rent"] = "rent";
 })(DeviceStatus || (exports.DeviceStatus = DeviceStatus = {}));
 exports.OEM_BRANDS = [
     "infinix",

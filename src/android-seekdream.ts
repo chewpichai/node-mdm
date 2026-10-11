@@ -133,9 +133,9 @@ export class AndroidSeekDreamMDM implements IMDM {
     const LOST_MODE = 8;
     const RENT_MODE = 1024;
 
-    if (flag & LOST_MODE) return DeviceStatus.LOST_LOCKED;
-    if (flag & RENT_MODE) return DeviceStatus.RENT_LOCKED;
-    return DeviceStatus.SUPERVISED;
+    if (flag & LOST_MODE) return DeviceStatus.locked;
+    if (flag & RENT_MODE) return DeviceStatus.rent;
+    return DeviceStatus.active;
   }
 
   async enableLostMode(

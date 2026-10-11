@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 import { sleep } from "../../apple";
-import { MDMAndroidOEMDevice } from "../../types";
+import { DeviceStatus, MDMDevice } from "../../types";
 
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
@@ -55,28 +55,40 @@ async function uploadDevice(
   return data.error.code;
 }
 
-async function getDevice(
-  imei: string
-): Promise<MDMAndroidOEMDevice | undefined> {
+async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
   console.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || data.data.list.length === 0) return;
+
   const device = data.data.list[0];
+
   return {
-    id: imei,
-    status: getDeviceStatus(device.status.toLowerCase()),
-    modelName: device.marketingName || device.model,
+    id: 0,
+    deviceStatus: getDeviceStatus(device.status.toLowerCase()),
+    phoneModel: device.marketingName || device.model,
+    description: "",
+    serialNumber: imei,
+    imei,
+    activationLockStatus: 0,
+    functionRestrictData: "",
+    httpProxyStatus: 0,
+    commandContentList: [],
+    deviceAssignedBy: "",
+    color: "",
+    usbItunesStatus: 0,
+    deviceCapacity: "",
+    osVersion: "",
     createTime: dayjs(device.statusActivatedDate).format("YYYYMMDDHHmmss"),
     lastOnlineTime: dayjs(device.lastSyncTime).format("YYYYMMDDHHmmss"),
   };
 }
 
-function getDeviceStatus(status: string) {
+function getDeviceStatus(status: string): DeviceStatus {
   switch (status) {
     case "normal":
-      return "active";
+      return DeviceStatus.active;
     default:
-      return status;
+      return status as DeviceStatus;
   }
 }
 
