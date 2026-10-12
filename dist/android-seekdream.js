@@ -94,7 +94,7 @@ class AndroidSeekDreamMDM {
                 description: "",
                 serialNumber: device.dc_info.hardwareInfo.serialNumber,
                 activationLockStatus: 1,
-                functionRestrictData: "",
+                functionRestrictData: null,
                 httpProxyStatus: 0,
                 phoneModel: device.dc_info.hardwareInfo.model,
                 commandContentList: null,

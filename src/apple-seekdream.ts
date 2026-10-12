@@ -112,7 +112,7 @@ export class AppleSeekDreamMDM implements IMDM {
         description: device.device_description,
         serialNumber: device.serial,
         activationLockStatus: 0,
-        functionRestrictData: "",
+        functionRestrictData: null,
         httpProxyStatus: 0,
         phoneModel: "",
         commandContentList: [],

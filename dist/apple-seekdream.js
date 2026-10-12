@@ -90,7 +90,7 @@ class AppleSeekDreamMDM {
                 description: device.device_description,
                 serialNumber: device.serial,
                 activationLockStatus: 0,
-                functionRestrictData: "",
+                functionRestrictData: null,
                 httpProxyStatus: 0,
                 phoneModel: "",
                 commandContentList: [],

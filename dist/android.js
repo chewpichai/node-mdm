@@ -81,7 +81,7 @@ class AndroidMDM {
                 description: "",
                 serialNumber: device.serial,
                 activationLockStatus: 1,
-                functionRestrictData: "",
+                functionRestrictData: null,
                 httpProxyStatus: 0,
                 phoneModel: "",
                 commandContentList: null,

@@ -85,7 +85,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     serialNumber: imei,
     imei,
     activationLockStatus: 0,
-    functionRestrictData: "",
+    functionRestrictData: null,
     httpProxyStatus: 0,
     commandContentList: [],
     deviceAssignedBy: "",
