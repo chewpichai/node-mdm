@@ -108,6 +108,8 @@ class AppleMDM {
     }
     getDeviceStatus(status) {
         switch (status) {
+            case 0:
+                return _1.DeviceStatus.activating;
             case 1:
                 return _1.DeviceStatus.active;
             case 2:
@@ -126,7 +128,7 @@ class AppleMDM {
         try {
             const device = await this._getDevice();
             this.query.mdmId = device?.id;
-            if (device?.deviceStatus === _1.DeviceStatus.unknown) {
+            if (device?.deviceStatus === _1.DeviceStatus.activating) {
                 await this.enableSupervision();
                 const _device = await this._getDevice();
                 if (!_device)
@@ -139,7 +141,8 @@ class AppleMDM {
                 await this.disableProxy();
                 device.httpProxyStatus = 0;
             }
-            device.functionRestrictData = JSON.stringify(Object.fromEntries(Object.entries(JSON.parse(device.functionRestrictData)).map(([key, value]) => [key, value === "true"])));
+            if (device.functionRestrictData)
+                device.functionRestrictData = JSON.stringify(Object.fromEntries(Object.entries(JSON.parse(device.functionRestrictData)).map(([key, value]) => [key, value === "true"])));
             return device;
         }
         catch (error) {

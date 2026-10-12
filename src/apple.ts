@@ -140,6 +140,8 @@ export class AppleMDM implements IMDM {
 
   getDeviceStatus(status: Number): DeviceStatus {
     switch (status) {
+      case 0:
+        return DeviceStatus.activating;
       case 1:
         return DeviceStatus.active;
       case 2:
@@ -159,7 +161,7 @@ export class AppleMDM implements IMDM {
       const device = await this._getDevice();
       this.query.mdmId = device?.id;
 
-      if (device?.deviceStatus === DeviceStatus.unknown) {
+      if (device?.deviceStatus === DeviceStatus.activating) {
         await this.enableSupervision();
         const _device = await this._getDevice();
         if (!_device) throw new Error("device_not_found");
@@ -173,13 +175,15 @@ export class AppleMDM implements IMDM {
         device.httpProxyStatus = 0;
       }
 
-      device.functionRestrictData = JSON.stringify(
-        Object.fromEntries(
-          Object.entries(JSON.parse(device.functionRestrictData)).map(
-            ([key, value]) => [key, value === "true"]
+      if (device.functionRestrictData)
+        device.functionRestrictData = JSON.stringify(
+          Object.fromEntries(
+            Object.entries(JSON.parse(device.functionRestrictData)).map(
+              ([key, value]) => [key, value === "true"]
+            )
           )
-        )
-      );
+        );
+
       return device;
     } catch (error) {
       logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);

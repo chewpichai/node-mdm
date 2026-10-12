@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import zlib from "zlib";
-import { MDMAndroidOEMDevice } from "../../../../types";
+import { DeviceStatus, MDMDevice } from "../../../../types";
 import { AESUtils } from "./aesUtils";
 import { ErrorCode } from "./errorCode";
 import { PartnerResponse } from "./partnerResponse";
@@ -293,9 +293,7 @@ async function uploadDevice(imei: string): Promise<void> {
   console.log("🚀 ~ uploadDevice ~ data:", data);
 }
 
-async function getDevice(
-  imei: string
-): Promise<MDMAndroidOEMDevice | undefined> {
+async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand<{
     code: number;
     msg: string;
@@ -305,10 +303,23 @@ async function getDevice(
     deviceRegisterNo: imei,
   });
   console.log("🚀 ~ getDevice ~ data:", data);
+
   return {
-    id: imei,
-    status: getDeviceStatus(data.content.financialStatus),
-    modelName: "",
+    id: 0,
+    deviceStatus: getDeviceStatus(data.content.financialStatus),
+    phoneModel: "",
+    description: "",
+    serialNumber: imei,
+    imei,
+    activationLockStatus: 0,
+    functionRestrictData: "",
+    httpProxyStatus: 0,
+    commandContentList: [],
+    deviceAssignedBy: "",
+    color: "",
+    usbItunesStatus: 0,
+    deviceCapacity: "",
+    osVersion: "",
     createTime: "",
     lastOnlineTime: dayjs(data.content.lastContractTime).format(
       "YYYYMMDDHHmmss"
@@ -316,14 +327,14 @@ async function getDevice(
   };
 }
 
-function getDeviceStatus(status: FinancialStatus) {
+function getDeviceStatus(status: FinancialStatus): DeviceStatus {
   switch (status) {
     case "register":
-      return "activating";
+      return DeviceStatus.activating;
     case "released":
-      return "completed";
+      return DeviceStatus.completed;
     default:
-      return status;
+      return status as DeviceStatus;
   }
 }
 

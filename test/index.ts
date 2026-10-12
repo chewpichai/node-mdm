@@ -7,12 +7,11 @@ import {
   AppleSeekDreamMDM,
   getMDM,
 } from "../dist";
-import miguard from "../dist/lib/android/xiaomi/miguard";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "NPY2CKKVYD",
+    serialNumber: "KVK2Q2C7RV",
     brand: "apple",
   })) as AppleMDM;
   console.log(mdm);
@@ -24,8 +23,8 @@ const testAppleMDM = async () => {
   // const detail = await mdm.getDeviceDetail();
   // console.log("Detail", detail);
 
-  const commands = await mdm.getOperationHistory();
-  console.log("Commands", commands);
+  // const commands = await mdm.getOperationHistory();
+  // console.log("Commands", commands);
 
   // const escrowKey = await mdm.getEscrowKey();
   // console.log("Escrow Key", escrowKey);
@@ -186,12 +185,12 @@ const testAndroidOEMMDM = async () => {
   })) as AndroidOEMMDM;
 
   // Get mdmId from device.
-  const status = await mdm.getAndroidOEMDevice();
+  const status = await mdm.getDevice();
   console.log("status", status);
 };
 
 (async () => {
-  // await testAppleMDM();
+  await testAppleMDM();
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
@@ -199,5 +198,5 @@ const testAndroidOEMMDM = async () => {
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
   // await testAndroidOEMMDM();
-  await miguard.sendMessage("868506080036129", "", "");
+  // await miguard.sendMessage("868506080036129", "", "");
 })();

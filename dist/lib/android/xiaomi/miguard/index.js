@@ -7,6 +7,7 @@ exports.decompressGzip = decompressGzip;
 exports.getSignContent = getSignContent;
 const dayjs_1 = __importDefault(require("dayjs"));
 const zlib_1 = __importDefault(require("zlib"));
+const types_1 = require("../../../../types");
 const aesUtils_1 = require("./aesUtils");
 const errorCode_1 = require("./errorCode");
 const partnerResponse_1 = require("./partnerResponse");
@@ -236,9 +237,21 @@ async function getDevice(imei) {
     });
     console.log("🚀 ~ getDevice ~ data:", data);
     return {
-        id: imei,
-        status: getDeviceStatus(data.content.financialStatus),
-        modelName: "",
+        id: 0,
+        deviceStatus: getDeviceStatus(data.content.financialStatus),
+        phoneModel: "",
+        description: "",
+        serialNumber: imei,
+        imei,
+        activationLockStatus: 0,
+        functionRestrictData: "",
+        httpProxyStatus: 0,
+        commandContentList: [],
+        deviceAssignedBy: "",
+        color: "",
+        usbItunesStatus: 0,
+        deviceCapacity: "",
+        osVersion: "",
         createTime: "",
         lastOnlineTime: (0, dayjs_1.default)(data.content.lastContractTime).format("YYYYMMDDHHmmss"),
     };
@@ -246,9 +259,9 @@ async function getDevice(imei) {
 function getDeviceStatus(status) {
     switch (status) {
         case "register":
-            return "activating";
+            return types_1.DeviceStatus.activating;
         case "released":
-            return "completed";
+            return types_1.DeviceStatus.completed;
         default:
             return status;
     }

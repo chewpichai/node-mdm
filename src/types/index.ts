@@ -17,7 +17,7 @@ export type MDMDevice = {
   description: string;
   serialNumber: string;
   activationLockStatus: 0 | 1;
-  functionRestrictData: string;
+  functionRestrictData: string | null;
   httpProxyStatus: 0 | 1;
   phoneModel: string;
   commandContentList: string[] | null;
@@ -143,12 +143,4 @@ export type Command = {
   modifyTime: string;
   commandItem: number;
   commandName: string;
-};
-
-export type MDMAndroidOEMDevice = {
-  id: string;
-  status: string;
-  modelName: string;
-  createTime: string;
-  lastOnlineTime?: string;
 };
