@@ -160,9 +160,9 @@ class AppleMDMLockPhoneMDM {
             const body = await this.sendCommand("/devicePage", {
                 current: 1,
                 serialNumber: this.query.serialNumber,
-                contractCode: this.query.serialNumber
-                    ? undefined
-                    : this.query.applicationId,
+                contractCode: this.query.applicationId
+                    ? this.query.applicationId
+                    : undefined,
                 size: 10,
             });
             if (body.code !== 200) {

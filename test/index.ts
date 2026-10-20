@@ -7,12 +7,11 @@ import {
   AppleSeekDreamMDM,
   getMDM,
 } from "../dist";
-import miguard from "../dist/lib/android/xiaomi/miguard";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
     applicationId: "",
-    serialNumber: "KVK2Q2C7RV",
+    serialNumber: "MQP42RXXKQ",
     brand: "apple",
   })) as AppleMDM;
   console.log(mdm);
@@ -191,7 +190,7 @@ const testAndroidOEMMDM = async () => {
 };
 
 (async () => {
-  // await testAppleMDM();
+  await testAppleMDM();
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
@@ -200,5 +199,5 @@ const testAndroidOEMMDM = async () => {
   // await testAppleMDMLockPhoneMDMDevices();
   // await testAndroidOEMMDM();
   // await miguard.uploadDevice("869950080069228");
-  await miguard.lockDevice("868952080078101", "", "");
+  // await miguard.lockDevice("868952080078101", "", "");
 })();

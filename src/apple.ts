@@ -108,7 +108,7 @@ export class AppleMDM implements IMDM {
           rows: [device],
         },
       } = await this.sendCommand("/mdm/saas/device/queryPage", {
-        possessor: this.query.serialNumber ? "" : this.query.applicationId,
+        possessor: this.query.applicationId ?? "",
         useStatusList: [],
         assignStatusList: [],
         deviceStatusList: [0, 1, 3, 4],
