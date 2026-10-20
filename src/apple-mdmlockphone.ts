@@ -186,10 +186,10 @@ export class AppleMDMLockPhoneMDM implements IMDM {
     try {
       const body = await this.sendCommand("/devicePage", {
         current: 1,
-        serialNumber: this.query.serialNumber,
-        contractCode: this.query.applicationId
-          ? this.query.applicationId
-          : undefined,
+        serialNumber: this.query.applicationId
+          ? undefined
+          : this.query.serialNumber,
+        contractCode: this.query.applicationId,
         size: 10,
       });
 
