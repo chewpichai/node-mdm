@@ -7,6 +7,7 @@ import {
   AppleSeekDreamMDM,
   getMDM,
 } from "../dist";
+import miguard from "../dist/lib/android/xiaomi/miguard";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
@@ -190,7 +191,7 @@ const testAndroidOEMMDM = async () => {
 };
 
 (async () => {
-  await testAppleMDM();
+  // await testAppleMDM();
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
@@ -198,5 +199,6 @@ const testAndroidOEMMDM = async () => {
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
   // await testAndroidOEMMDM();
-  // await miguard.sendMessage("868506080036129", "", "");
+  // await miguard.uploadDevice("869950080069228");
+  await miguard.lockDevice("868952080078101", "", "");
 })();

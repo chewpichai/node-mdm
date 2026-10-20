@@ -208,7 +208,7 @@ function parseResponse(content) {
 }
 async function sendCommand(method, params) {
     const postParams = getPostParams(APP_ID, "123", method, params, false);
-    const url = "https://staging-merchant-api.ginstal.xiaomi.com/v1/partner";
+    const url = "https://prd-sgp-merchant-api.ginstal.xiaomi.com/v1/partner";
     const formBody = new URLSearchParams(postParams);
     const res = await fetch(url, {
         method: "POST",

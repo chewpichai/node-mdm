@@ -124,7 +124,8 @@ export class AppleMDM implements IMDM {
         !device ||
         (this.query.serialNumber &&
           this.query.serialNumber !== device?.serialNumber) ||
-        (device.possessor && device.possessor !== this.query.applicationId)
+        (this.query.applicationId &&
+          this.query.applicationId !== device.possessor)
       ) {
         logger.log(this.query.serialNumber, device?.serialNumber);
         throw new Error("device_not_found");

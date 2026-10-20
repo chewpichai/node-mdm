@@ -95,7 +95,8 @@ class AppleMDM {
             if (!device ||
                 (this.query.serialNumber &&
                     this.query.serialNumber !== device?.serialNumber) ||
-                (device.possessor && device.possessor !== this.query.applicationId)) {
+                (this.query.applicationId &&
+                    this.query.applicationId !== device.possessor)) {
                 logger_1.logger.log(this.query.serialNumber, device?.serialNumber);
                 throw new Error("device_not_found");
             }
