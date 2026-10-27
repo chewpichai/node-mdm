@@ -170,7 +170,9 @@ class AppleMDMLockPhoneMDM {
                 throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
             }
             const { data: { records }, } = body;
-            const device = records.filter((d) => d.isdelete === 0).at(0);
+            const device = records
+                .filter((d) => d.isdelete === 0 && d.status === 1)
+                .at(0);
             if (!device ||
                 (this.query.serialNumber &&
                     this.query.serialNumber !== device?.sserialno) ||

@@ -203,7 +203,9 @@ export class AppleMDMLockPhoneMDM implements IMDM {
       const {
         data: { records },
       } = body;
-      const device = records.filter((d: any) => d.isdelete === 0).at(0);
+      const device = records
+        .filter((d: any) => d.isdelete === 0 && d.status === 1)
+        .at(0);
 
       if (
         !device ||
