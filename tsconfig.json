@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020", // Output JS version
+    "target": "ES2021", // Output JS version
     "module": "node16", // Module system (or "ESNext" for ESM)
     "outDir": "./dist", // Output directory
     "rootDir": "./src", // Source directory

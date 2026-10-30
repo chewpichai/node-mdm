@@ -3,7 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xiaomi = exports.vivo = exports.tecno = exports.realme = exports.oppo = exports.iqoo = exports.infinix = void 0;
+exports.xiaomi = exports.vivo = exports.tecno = exports.realme = exports.oppo = exports.iqoo = exports.infinix = exports.honor = void 0;
+const honor_1 = __importDefault(require("./honor"));
+exports.honor = honor_1.default;
 const infinix_1 = __importDefault(require("./infinix"));
 Object.defineProperty(exports, "infinix", { enumerable: true, get: function () { return infinix_1.default; } });
 Object.defineProperty(exports, "tecno", { enumerable: true, get: function () { return infinix_1.default; } });
