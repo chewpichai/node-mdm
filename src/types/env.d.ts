@@ -38,6 +38,8 @@ declare global {
       MI_GUARD_MI_PUBLIC_KEY: string;
       HONOR_APP_ID: string;
       HONOR_APP_KEY: string;
+      NUBIA_KEY_ID: string;
+      NUBIA_KEY_SECRET: string;
     }
   }
 }

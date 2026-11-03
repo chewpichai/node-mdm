@@ -62,8 +62,10 @@ export type DevicePermissions = {
 };
 
 export const OEM_BRANDS = [
+  "honor",
   "infinix",
   "iqoo",
+  "nubia",
   "oppo",
   "realme",
   "tecno",

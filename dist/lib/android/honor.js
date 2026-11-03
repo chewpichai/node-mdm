@@ -44,7 +44,7 @@ dayjs_1.default.extend(utc_1.default);
 const BASE_URL = "https://apigw.yun.hihonor.com/api/devicelock/v1";
 const APP_ID = process.env.HONOR_APP_ID;
 const APP_KEY = process.env.HONOR_APP_KEY;
-function getSign(body, date, urlStr, method) {
+function getSign(date, urlStr, method) {
     const url = new URL(urlStr);
     const pathname = url.pathname.slice(4);
     const params = url.searchParams.toString().replaceAll("&", "|");
@@ -64,13 +64,13 @@ async function sendCommand(path, body, method = "POST") {
             "Content-Type": "application/json",
             "X-RY-ID": APP_ID,
             "X-RY-DATE": date,
-            "X-RY-SIGN": getSign(JSON.stringify(body), date, url, method),
+            "X-RY-SIGN": getSign(date, url, method),
         },
     });
     const data = await response.json();
     return data;
 }
-async function uploadDevice(imei, productCode) {
+async function uploadDevice(imei) {
     let data = await sendCommand("/devices/import", { deviceInfos: [imei] });
     console.log("🚀 ~ uploadDevice ~ data:", data);
     return data.message === "success" ? 200 : data.code;

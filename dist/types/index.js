@@ -15,8 +15,10 @@ var DeviceStatus;
     DeviceStatus["rent"] = "rent";
 })(DeviceStatus || (exports.DeviceStatus = DeviceStatus = {}));
 exports.OEM_BRANDS = [
+    "honor",
     "infinix",
     "iqoo",
+    "nubia",
     "oppo",
     "realme",
     "tecno",
