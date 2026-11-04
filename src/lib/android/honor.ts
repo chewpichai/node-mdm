@@ -14,10 +14,7 @@ function getSign(date: string, urlStr: string, method: string): string {
   const pathname = url.pathname.slice(4);
   const params = url.searchParams.toString().replaceAll("&", "|");
   const dataToSign = `${pathname}|${method}|${params ? params + "|" : ""}${date}|${APP_ID}|${APP_KEY}`;
-  return crypto
-    .createHash("sha256")
-    .update(dataToSign, "utf8")
-    .digest("base64");
+  return crypto.createHash("sha256").update(dataToSign).digest("hex");
 }
 
 async function sendCommand(
