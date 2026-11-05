@@ -56,7 +56,7 @@ async function sendCommand(path, body, method = "POST") {
     const date = dayjs_1.default.utc().format("YYYYMMDD[T]HHmmss[Z]");
     const response = await fetch(url, {
         method,
-        body: JSON.stringify(body),
+        body: body ? JSON.stringify(body) : undefined,
         headers: {
             "Content-Type": "application/json",
             "X-RY-ID": APP_ID,
@@ -78,7 +78,7 @@ async function getDevice(imei) {
         pageSize: "10",
         registeredId: imei,
     });
-    const data = await sendCommand(`/devices?${params.toString()}`, {}, "GET");
+    const data = await sendCommand(`/devices?${params.toString()}`, null, "GET");
     console.log("🚀 ~ getDevice ~ data:", data);
     if (data.message !== "success" || data.data.length === 0)
         return;
