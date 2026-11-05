@@ -40,7 +40,7 @@ async function uploadDevice(imei: string): Promise<number> {
   const isSuccess = data.code === 200;
   if (isSuccess) return 200;
 
-  if (data.code === 50021) return 461;
+  if ([50021, 50052, 50053].includes(data.code)) return 461;
 
   return data.code;
 }

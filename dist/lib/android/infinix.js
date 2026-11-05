@@ -74,7 +74,7 @@ async function uploadDevice(imei) {
     const isSuccess = data.code === 200;
     if (isSuccess)
         return 200;
-    if (data.code === 50021)
+    if ([50021, 50052, 50053].includes(data.code))
         return 461;
     return data.code;
 }
