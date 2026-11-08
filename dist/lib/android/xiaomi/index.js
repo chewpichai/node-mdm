@@ -102,14 +102,14 @@ async function lockDevice(imei, phone, message) {
         ],
     });
     console.log("🚀 ~ lockDevice ~ data:", data);
-    return data.lockResponseList[0].resultCode === "SUCCESS";
+    return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/device/unlock/", {
         unLockList: [{ deviceUid: imei }],
     });
     console.log("🚀 ~ unlockDevice ~ data:", data);
-    return data.unlockResponseList[0].resultCode === "SUCCESS";
+    return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
     const data = await sendCommand("/device/notify/", {
@@ -123,12 +123,12 @@ async function sendMessage(imei, phone, message) {
         ],
     });
     console.log("🚀 ~ sendMessage ~ data:", data);
-    return data.messageResponseList[0].resultCode === "SUCCESS";
+    return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/device/release/", { deviceReleaseList: [{ deviceUid: imei }] }, "PUT");
     console.log("🚀 ~ completeDevice ~ data:", data);
-    return data.releaseResponseList[0].resultCode === "SUCCESS";
+    return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 exports.default = {
     uploadDevice,

@@ -110,7 +110,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     ],
   });
   console.log("🚀 ~ lockDevice ~ data:", data);
-  return data.lockResponseList[0].resultCode === "SUCCESS";
+  return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
 async function unlockDevice(imei: string) {
@@ -118,7 +118,7 @@ async function unlockDevice(imei: string) {
     unLockList: [{ deviceUid: imei }],
   });
   console.log("🚀 ~ unlockDevice ~ data:", data);
-  return data.unlockResponseList[0].resultCode === "SUCCESS";
+  return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -133,7 +133,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     ],
   });
   console.log("🚀 ~ sendMessage ~ data:", data);
-  return data.messageResponseList[0].resultCode === "SUCCESS";
+  return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
 async function completeDevice(imei: string) {
@@ -143,7 +143,7 @@ async function completeDevice(imei: string) {
     "PUT"
   );
   console.log("🚀 ~ completeDevice ~ data:", data);
-  return data.releaseResponseList[0].resultCode === "SUCCESS";
+  return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
 export default {
