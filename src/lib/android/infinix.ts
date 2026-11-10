@@ -1,5 +1,6 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
+import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
 
 const BASE_URL = "https://paytrigger.transsion-os.com/PayTrigger";
@@ -36,7 +37,7 @@ async function uploadDevice(imei: string): Promise<number> {
     apiKey: API_KEY,
     preLockFlag: false,
   });
-  console.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log("🚀 ~ uploadDevice ~ data:", data);
   const isSuccess = data.code === 200;
   if (isSuccess) return 200;
 
@@ -50,7 +51,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     imei,
     apiKey: API_KEY,
   });
-  console.log("🚀 ~ getDevice ~ data:", data);
+  logger.log("🚀 ~ getDevice ~ data:", data);
   if (data.message.toLowerCase() !== "success") return;
   const device = data.data;
   const [status, lockStatus] = await Promise.all([
@@ -84,7 +85,7 @@ async function getDeviceStatus(imei: string): Promise<DeviceStatus> {
     imei,
     apiKey: API_KEY,
   });
-  console.log("🚀 ~ getDeviceStatus ~ data:", data);
+  logger.log("🚀 ~ getDeviceStatus ~ data:", data);
   switch (data.data?.serverState) {
     case 500:
       return DeviceStatus.activating;
@@ -104,7 +105,7 @@ async function getDeviceLockStatus(imei: string): Promise<DeviceStatus> {
     imei,
     apiKey: API_KEY,
   });
-  console.log("🚀 ~ getDeviceLockStatus ~ data:", data);
+  logger.log("🚀 ~ getDeviceLockStatus ~ data:", data);
   if (data.code === 200 && data.data.operationStatus === "ON")
     return DeviceStatus.locked;
   return DeviceStatus.active;
@@ -116,7 +117,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     contactInformation: `tel: ${phone} ${message}`,
     apiKey: API_KEY,
   });
-  console.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log("🚀 ~ lockDevice ~ data:", data);
   return data.code === 200;
 }
 
@@ -125,7 +126,7 @@ async function unlockDevice(imei: string) {
     deviceUid: imei,
     apiKey: API_KEY,
   });
-  console.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log("🚀 ~ unlockDevice ~ data:", data);
   return data.code === 200;
 }
 
@@ -137,7 +138,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     title: phone,
     pushType: 1,
   });
-  console.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log("🚀 ~ sendMessage ~ data:", data);
   return data.code === 200;
 }
 
@@ -146,7 +147,7 @@ async function completeDevice(imei: string) {
     imeiInfo: imei,
     apiKey: API_KEY,
   });
-  console.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log("🚀 ~ completeDevice ~ data:", data);
   return data.code === 200;
 }
 

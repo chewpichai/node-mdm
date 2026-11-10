@@ -2,6 +2,7 @@ import crypto from "crypto";
 import dayjs from "dayjs";
 import { DeviceLocation, IMDM, MDMDevice, MDMQuery } from ".";
 import { getCache } from "./lib/cache";
+import { logger } from "./lib/logger";
 import { DeviceStatus, Wallpaper } from "./types";
 
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
@@ -155,10 +156,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         content,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [false, undefined];
     }
   }
@@ -177,10 +178,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchant_id: this.query.merchantId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [false, undefined];
     }
   }
@@ -218,10 +219,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchant_id: this.query.merchantId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -238,10 +239,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchant_id: this.query.merchantId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -279,7 +280,7 @@ export class AndroidSeekDreamMDM implements IMDM {
         })
       ) as Wallpaper[];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [];
     }
   }
@@ -299,10 +300,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchant_id: this.query.merchantId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -323,10 +324,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchant_id: this.query.merchantId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -343,10 +344,10 @@ export class AndroidSeekDreamMDM implements IMDM {
         merchant_id: this.query.merchantId,
       });
       const data = await response.json();
-      console.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
+      logger.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }

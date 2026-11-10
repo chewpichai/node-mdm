@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { DeviceLocation, DeviceStatus, IMDM, MDMDevice, MDMQuery } from ".";
 import { getCache } from "./lib/cache";
+import { logger } from "./lib/logger";
 
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
@@ -129,7 +130,7 @@ export class AndroidMDM implements IMDM {
       const { status } = await response.json();
       return [status === "OK", undefined];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [false, undefined];
     }
   }
@@ -158,7 +159,7 @@ export class AndroidMDM implements IMDM {
       const { status } = await response.json();
       return [status === "OK", undefined];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [false, undefined];
     }
   }
@@ -210,13 +211,13 @@ export class AndroidMDM implements IMDM {
           messageType: "1",
         }
       );
-      console.log(
+      logger.log(
         "🚀 ~ AndroidMDM ~ setWallpaper ~ response:",
         await response.json()
       );
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -242,7 +243,7 @@ export class AndroidMDM implements IMDM {
       );
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -268,7 +269,7 @@ export class AndroidMDM implements IMDM {
       );
       return response.ok;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }

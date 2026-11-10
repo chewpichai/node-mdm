@@ -9,6 +9,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const _1 = require(".");
 const cache_1 = require("./lib/cache");
+const logger_1 = require("./lib/logger");
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
@@ -106,7 +107,7 @@ class AppleSeekDreamMDM {
             };
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
         }
     }
     async getEscrowKey() {
@@ -119,11 +120,11 @@ class AppleSeekDreamMDM {
             });
             const response = await this.sendCommand(`/device/activateLock?${params.toString()}`);
             const data = await response.json();
-            console.log("getEscrowKey:", data);
+            logger_1.logger.log("getEscrowKey:", data);
             return "";
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -135,11 +136,11 @@ class AppleSeekDreamMDM {
                 location: true,
             });
             const data = await response.json();
-            console.log("enableLostMode:", data);
+            logger_1.logger.log("enableLostMode:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -147,18 +148,18 @@ class AppleSeekDreamMDM {
         try {
             const response = await this.sendCommand(`/device/unlock?serial=${this.query.serialNumber}`, {});
             const data = await response.json();
-            console.log("disableLostMode:", data);
+            logger_1.logger.log("disableLostMode:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
     async refreshLocation() {
         const response = await this.sendCommand(`/device/location?serial=${this.query.serialNumber}`, {});
         const data = await response.json();
-        console.log("refreshLocations:", data);
+        logger_1.logger.log("refreshLocations:", data);
         return data.code === 200;
     }
     async getLocations() {
@@ -177,11 +178,11 @@ class AppleSeekDreamMDM {
         try {
             const response = await this.sendCommand(`/device/clearPasscode?serial=${this.query.serialNumber}`, {});
             const data = await response.json();
-            console.log("removePassword:", data);
+            logger_1.logger.log("removePassword:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -211,11 +212,11 @@ class AppleSeekDreamMDM {
                 allowed: changeable ? 0 : 1,
             });
             const data = await response.json();
-            console.log("setWallpaper:", data);
+            logger_1.logger.log("setWallpaper:", data);
             return data.code === 200;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }

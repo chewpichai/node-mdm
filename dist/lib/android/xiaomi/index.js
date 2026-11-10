@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dayjs_1 = __importDefault(require("dayjs"));
+const logger_1 = require("../../logger");
 const types_1 = require("../../../types");
 const cache_1 = require("../../cache");
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
@@ -48,7 +49,7 @@ async function uploadDevice(imei) {
             },
         ],
     });
-    console.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
     const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
     return isSuccess ? 200 : 461;
 }
@@ -56,7 +57,7 @@ async function getDevice(imei) {
     const data = await sendCommand("/query/devices", {
         deviceList: [{ deviceUid: imei }],
     });
-    console.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
     const device = data.deviceResponseList[0];
     if (device.resultCode)
         return;
@@ -101,14 +102,14 @@ async function lockDevice(imei, phone, message) {
             },
         ],
     });
-    console.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
     return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/device/unlock/", {
         unLockList: [{ deviceUid: imei }],
     });
-    console.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
     return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
@@ -122,12 +123,12 @@ async function sendMessage(imei, phone, message) {
             },
         ],
     });
-    console.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
     return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/device/release/", { deviceReleaseList: [{ deviceUid: imei }] }, "PUT");
-    console.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
     return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 exports.default = {

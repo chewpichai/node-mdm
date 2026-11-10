@@ -7,6 +7,7 @@ exports.AndroidMDM = void 0;
 const dayjs_1 = __importDefault(require("dayjs"));
 const _1 = require(".");
 const cache_1 = require("./lib/cache");
+const logger_1 = require("./lib/logger");
 const MDM_URL = process.env.MDM_ANDROID_URL;
 const MDM_USERNAME = process.env.MDM_ANDROID_USERNAME;
 const MDM_PASSWORD = process.env.MDM_ANDROID_PASSWORD;
@@ -118,7 +119,7 @@ class AndroidMDM {
             return [status === "OK", undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -143,7 +144,7 @@ class AndroidMDM {
             return [status === "OK", undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -186,11 +187,11 @@ class AndroidMDM {
                 }),
                 messageType: "1",
             });
-            console.log("🚀 ~ AndroidMDM ~ setWallpaper ~ response:", await response.json());
+            logger_1.logger.log("🚀 ~ AndroidMDM ~ setWallpaper ~ response:", await response.json());
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -214,7 +215,7 @@ class AndroidMDM {
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -238,7 +239,7 @@ class AndroidMDM {
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }

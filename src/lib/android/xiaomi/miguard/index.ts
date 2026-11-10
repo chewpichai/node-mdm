@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import zlib from "zlib";
+import { logger } from "../../../logger";
 import { DeviceStatus, MDMDevice } from "../../../../types";
 import { AESUtils } from "./aesUtils";
 import { ErrorCode } from "./errorCode";
@@ -90,7 +91,7 @@ function partnerDecrypt(
     try {
       decrypted = decompressGzip(Buffer.from(decrypted, "base64"));
     } catch (e) {
-      console.error("gzip decompress error", e);
+      logger.error("gzip decompress error", e);
     }
   }
 
@@ -194,7 +195,7 @@ function parseRequest(content: string): string {
   if (verified) {
     partnerDecrypt(request, PRIVATE_KEY);
   } else {
-    console.warn("parseRequest signature verification failed!");
+    logger.warn("parseRequest signature verification failed!");
   }
 
   return JSON.stringify(request.toJSON());
@@ -246,7 +247,7 @@ function parseResponse(content: string) {
   if (verified) {
     decrypt(response, PRIVATE_KEY);
   } else {
-    console.warn("parseResponse signature verification failed!");
+    logger.warn("parseResponse signature verification failed!");
   }
 
   return response.toJSON() as {
@@ -276,9 +277,9 @@ async function sendCommand<T>(
     body: formBody.toString(),
   });
   const bodyText = await res.text();
-  console.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
+  logger.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
   const parsedResponse = parseResponse(bodyText);
-  console.log("parsedResponse : " + JSON.stringify(parsedResponse));
+  logger.log("parsedResponse : " + JSON.stringify(parsedResponse));
   return JSON.parse(parsedResponse.data);
 }
 
@@ -290,7 +291,7 @@ async function uploadDevice(imei: string): Promise<void> {
       deviceRegisterNo: imei,
     }
   );
-  console.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log("🚀 ~ uploadDevice ~ data:", data);
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
@@ -302,7 +303,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     financialOrgNo: ORG_NO,
     deviceRegisterNo: imei,
   });
-  console.log("🚀 ~ getDevice ~ data:", data);
+  logger.log("🚀 ~ getDevice ~ data:", data);
 
   return {
     id: 0,
@@ -349,7 +350,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
       content: message,
     }
   );
-  console.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log("🚀 ~ lockDevice ~ data:", data);
   return data.msg === "success";
 }
 
@@ -362,7 +363,7 @@ async function unlockDevice(imei: string) {
       policyNo: "unlock",
     }
   );
-  console.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log("🚀 ~ unlockDevice ~ data:", data);
   return data.msg === "success";
 }
 
@@ -377,7 +378,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
       content: message,
     }
   );
-  console.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log("🚀 ~ sendMessage ~ data:", data);
   return data.msg === "success";
 }
 
@@ -390,7 +391,7 @@ async function completeDevice(imei: string) {
       policyNo: "release",
     }
   );
-  console.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log("🚀 ~ completeDevice ~ data:", data);
   return data.msg === "success";
 }
 

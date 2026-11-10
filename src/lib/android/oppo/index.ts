@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { sleep } from "../../../apple";
+import { logger } from "../../logger";
 import { DeviceStatus, MDMDevice } from "../../../types";
 import { oGuardSign, possefySign } from "./sign";
 
@@ -42,7 +43,7 @@ async function uploadDevice(imei: string): Promise<number> {
   if (response.status !== 200) return response.status;
 
   let data = await response.json();
-  console.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log("🚀 ~ uploadDevice ~ data:", data);
   let isSuccess = data.success;
   if (!isSuccess)
     switch (data.code) {
@@ -59,7 +60,7 @@ async function uploadDevice(imei: string): Promise<number> {
     deviceUid: imei,
     type: 1,
   });
-  console.log("🚀 ~ bindPackage ~ data:", data);
+  logger.log("🚀 ~ bindPackage ~ data:", data);
   isSuccess = data.result === "SUCCESS";
   if (isSuccess) return 200;
 
@@ -73,7 +74,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     modelName = (await response.json()).data?.model_name;
 
   const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
-  console.log("🚀 ~ getDevice ~ data:", data);
+  logger.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || data.data.list.length === 0) return;
   const device = data.data.list[0];
 
@@ -113,13 +114,13 @@ async function lockDevice(imei: string, phone: string, message: string) {
     title: phone,
     message,
   });
-  console.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log("🚀 ~ lockDevice ~ data:", data);
   return data.result === "SUCCESS";
 }
 
 async function unlockDevice(imei: string) {
   const data = await sendCommand("/unlock", { deviceUid: imei });
-  console.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log("🚀 ~ unlockDevice ~ data:", data);
   return data.result === "SUCCESS";
 }
 
@@ -129,13 +130,13 @@ async function sendMessage(imei: string, phone: string, message: string) {
     title: phone,
     message,
   });
-  console.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log("🚀 ~ sendMessage ~ data:", data);
   return data.result === "SUCCESS";
 }
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/complete", { deviceUid: imei });
-  console.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log("🚀 ~ completeDevice ~ data:", data);
   return data.result === "SUCCESS";
 }
 

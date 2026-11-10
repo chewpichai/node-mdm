@@ -9,6 +9,7 @@ exports.compressGzip = compressGzip;
 exports.decompressGzip = decompressGzip;
 const node_crypto_1 = __importDefault(require("node:crypto"));
 const node_zlib_1 = __importDefault(require("node:zlib"));
+const logger_1 = require("../../../logger");
 function cleanBase64Key(rawKey) {
     const clean = rawKey.replace(/[\r\n\s]/g, '');
     return Buffer.from(clean, 'base64');
@@ -68,7 +69,7 @@ class RSAUtils {
             return signer.sign(priKey, 'base64url');
         }
         catch (e) {
-            console.error('sign error', e);
+            logger_1.logger.error('sign error', e);
             return null;
         }
     }
@@ -90,7 +91,7 @@ class RSAUtils {
             return verifier.verify(pubKey, signBuf);
         }
         catch (e) {
-            console.error('verify sign error', e);
+            logger_1.logger.error('verify sign error', e);
             return false;
         }
     }
@@ -111,7 +112,7 @@ class RSAUtils {
             return encrypted.toString('base64');
         }
         catch (e) {
-            console.error('encrypt error', e);
+            logger_1.logger.error('encrypt error', e);
             return null;
         }
     }
@@ -128,7 +129,7 @@ class RSAUtils {
             return encrypted.toString('base64url');
         }
         catch (e) {
-            console.error('encrypt URL safe error', e);
+            logger_1.logger.error('encrypt URL safe error', e);
             return null;
         }
     }
@@ -151,7 +152,7 @@ class RSAUtils {
             return unpadded.toString('utf8');
         }
         catch (e) {
-            console.error('decrypt error', e);
+            logger_1.logger.error('decrypt error', e);
             return null;
         }
     }
@@ -177,7 +178,7 @@ class RSAUtils {
             return Buffer.concat(chunks).toString('base64');
         }
         catch (e) {
-            console.error('encryptBySegment error', e);
+            logger_1.logger.error('encryptBySegment error', e);
             return null;
         }
     }
@@ -204,7 +205,7 @@ class RSAUtils {
             return Buffer.concat(chunks).toString('utf8');
         }
         catch (e) {
-            console.error('decryptBySegment error', e);
+            logger_1.logger.error('decryptBySegment error', e);
             return null;
         }
     }

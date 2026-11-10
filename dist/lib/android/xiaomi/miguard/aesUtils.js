@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AESUtils = void 0;
 const node_crypto_1 = __importDefault(require("node:crypto"));
+const logger_1 = require("../../../logger");
 class AESUtils {
     /**
      * Generates a random 128-bit AES key as a Base64-encoded string.
@@ -30,7 +31,7 @@ class AESUtils {
             return encrypted.toString('base64');
         }
         catch (e) {
-            console.error('encrypt error', e);
+            logger_1.logger.error('encrypt error', e);
             return null;
         }
     }
@@ -52,7 +53,7 @@ class AESUtils {
             return decrypted.toString('utf8');
         }
         catch (e) {
-            console.error('decrypt error', e);
+            logger_1.logger.error('decrypt error', e);
             return null;
         }
     }

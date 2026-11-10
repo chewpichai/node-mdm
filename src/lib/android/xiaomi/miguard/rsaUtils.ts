@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import { logger } from '../../../logger';
 
 function cleanBase64Key(rawKey: string): Buffer {
   const clean = rawKey.replace(/[\r\n\s]/g, '');
@@ -73,7 +74,7 @@ export class RSAUtils {
       signer.update(content, 'utf8');
       return signer.sign(priKey, 'base64url');
     } catch (e) {
-      console.error('sign error', e);
+      logger.error('sign error', e);
       return null;
     }
   }
@@ -95,7 +96,7 @@ export class RSAUtils {
       const signBuf = Buffer.from(sign, 'base64url');
       return verifier.verify(pubKey, signBuf);
     } catch (e) {
-      console.error('verify sign error', e);
+      logger.error('verify sign error', e);
       return false;
     }
   }
@@ -119,7 +120,7 @@ export class RSAUtils {
       );
       return encrypted.toString('base64');
     } catch (e) {
-      console.error('encrypt error', e);
+      logger.error('encrypt error', e);
       return null;
     }
   }
@@ -139,7 +140,7 @@ export class RSAUtils {
       );
       return encrypted.toString('base64url');
     } catch (e) {
-      console.error('encrypt URL safe error', e);
+      logger.error('encrypt URL safe error', e);
       return null;
     }
   }
@@ -165,7 +166,7 @@ export class RSAUtils {
       const unpadded = pkcs1Unpad(raw);
       return unpadded.toString('utf8');
     } catch (e) {
-      console.error('decrypt error', e);
+      logger.error('decrypt error', e);
       return null;
     }
   }
@@ -196,7 +197,7 @@ export class RSAUtils {
 
       return Buffer.concat(chunks).toString('base64');
     } catch (e) {
-      console.error('encryptBySegment error', e);
+      logger.error('encryptBySegment error', e);
       return null;
     }
   }
@@ -228,7 +229,7 @@ export class RSAUtils {
 
       return Buffer.concat(chunks).toString('utf8');
     } catch (e) {
-      console.error('decryptBySegment error', e);
+      logger.error('decryptBySegment error', e);
       return null;
     }
   }

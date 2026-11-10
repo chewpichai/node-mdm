@@ -6,6 +6,7 @@ import {
   AppleMDMLockPhoneMDM,
   AppleSeekDreamMDM,
   getMDM,
+  logger,
 } from "../dist";
 
 const testAppleMDM = async () => {
@@ -14,11 +15,11 @@ const testAppleMDM = async () => {
     serialNumber: "MQP42RXXKQ",
     brand: "apple",
   })) as AppleMDM;
-  console.log(mdm);
+  logger.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
-  console.log("Device", device);
+  logger.log("Device", device);
 
   // const detail = await mdm.getDeviceDetail();
   // console.log("Detail", detail);
@@ -36,11 +37,11 @@ const testAndroidMDM = async () => {
     serialNumber: "",
     brand: "android",
   });
-  console.log(mdm);
+  logger.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
-  console.log("Device", device);
+  logger.log("Device", device);
 };
 
 const testAndroidSeekdreamMDM = async () => {
@@ -49,11 +50,11 @@ const testAndroidSeekdreamMDM = async () => {
     serialNumber: "RFGL1139R4Y",
     brand: "android-seekdream",
   });
-  console.log(mdm);
+  logger.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
-  console.log("Device", device);
+  logger.log("Device", device);
 };
 
 const testAppleChewLabxMDM = async () => {
@@ -62,11 +63,11 @@ const testAppleChewLabxMDM = async () => {
     serialNumber: "DMPTD15QGXQ7",
     brand: "apple-chewlabx",
   })) as AppleChewLabxMDM;
-  console.log(mdm);
+  logger.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
-  console.log("Device", device);
+  logger.log("Device", device);
 };
 
 const testAppleMDMLockPhoneMDM = async () => {
@@ -75,11 +76,11 @@ const testAppleMDMLockPhoneMDM = async () => {
     serialNumber: "CG7T0L0GCX",
     brand: "apple-mdmlockphone",
   })) as AppleMDMLockPhoneMDM;
-  console.log(mdm);
+  logger.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
-  console.log("Device", device);
+  logger.log("Device", device);
 
   const wallpaper =
     "https://m-leasing.net/image/5fac6a08-429b-4bc3-a96e-737352ad5b4c.webp";
@@ -91,7 +92,7 @@ const testAppleMDMLockPhoneMDM = async () => {
   // await mdm.setWallpaper(true, wallpaper);
 
   const escrowKey = await mdm.getEscrowKey();
-  console.log("Escrow Key =", escrowKey);
+  logger.log("Escrow Key =", escrowKey);
 
   // await mdm.updateOS();
   // await mdm.setPermissions({
@@ -114,11 +115,11 @@ const testAppleSeekDreamMDM = async () => {
     serialNumber: "JVWNY4HMXD",
     brand: "apple-seekdream",
   })) as AppleSeekDreamMDM;
-  console.log(mdm);
+  logger.log(mdm);
 
   // Get mdmId from device.
   const device = await mdm.getDevice();
-  console.log("Device", device);
+  logger.log("Device", device);
 
   // await mdm.enableLostMode("0812223333", "this is a test");
   // await mdm.disableLostMode();
@@ -126,7 +127,7 @@ const testAppleSeekDreamMDM = async () => {
   // const locations = await mdm.getLocations();
   // console.log("Locations", locations);
   const credit = await mdm.getCredit();
-  console.log("Credit", credit);
+  logger.log("Credit", credit);
 };
 
 const testAppleMDMLockPhoneMDMDevices = async () => {
@@ -171,7 +172,7 @@ const testAppleMDMLockPhoneMDMDevices = async () => {
 
     // Get mdmId from device.
     const device = await mdm.getDevice();
-    console.log("Device", device);
+    logger.log("Device", device);
   }
 };
 
@@ -186,7 +187,7 @@ const testAndroidOEMMDM = async () => {
 
   // Get mdmId from device.
   const status = await mdm.getDevice();
-  console.log("status", status);
+  logger.log("status", status);
 };
 
 (async () => {

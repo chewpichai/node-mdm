@@ -1,6 +1,7 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
 
 dayjs.extend(utc);
@@ -40,7 +41,7 @@ async function sendCommand(
 
 async function uploadDevice(imei: string): Promise<number> {
   let data = await sendCommand("/devices/import", { deviceInfos: [imei] });
-  console.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log("🚀 ~ uploadDevice ~ data:", data);
   return data.message === "success" ? 200 : data.code;
 }
 
@@ -51,7 +52,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     registeredId: imei,
   });
   const data = await sendCommand(`/devices?${params.toString()}`, null, "GET");
-  console.log("🚀 ~ getDevice ~ data:", data);
+  logger.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "success" || data.data.length === 0) return;
 
   const device: {
@@ -118,7 +119,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
       forbidIncomingCall: false,
     },
   });
-  console.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log("🚀 ~ lockDevice ~ data:", data);
   return data.message === "success";
 }
 
@@ -127,7 +128,7 @@ async function unlockDevice(imei: string) {
     registeredIds: [imei],
     unlockPolicy: {},
   });
-  console.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log("🚀 ~ unlockDevice ~ data:", data);
   return data.message === "success";
 }
 
@@ -141,13 +142,13 @@ async function sendMessage(imei: string, phone: string, message: string) {
       showType: 1,
     },
   });
-  console.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log("🚀 ~ sendMessage ~ data:", data);
   return data.message === "success";
 }
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/unbind/deliver", { registeredIds: [imei] });
-  console.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log("🚀 ~ completeDevice ~ data:", data);
   return data.message === "success";
 }
 

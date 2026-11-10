@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const apple_1 = require("../../apple");
+const logger_1 = require("../logger");
 const types_1 = require("../../types");
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
@@ -70,7 +71,7 @@ async function uploadDevice(imei, productCode) {
         productName: productCode,
         operationType: 1,
     });
-    console.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
     let isSuccess = data.message === "SUCCESS";
     if (!isSuccess)
         return 400;
@@ -79,7 +80,7 @@ async function uploadDevice(imei, productCode) {
         deviceUid: imei,
         type: 1,
     });
-    console.log("🚀 ~ bindPackage ~ data:", data);
+    logger_1.logger.log("🚀 ~ bindPackage ~ data:", data);
     isSuccess = data.result === "SUCCESS";
     if (isSuccess)
         return 200;
@@ -87,7 +88,7 @@ async function uploadDevice(imei, productCode) {
 }
 async function getDevice(imei) {
     const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
-    console.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
     if (data.message !== "SUCCESS" || data.data.list.length === 0)
         return;
     const device = data.data.list[0];
@@ -125,12 +126,12 @@ async function lockDevice(imei, phone, message) {
         tel: phone,
         message,
     });
-    console.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
     return data.result === "SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/unlock", { deviceUid: imei });
-    console.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
     return data.result === "SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
@@ -139,12 +140,12 @@ async function sendMessage(imei, phone, message) {
         tel: phone,
         message,
     });
-    console.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
     return data.result === "SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/complete", { deviceUid: imei });
-    console.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
     return data.result === "SUCCESS";
 }
 exports.default = {

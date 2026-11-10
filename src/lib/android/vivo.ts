@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import dayjs from "dayjs";
+import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
 
 export interface VTrustOpenAPIOptions {
@@ -333,7 +334,7 @@ function getClient(): VTrustOpenAPI {
 
 async function uploadDevice(imei: string): Promise<number> {
   const data = await getClient().enroll(imei);
-  console.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log("🚀 ~ uploadDevice ~ data:", data);
   const isSuccess = data.message === "SUCCESS";
   if (isSuccess) return 200;
   return 461;
@@ -341,7 +342,7 @@ async function uploadDevice(imei: string): Promise<number> {
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await getClient().queryDeviceInfo(imei);
-  console.log("🚀 ~ getDevice ~ data:", data);
+  logger.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "SUCCESS" || !data.data) return;
   const device = data.data;
   const status = getDeviceStatus(device.status as number);
@@ -398,13 +399,13 @@ async function lockDevice(
   message: string
 ): Promise<boolean> {
   const data = await getClient().control(imei, 1);
-  console.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log("🚀 ~ lockDevice ~ data:", data);
   return data.message === "SUCCESS";
 }
 
 async function unlockDevice(imei: string): Promise<boolean> {
   const data = await getClient().control(imei, 2);
-  console.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log("🚀 ~ unlockDevice ~ data:", data);
   return data.message === "SUCCESS";
 }
 
@@ -414,13 +415,13 @@ async function sendMessage(
   message: string
 ): Promise<boolean> {
   const data = await getClient().message(imei, phone, message);
-  console.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log("🚀 ~ sendMessage ~ data:", data);
   return data.message === "SUCCESS";
 }
 
 async function completeDevice(imei: string): Promise<boolean> {
   const data = await getClient().completeContract(imei);
-  console.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log("🚀 ~ completeDevice ~ data:", data);
   return data.message === "SUCCESS";
 }
 

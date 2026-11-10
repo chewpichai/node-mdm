@@ -7,6 +7,7 @@ exports.AndroidSeekDreamMDM = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const cache_1 = require("./lib/cache");
+const logger_1 = require("./lib/logger");
 const types_1 = require("./types");
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
@@ -134,11 +135,11 @@ class AndroidSeekDreamMDM {
                 content,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ enableLostMode ~ data:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -153,11 +154,11 @@ class AndroidSeekDreamMDM {
                 merchant_id: this.query.merchantId,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -185,11 +186,11 @@ class AndroidSeekDreamMDM {
                 merchant_id: this.query.merchantId,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -204,11 +205,11 @@ class AndroidSeekDreamMDM {
                 merchant_id: this.query.merchantId,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -239,7 +240,7 @@ class AndroidSeekDreamMDM {
             }));
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [];
         }
     }
@@ -257,11 +258,11 @@ class AndroidSeekDreamMDM {
                 merchant_id: this.query.merchantId,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -279,11 +280,11 @@ class AndroidSeekDreamMDM {
                 merchant_id: this.query.merchantId,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -298,11 +299,11 @@ class AndroidSeekDreamMDM {
                 merchant_id: this.query.merchantId,
             });
             const data = await response.json();
-            console.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
+            logger_1.logger.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
             return response.ok;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }

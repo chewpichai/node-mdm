@@ -9,6 +9,7 @@ import {
   MDMQuery,
 } from ".";
 import { getCache } from "./lib/cache";
+import { logger } from "./lib/logger";
 
 const MDM_URL = process.env.MDM_SEEKDREAM_URL;
 const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
@@ -127,7 +128,7 @@ export class AppleSeekDreamMDM implements IMDM {
         merchantId: device.merchant_id,
       };
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
     }
   }
 
@@ -144,10 +145,10 @@ export class AppleSeekDreamMDM implements IMDM {
         `/device/activateLock?${params.toString()}`
       );
       const data = await response.json();
-      console.log("getEscrowKey:", data);
+      logger.log("getEscrowKey:", data);
       return "";
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
     }
   }
 
@@ -166,10 +167,10 @@ export class AppleSeekDreamMDM implements IMDM {
         }
       );
       const data = await response.json();
-      console.log("enableLostMode:", data);
+      logger.log("enableLostMode:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [false, undefined];
     }
   }
@@ -183,10 +184,10 @@ export class AppleSeekDreamMDM implements IMDM {
         {}
       );
       const data = await response.json();
-      console.log("disableLostMode:", data);
+      logger.log("disableLostMode:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return [false, undefined];
     }
   }
@@ -197,7 +198,7 @@ export class AppleSeekDreamMDM implements IMDM {
       {}
     );
     const data = await response.json();
-    console.log("refreshLocations:", data);
+    logger.log("refreshLocations:", data);
     return data.code === 200;
   }
 
@@ -226,10 +227,10 @@ export class AppleSeekDreamMDM implements IMDM {
         {}
       );
       const data = await response.json();
-      console.log("removePassword:", data);
+      logger.log("removePassword:", data);
       return data.code === 200;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }
@@ -266,10 +267,10 @@ export class AppleSeekDreamMDM implements IMDM {
         allowed: changeable ? 0 : 1,
       });
       const data = await response.json();
-      console.log("setWallpaper:", data);
+      logger.log("setWallpaper:", data);
       return data.code === 200;
     } catch (error) {
-      console.warn(error);
+      logger.warn(error);
       return false;
     }
   }

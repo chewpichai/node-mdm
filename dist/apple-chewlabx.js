@@ -7,6 +7,7 @@ exports.AppleChewLabxMDM = void 0;
 const dayjs_1 = __importDefault(require("dayjs"));
 const _1 = require(".");
 const cache_1 = require("./lib/cache");
+const logger_1 = require("./lib/logger");
 const MDM_URL = process.env.MDM_CHEWLABX_URL;
 const MDM_USERNAME = process.env.MDM_CHEWLABX_USERNAME;
 const MDM_PASSWORD = process.env.MDM_CHEWLABX_PASSWORD;
@@ -100,7 +101,7 @@ class AppleChewLabxMDM {
             };
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
         }
     }
     getDeviceStatus(status) {
@@ -124,7 +125,7 @@ class AppleChewLabxMDM {
             return escrow_key;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -138,7 +139,7 @@ class AppleChewLabxMDM {
             return [status === "locking", undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -149,7 +150,7 @@ class AppleChewLabxMDM {
             return [status === "unlocking", undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -160,7 +161,7 @@ class AppleChewLabxMDM {
             return status === "success";
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -179,7 +180,7 @@ class AppleChewLabxMDM {
             return status === "deleted";
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -190,7 +191,7 @@ class AppleChewLabxMDM {
             return status === "clearing";
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -201,7 +202,7 @@ class AppleChewLabxMDM {
             return [status === "hiding", undefined];
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return [false, undefined];
         }
     }
@@ -214,7 +215,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -229,7 +230,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -240,7 +241,7 @@ class AppleChewLabxMDM {
             return status === "scheduling";
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -250,7 +251,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }
@@ -260,7 +261,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            console.warn(error);
+            logger_1.logger.warn(error);
             return false;
         }
     }

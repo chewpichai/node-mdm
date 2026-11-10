@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const utc_1 = __importDefault(require("dayjs/plugin/utc"));
+const logger_1 = require("../logger");
 const types_1 = require("../../types");
 dayjs_1.default.extend(utc_1.default);
 const BASE_URL = "https://apigw.yun.hihonor.com/api/devicelock/v1";
@@ -69,7 +70,7 @@ async function sendCommand(path, body, method = "POST") {
 }
 async function uploadDevice(imei) {
     let data = await sendCommand("/devices/import", { deviceInfos: [imei] });
-    console.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
     return data.message === "success" ? 200 : data.code;
 }
 async function getDevice(imei) {
@@ -79,7 +80,7 @@ async function getDevice(imei) {
         registeredId: imei,
     });
     const data = await sendCommand(`/devices?${params.toString()}`, null, "GET");
-    console.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
     if (data.message !== "success" || data.data.length === 0)
         return;
     const device = data.data[0];
@@ -134,7 +135,7 @@ async function lockDevice(imei, phone, message) {
             forbidIncomingCall: false,
         },
     });
-    console.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
     return data.message === "success";
 }
 async function unlockDevice(imei) {
@@ -142,7 +143,7 @@ async function unlockDevice(imei) {
         registeredIds: [imei],
         unlockPolicy: {},
     });
-    console.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
     return data.message === "success";
 }
 async function sendMessage(imei, phone, message) {
@@ -155,12 +156,12 @@ async function sendMessage(imei, phone, message) {
             showType: 1,
         },
     });
-    console.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
     return data.message === "success";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/unbind/deliver", { registeredIds: [imei] });
-    console.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
     return data.message === "success";
 }
 exports.default = {

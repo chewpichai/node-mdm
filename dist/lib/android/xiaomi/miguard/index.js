@@ -7,6 +7,7 @@ exports.decompressGzip = decompressGzip;
 exports.getSignContent = getSignContent;
 const dayjs_1 = __importDefault(require("dayjs"));
 const zlib_1 = __importDefault(require("zlib"));
+const logger_1 = require("../../../logger");
 const types_1 = require("../../../../types");
 const aesUtils_1 = require("./aesUtils");
 const errorCode_1 = require("./errorCode");
@@ -75,7 +76,7 @@ function partnerDecrypt(request, partnerPrivateKey) {
             decrypted = decompressGzip(Buffer.from(decrypted, "base64"));
         }
         catch (e) {
-            console.error("gzip decompress error", e);
+            logger_1.logger.error("gzip decompress error", e);
         }
     }
     request.params = decrypted ?? undefined;
@@ -157,7 +158,7 @@ function parseRequest(content) {
         partnerDecrypt(request, PRIVATE_KEY);
     }
     else {
-        console.warn("parseRequest signature verification failed!");
+        logger_1.logger.warn("parseRequest signature verification failed!");
     }
     return JSON.stringify(request.toJSON());
 }
@@ -202,7 +203,7 @@ function parseResponse(content) {
         decrypt(response, PRIVATE_KEY);
     }
     else {
-        console.warn("parseResponse signature verification failed!");
+        logger_1.logger.warn("parseResponse signature verification failed!");
     }
     return response.toJSON();
 }
@@ -218,9 +219,9 @@ async function sendCommand(method, params) {
         body: formBody.toString(),
     });
     const bodyText = await res.text();
-    console.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
+    logger_1.logger.log("🚀 ~ sendCommand ~ bodyText:", bodyText);
     const parsedResponse = parseResponse(bodyText);
-    console.log("parsedResponse : " + JSON.stringify(parsedResponse));
+    logger_1.logger.log("parsedResponse : " + JSON.stringify(parsedResponse));
     return JSON.parse(parsedResponse.data);
 }
 async function uploadDevice(imei) {
@@ -228,14 +229,14 @@ async function uploadDevice(imei) {
         financialOrgNo: ORG_NO,
         deviceRegisterNo: imei,
     });
-    console.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
 }
 async function getDevice(imei) {
     const data = await sendCommand("mi.lock.device.status", {
         financialOrgNo: ORG_NO,
         deviceRegisterNo: imei,
     });
-    console.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
     return {
         id: 0,
         deviceStatus: getDeviceStatus(data.content.financialStatus),
@@ -274,7 +275,7 @@ async function lockDevice(imei, phone, message) {
         title: phone,
         content: message,
     });
-    console.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
     return data.msg === "success";
 }
 async function unlockDevice(imei) {
@@ -283,7 +284,7 @@ async function unlockDevice(imei) {
         deviceRegisterNo: imei,
         policyNo: "unlock",
     });
-    console.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
     return data.msg === "success";
 }
 async function sendMessage(imei, phone, message) {
@@ -294,7 +295,7 @@ async function sendMessage(imei, phone, message) {
         title: phone,
         content: message,
     });
-    console.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
     return data.msg === "success";
 }
 async function completeDevice(imei) {
@@ -303,7 +304,7 @@ async function completeDevice(imei) {
         deviceRegisterNo: imei,
         policyNo: "release",
     });
-    console.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
     return data.msg === "success";
 }
 exports.default = {

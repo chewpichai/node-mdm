@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dayjs_1 = __importDefault(require("dayjs"));
 const apple_1 = require("../../../apple");
+const logger_1 = require("../../logger");
 const types_1 = require("../../../types");
 const sign_1 = require("./sign");
 const BASE_URL = "https://ilockcardf-isp.apps.coloros.com";
@@ -40,7 +41,7 @@ async function uploadDevice(imei) {
     if (response.status !== 200)
         return response.status;
     let data = await response.json();
-    console.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
     let isSuccess = data.success;
     if (!isSuccess)
         switch (data.code) {
@@ -56,7 +57,7 @@ async function uploadDevice(imei) {
         deviceUid: imei,
         type: 1,
     });
-    console.log("🚀 ~ bindPackage ~ data:", data);
+    logger_1.logger.log("🚀 ~ bindPackage ~ data:", data);
     isSuccess = data.result === "SUCCESS";
     if (isSuccess)
         return 200;
@@ -68,7 +69,7 @@ async function getDevice(imei) {
     if (response.status === 200)
         modelName = (await response.json()).data?.model_name;
     const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
-    console.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
     if (data.message !== "SUCCESS" || data.data.list.length === 0)
         return;
     const device = data.data.list[0];
@@ -106,12 +107,12 @@ async function lockDevice(imei, phone, message) {
         title: phone,
         message,
     });
-    console.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
     return data.result === "SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/unlock", { deviceUid: imei });
-    console.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
     return data.result === "SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
@@ -120,12 +121,12 @@ async function sendMessage(imei, phone, message) {
         title: phone,
         message,
     });
-    console.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
     return data.result === "SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/complete", { deviceUid: imei });
-    console.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
     return data.result === "SUCCESS";
 }
 exports.default = {

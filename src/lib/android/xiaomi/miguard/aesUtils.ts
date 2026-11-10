@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { logger } from '../../../logger';
 
 export class AESUtils {
   public static readonly KEY_ALGORITHM = 'AES';
@@ -28,7 +29,7 @@ export class AESUtils {
       ]);
       return encrypted.toString('base64');
     } catch (e) {
-      console.error('encrypt error', e);
+      logger.error('encrypt error', e);
       return null;
     }
   }
@@ -50,7 +51,7 @@ export class AESUtils {
       ]);
       return decrypted.toString('utf8');
     } catch (e) {
-      console.error('decrypt error', e);
+      logger.error('decrypt error', e);
       return null;
     }
   }

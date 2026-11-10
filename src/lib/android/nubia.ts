@@ -1,6 +1,7 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
 
 dayjs.extend(utc);
@@ -36,13 +37,13 @@ async function sendCommand(
 
 async function uploadDevice(imei: string): Promise<number> {
   let data = await sendCommand("/enroll", [{ imei }]);
-  console.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log("🚀 ~ uploadDevice ~ data:", data);
   return data.message === "success" ? 200 : data.code;
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/get-model", [{ imei }]);
-  console.log("🚀 ~ getDevice ~ data:", data);
+  logger.log("🚀 ~ getDevice ~ data:", data);
   if (data.message !== "success" || data.data.length === 0) return;
 
   const device: {
@@ -103,7 +104,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     imei,
     lockInfoList: [{ type: "LOCK_PHONE" }],
   });
-  console.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log("🚀 ~ lockDevice ~ data:", data);
   return data.message === "success";
 }
 
@@ -112,7 +113,7 @@ async function unlockDevice(imei: string) {
     imei,
     lockInfoList: [{ type: "LOCK_PHONE" }],
   });
-  console.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log("🚀 ~ unlockDevice ~ data:", data);
   return data.message === "success";
 }
 
@@ -121,13 +122,13 @@ async function sendMessage(imei: string, phone: string, message: string) {
     imei,
     alertMessage: message,
   });
-  console.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log("🚀 ~ sendMessage ~ data:", data);
   return data.message === "success";
 }
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/deregister", [{ imei }]);
-  console.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log("🚀 ~ completeDevice ~ data:", data);
   return data.message === "success";
 }
 
