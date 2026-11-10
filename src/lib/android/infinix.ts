@@ -85,7 +85,7 @@ async function getDeviceStatus(imei: string): Promise<DeviceStatus> {
     apiKey: API_KEY,
   });
   console.log("🚀 ~ getDeviceStatus ~ data:", data);
-  switch (data.data.serverState) {
+  switch (data.data?.serverState) {
     case 500:
       return DeviceStatus.activating;
     case 1000:
