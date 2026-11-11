@@ -233,7 +233,7 @@ function getClient() {
 }
 async function uploadDevice(imei) {
     const data = await getClient().enroll(imei);
-    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
     const isSuccess = data.message === "SUCCESS";
     if (isSuccess)
         return 200;
@@ -241,7 +241,7 @@ async function uploadDevice(imei) {
 }
 async function getDevice(imei) {
     const data = await getClient().queryDeviceInfo(imei);
-    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
     if (data.message !== "SUCCESS" || !data.data)
         return;
     const device = data.data;
@@ -292,22 +292,22 @@ function getDeviceStatus(status) {
 }
 async function lockDevice(imei, phone, message) {
     const data = await getClient().control(imei, 1);
-    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
     return data.message === "SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await getClient().control(imei, 2);
-    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
     return data.message === "SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
     const data = await getClient().message(imei, phone, message);
-    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.message === "SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await getClient().completeContract(imei);
-    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.message === "SUCCESS";
 }
 exports.default = {

@@ -334,7 +334,7 @@ function getClient(): VTrustOpenAPI {
 
 async function uploadDevice(imei: string): Promise<number> {
   const data = await getClient().enroll(imei);
-  logger.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
   const isSuccess = data.message === "SUCCESS";
   if (isSuccess) return 200;
   return 461;
@@ -342,7 +342,7 @@ async function uploadDevice(imei: string): Promise<number> {
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await getClient().queryDeviceInfo(imei);
-  logger.log("🚀 ~ getDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
   if (data.message !== "SUCCESS" || !data.data) return;
   const device = data.data;
   const status = getDeviceStatus(device.status as number);
@@ -399,13 +399,13 @@ async function lockDevice(
   message: string
 ): Promise<boolean> {
   const data = await getClient().control(imei, 1);
-  logger.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
   return data.message === "SUCCESS";
 }
 
 async function unlockDevice(imei: string): Promise<boolean> {
   const data = await getClient().control(imei, 2);
-  logger.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
   return data.message === "SUCCESS";
 }
 
@@ -415,13 +415,13 @@ async function sendMessage(
   message: string
 ): Promise<boolean> {
   const data = await getClient().message(imei, phone, message);
-  logger.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
   return data.message === "SUCCESS";
 }
 
 async function completeDevice(imei: string): Promise<boolean> {
   const data = await getClient().completeContract(imei);
-  logger.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.message === "SUCCESS";
 }
 

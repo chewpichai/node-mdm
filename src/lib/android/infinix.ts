@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
-import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
+import { logger } from "../logger";
 
 const BASE_URL = "https://paytrigger.transsion-os.com/PayTrigger";
 const API_KEY = process.env.INFINIX_API_KEY;
@@ -37,7 +37,7 @@ async function uploadDevice(imei: string): Promise<number> {
     apiKey: API_KEY,
     preLockFlag: false,
   });
-  logger.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
   const isSuccess = data.code === 200;
   if (isSuccess) return 200;
 
@@ -51,7 +51,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     imei,
     apiKey: API_KEY,
   });
-  logger.log("🚀 ~ getDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
   if (data.message.toLowerCase() !== "success") return;
   const device = data.data;
   const [status, lockStatus] = await Promise.all([
@@ -85,7 +85,7 @@ async function getDeviceStatus(imei: string): Promise<DeviceStatus> {
     imei,
     apiKey: API_KEY,
   });
-  logger.log("🚀 ~ getDeviceStatus ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDeviceStatus ~ data:`, data);
   switch (data.data?.serverState) {
     case 500:
       return DeviceStatus.activating;
@@ -105,28 +105,29 @@ async function getDeviceLockStatus(imei: string): Promise<DeviceStatus> {
     imei,
     apiKey: API_KEY,
   });
-  logger.log("🚀 ~ getDeviceLockStatus ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDeviceLockStatus ~ data:`, data);
   if (data.code === 200 && data.data.operationStatus === "ON")
     return DeviceStatus.locked;
   return DeviceStatus.active;
 }
 
 async function lockDevice(imei: string, phone: string, message: string) {
-  const data = await sendCommand("/api/partner/anti-theft/v1/submit", {
+  const data = await sendCommand("/api/partner/lock/v1/lock-or-unlock", {
     imei,
-    contactInformation: `tel: ${phone} ${message}`,
     apiKey: API_KEY,
+    flag: "LOCK",
   });
-  logger.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
   return data.code === 200;
 }
 
 async function unlockDevice(imei: string) {
-  const data = await sendCommand("/api/partner/anti-theft/v1/close", {
-    deviceUid: imei,
+  const data = await sendCommand("/api/partner/lock/v1/lock-or-unlock", {
+    imei,
     apiKey: API_KEY,
+    flag: "UNLOCK",
   });
-  logger.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
   return data.code === 200;
 }
 
@@ -138,7 +139,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     title: phone,
     pushType: 1,
   });
-  logger.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
   return data.code === 200;
 }
 
@@ -147,7 +148,7 @@ async function completeDevice(imei: string) {
     imeiInfo: imei,
     apiKey: API_KEY,
   });
-  logger.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.code === 200;
 }
 

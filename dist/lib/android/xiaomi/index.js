@@ -49,7 +49,7 @@ async function uploadDevice(imei) {
             },
         ],
     });
-    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
     const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
     return isSuccess ? 200 : 461;
 }
@@ -57,7 +57,7 @@ async function getDevice(imei) {
     const data = await sendCommand("/query/devices", {
         deviceList: [{ deviceUid: imei }],
     });
-    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
     const device = data.deviceResponseList[0];
     if (device.resultCode)
         return;
@@ -102,14 +102,14 @@ async function lockDevice(imei, phone, message) {
             },
         ],
     });
-    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
     return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/device/unlock/", {
         unLockList: [{ deviceUid: imei }],
     });
-    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
     return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
@@ -123,12 +123,12 @@ async function sendMessage(imei, phone, message) {
             },
         ],
     });
-    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/device/release/", { deviceReleaseList: [{ deviceUid: imei }] }, "PUT");
-    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 exports.default = {

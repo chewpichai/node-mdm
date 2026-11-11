@@ -37,13 +37,13 @@ async function sendCommand(
 
 async function uploadDevice(imei: string): Promise<number> {
   let data = await sendCommand("/enroll", [{ imei }]);
-  logger.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
   return data.message === "success" ? 200 : data.code;
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/get-model", [{ imei }]);
-  logger.log("🚀 ~ getDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
   if (data.message !== "success" || data.data.length === 0) return;
 
   const device: {
@@ -104,7 +104,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     imei,
     lockInfoList: [{ type: "LOCK_PHONE" }],
   });
-  logger.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
   return data.message === "success";
 }
 
@@ -113,7 +113,7 @@ async function unlockDevice(imei: string) {
     imei,
     lockInfoList: [{ type: "LOCK_PHONE" }],
   });
-  logger.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
   return data.message === "success";
 }
 
@@ -122,13 +122,13 @@ async function sendMessage(imei: string, phone: string, message: string) {
     imei,
     alertMessage: message,
   });
-  logger.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
   return data.message === "success";
 }
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/deregister", [{ imei }]);
-  logger.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.message === "success";
 }
 

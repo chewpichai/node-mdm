@@ -71,7 +71,7 @@ async function uploadDevice(imei, productCode) {
         productName: productCode,
         operationType: 1,
     });
-    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
     let isSuccess = data.message === "SUCCESS";
     if (!isSuccess)
         return 400;
@@ -80,7 +80,7 @@ async function uploadDevice(imei, productCode) {
         deviceUid: imei,
         type: 1,
     });
-    logger_1.logger.log("🚀 ~ bindPackage ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ bindPackage ~ data:`, data);
     isSuccess = data.result === "SUCCESS";
     if (isSuccess)
         return 200;
@@ -88,7 +88,7 @@ async function uploadDevice(imei, productCode) {
 }
 async function getDevice(imei) {
     const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
-    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
     if (data.message !== "SUCCESS" || data.data.list.length === 0)
         return;
     const device = data.data.list[0];
@@ -126,12 +126,12 @@ async function lockDevice(imei, phone, message) {
         tel: phone,
         message,
     });
-    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
     return data.result === "SUCCESS";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/unlock", { deviceUid: imei });
-    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
     return data.result === "SUCCESS";
 }
 async function sendMessage(imei, phone, message) {
@@ -140,12 +140,12 @@ async function sendMessage(imei, phone, message) {
         tel: phone,
         message,
     });
-    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.result === "SUCCESS";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/complete", { deviceUid: imei });
-    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.result === "SUCCESS";
 }
 exports.default = {

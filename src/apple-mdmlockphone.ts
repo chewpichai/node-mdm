@@ -315,6 +315,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         lostPhoneNum: phoneNumber,
         serialNo: this.query.serialNumber,
       });
+      logger.log(`enableLostMode: ${this.query.serialNumber} data: ${data}`);
       return [data.code === 200, undefined];
     } catch (error) {
       logger.warn(
@@ -332,6 +333,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         appid: MDM_APPID,
         serialNo: this.query.serialNumber,
       });
+      logger.log(`disableLostMode: ${this.query.serialNumber} data: ${data}`);
       return [data.code === 200, undefined];
     } catch (error) {
       logger.warn(
@@ -367,7 +369,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         removeProfile: true,
         unbindABM: true,
       });
-      logger.log(`removeMDM: ${this.query.serialNumber}`);
+      logger.log(`removeMDM: ${this.query.serialNumber} data: ${data}}`);
       return data.code === 200;
     } catch (error) {
       logger.warn(
@@ -401,6 +403,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         serialNo: this.query.serialNumber,
         type: "1",
       });
+      logger.log(`hideApp: ${this.query.serialNumber} data: ${data}}`);
       return [data.code === 200, undefined];
     } catch (error) {
       logger.warn(
@@ -419,6 +422,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         serialNo: this.query.serialNumber,
         type: "0",
       });
+      logger.log(`disableHideApp: ${this.query.serialNumber} data: ${data}}`);
       return [data.code === 200, undefined];
     } catch (error) {
       logger.warn(

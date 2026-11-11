@@ -229,14 +229,14 @@ async function uploadDevice(imei) {
         financialOrgNo: ORG_NO,
         deviceRegisterNo: imei,
     });
-    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
 }
 async function getDevice(imei) {
     const data = await sendCommand("mi.lock.device.status", {
         financialOrgNo: ORG_NO,
         deviceRegisterNo: imei,
     });
-    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
     return {
         id: 0,
         deviceStatus: getDeviceStatus(data.content.financialStatus),
@@ -275,7 +275,7 @@ async function lockDevice(imei, phone, message) {
         title: phone,
         content: message,
     });
-    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
     return data.msg === "success";
 }
 async function unlockDevice(imei) {
@@ -284,7 +284,7 @@ async function unlockDevice(imei) {
         deviceRegisterNo: imei,
         policyNo: "unlock",
     });
-    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
     return data.msg === "success";
 }
 async function sendMessage(imei, phone, message) {
@@ -295,7 +295,7 @@ async function sendMessage(imei, phone, message) {
         title: phone,
         content: message,
     });
-    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.msg === "success";
 }
 async function completeDevice(imei) {
@@ -304,7 +304,7 @@ async function completeDevice(imei) {
         deviceRegisterNo: imei,
         policyNo: "release",
     });
-    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.msg === "success";
 }
 exports.default = {

@@ -70,7 +70,7 @@ async function sendCommand(path, body, method = "POST") {
 }
 async function uploadDevice(imei) {
     let data = await sendCommand("/devices/import", { deviceInfos: [imei] });
-    logger_1.logger.log("🚀 ~ uploadDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
     return data.message === "success" ? 200 : data.code;
 }
 async function getDevice(imei) {
@@ -80,7 +80,7 @@ async function getDevice(imei) {
         registeredId: imei,
     });
     const data = await sendCommand(`/devices?${params.toString()}`, null, "GET");
-    logger_1.logger.log("🚀 ~ getDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
     if (data.message !== "success" || data.data.length === 0)
         return;
     const device = data.data[0];
@@ -135,7 +135,7 @@ async function lockDevice(imei, phone, message) {
             forbidIncomingCall: false,
         },
     });
-    logger_1.logger.log("🚀 ~ lockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
     return data.message === "success";
 }
 async function unlockDevice(imei) {
@@ -143,7 +143,7 @@ async function unlockDevice(imei) {
         registeredIds: [imei],
         unlockPolicy: {},
     });
-    logger_1.logger.log("🚀 ~ unlockDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
     return data.message === "success";
 }
 async function sendMessage(imei, phone, message) {
@@ -156,12 +156,12 @@ async function sendMessage(imei, phone, message) {
             showType: 1,
         },
     });
-    logger_1.logger.log("🚀 ~ sendMessage ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.message === "success";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/unbind/deliver", { registeredIds: [imei] });
-    logger_1.logger.log("🚀 ~ completeDevice ~ data:", data);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.message === "success";
 }
 exports.default = {

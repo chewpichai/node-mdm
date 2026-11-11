@@ -291,7 +291,7 @@ async function uploadDevice(imei: string): Promise<void> {
       deviceRegisterNo: imei,
     }
   );
-  logger.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
@@ -303,7 +303,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
     financialOrgNo: ORG_NO,
     deviceRegisterNo: imei,
   });
-  logger.log("🚀 ~ getDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
 
   return {
     id: 0,
@@ -350,7 +350,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
       content: message,
     }
   );
-  logger.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
   return data.msg === "success";
 }
 
@@ -363,7 +363,7 @@ async function unlockDevice(imei: string) {
       policyNo: "unlock",
     }
   );
-  logger.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
   return data.msg === "success";
 }
 
@@ -378,7 +378,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
       content: message,
     }
   );
-  logger.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
   return data.msg === "success";
 }
 
@@ -391,7 +391,7 @@ async function completeDevice(imei: string) {
       policyNo: "release",
     }
   );
-  logger.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.msg === "success";
 }
 

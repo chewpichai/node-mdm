@@ -53,7 +53,7 @@ async function uploadDevice(imei: string): Promise<number> {
       },
     ],
   });
-  logger.log("🚀 ~ uploadDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
   const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
 
   return isSuccess ? 200 : 461;
@@ -63,7 +63,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/query/devices", {
     deviceList: [{ deviceUid: imei }],
   });
-  logger.log("🚀 ~ getDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
   const device = data.deviceResponseList[0];
   if (device.resultCode) return;
 
@@ -110,7 +110,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
       },
     ],
   });
-  logger.log("🚀 ~ lockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
   return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
@@ -118,7 +118,7 @@ async function unlockDevice(imei: string) {
   const data = await sendCommand("/device/unlock/", {
     unLockList: [{ deviceUid: imei }],
   });
-  logger.log("🚀 ~ unlockDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
   return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
@@ -133,7 +133,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
       },
     ],
   });
-  logger.log("🚀 ~ sendMessage ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
   return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 
@@ -143,7 +143,7 @@ async function completeDevice(imei: string) {
     { deviceReleaseList: [{ deviceUid: imei }] },
     "PUT"
   );
-  logger.log("🚀 ~ completeDevice ~ data:", data);
+  logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
 }
 

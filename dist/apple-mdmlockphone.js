@@ -252,6 +252,7 @@ class AppleMDMLockPhoneMDM {
                 lostPhoneNum: phoneNumber,
                 serialNo: this.query.serialNumber,
             });
+            logger_1.logger.log(`enableLostMode: ${this.query.serialNumber} data: ${data}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
@@ -265,6 +266,7 @@ class AppleMDMLockPhoneMDM {
                 appid: MDM_APPID,
                 serialNo: this.query.serialNumber,
             });
+            logger_1.logger.log(`disableLostMode: ${this.query.serialNumber} data: ${data}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
@@ -296,7 +298,7 @@ class AppleMDMLockPhoneMDM {
                 removeProfile: true,
                 unbindABM: true,
             });
-            logger_1.logger.log(`removeMDM: ${this.query.serialNumber}`);
+            logger_1.logger.log(`removeMDM: ${this.query.serialNumber} data: ${data}}`);
             return data.code === 200;
         }
         catch (error) {
@@ -325,6 +327,7 @@ class AppleMDMLockPhoneMDM {
                 serialNo: this.query.serialNumber,
                 type: "1",
             });
+            logger_1.logger.log(`hideApp: ${this.query.serialNumber} data: ${data}}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
@@ -340,6 +343,7 @@ class AppleMDMLockPhoneMDM {
                 serialNo: this.query.serialNumber,
                 type: "0",
             });
+            logger_1.logger.log(`disableHideApp: ${this.query.serialNumber} data: ${data}}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
