@@ -28,45 +28,56 @@ class AppleMDMLockPhoneMDM {
         this.refreshKey = "appleMDMLockPhoneMDMRefreshToken";
         this.refreshToken = null;
     }
-    async sendCommand(url, data, retry = 0) {
+    async sendCommand(url, body, retry = 0) {
         if (!this.token)
             throw new Error("token_not_found");
         const response = await fetch(`${MDM_URL}${url}`, {
-            method: data ? "POST" : "GET",
+            method: body ? "POST" : "GET",
             headers: {
                 "Content-Type": "application/json",
                 authorization: `Bearer ${this.token}`,
             },
-            body: JSON.stringify(data),
+            body: body ? JSON.stringify(body) : undefined,
         });
         const text = await response.text();
-        if (!response.ok) {
-            if (retry < 3) {
-                if (response.status === 429)
-                    await sleep(1000);
-                else if (response.status === 402) {
-                    this.token = null;
-                    this.refreshToken = null;
-                    const cache = (0, cache_1.getCache)();
-                    cache.del(this.tokenKey);
-                    cache.del(this.refreshKey);
-                    await this.init();
-                }
-                return this.sendCommand(url, data, retry + 1);
+        if (!response.ok && retry < 3) {
+            if (response.status === 429)
+                await sleep(1000);
+            else if (response.status === 402) {
+                this.token = null;
+                this.refreshToken = null;
+                const cache = (0, cache_1.getCache)();
+                cache.del(this.tokenKey);
+                cache.del(this.refreshKey);
+                await this.init();
             }
-            logger_1.logger.log(text);
-            throw new Error(`network_error_${response.status}`);
+            return this.sendCommand(url, body, retry + 1);
         }
+        let responseBody = text;
+        let parseError;
         try {
-            const data = JSON.parse(text);
-            if (data.code !== 200)
-                logger_1.logger.log("🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ data:", data);
-            return data;
+            responseBody = JSON.parse(text);
         }
         catch (error) {
-            logger_1.logger.log(text);
-            throw error;
+            parseError = error;
         }
+        const identifier = this.query.serialNumber || this.query.applicationId;
+        const prefix = identifier
+            ? `🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ ${identifier} ~ ${url}:`
+            : `🚀 ~ AppleMDMLockPhoneMDM ~ sendCommand ~ ${url}:`;
+        const logFn = !response.ok || parseError !== undefined ? logger_1.logger.warn : logger_1.logger.log;
+        logFn(prefix, {
+            ...(response.ok ? {} : { status: response.status }),
+            requestBody: body,
+            responseBody,
+        });
+        if (!response.ok) {
+            throw new Error(`network_error_${response.status}`);
+        }
+        if (parseError !== undefined) {
+            throw parseError;
+        }
+        return responseBody;
     }
     async init() {
         if (this.token)
@@ -139,7 +150,7 @@ class AppleMDMLockPhoneMDM {
             return data;
         }
         catch (error) {
-            logger_1.logger.warn(`getUSBItunesStatus ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`getUSBItunesStatus ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getHttpProxyStatus() {
@@ -150,7 +161,7 @@ class AppleMDMLockPhoneMDM {
             return data;
         }
         catch (error) {
-            logger_1.logger.warn(`getHttpProxyStatus ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`getHttpProxyStatus ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getDevice() {
@@ -166,7 +177,6 @@ class AppleMDMLockPhoneMDM {
                 size: 10,
             });
             if (body.code !== 200) {
-                logger_1.logger.log(body);
                 throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
             }
             const { data: { records }, } = body;
@@ -178,7 +188,6 @@ class AppleMDMLockPhoneMDM {
                     this.query.serialNumber !== device?.sserialno) ||
                 (this.query.applicationId &&
                     this.query.applicationId !== device.contractCode)) {
-                logger_1.logger.log(this.query.serialNumber, device?.sserialno);
                 throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
             }
             this.query.serialNumber = device.sserialno;
@@ -210,7 +219,7 @@ class AppleMDMLockPhoneMDM {
             };
         }
         catch (error) {
-            logger_1.logger.warn(`getDevice ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`getDevice ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getFunctionRestrictions(deviceId) {
@@ -227,7 +236,7 @@ class AppleMDMLockPhoneMDM {
             }));
         }
         catch (error) {
-            logger_1.logger.warn(`getFunctionRestrictions ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`getFunctionRestrictions ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getEscrowKey() {
@@ -240,7 +249,7 @@ class AppleMDMLockPhoneMDM {
             return code.passCode;
         }
         catch (error) {
-            logger_1.logger.warn(`getEscrowKey ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`getEscrowKey ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async enableLostMode(phoneNumber, content) {
@@ -252,11 +261,10 @@ class AppleMDMLockPhoneMDM {
                 lostPhoneNum: phoneNumber,
                 serialNo: this.query.serialNumber,
             });
-            logger_1.logger.log(`enableLostMode: ${this.query.serialNumber} data: ${data}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            logger_1.logger.warn(`enableLostMode ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`enableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -266,11 +274,10 @@ class AppleMDMLockPhoneMDM {
                 appid: MDM_APPID,
                 serialNo: this.query.serialNumber,
             });
-            logger_1.logger.log(`disableLostMode: ${this.query.serialNumber} data: ${data}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            logger_1.logger.warn(`disableLostMode ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`disableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -298,11 +305,10 @@ class AppleMDMLockPhoneMDM {
                 removeProfile: true,
                 unbindABM: true,
             });
-            logger_1.logger.log(`removeMDM: ${this.query.serialNumber} data: ${data}}`);
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`removeMDM ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`removeMDM ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -315,7 +321,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`removePassword ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`removePassword ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -327,11 +333,10 @@ class AppleMDMLockPhoneMDM {
                 serialNo: this.query.serialNumber,
                 type: "1",
             });
-            logger_1.logger.log(`hideApp: ${this.query.serialNumber} data: ${data}}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            logger_1.logger.warn(`hideApp ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`hideApp ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -343,11 +348,10 @@ class AppleMDMLockPhoneMDM {
                 serialNo: this.query.serialNumber,
                 type: "0",
             });
-            logger_1.logger.log(`disableHideApp: ${this.query.serialNumber} data: ${data}}`);
             return [data.code === 200, undefined];
         }
         catch (error) {
-            logger_1.logger.warn(`disableHideApp ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`disableHideApp ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -367,7 +371,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`setPermissions ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`setPermissions ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -380,7 +384,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`disableProxy ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`disableProxy ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -393,7 +397,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`enableProxy ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`enableProxy ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -412,7 +416,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`setWallpaper ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`setWallpaper ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -425,7 +429,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`disableUSB ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`disableUSB ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -438,7 +442,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`enableUSB ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`enableUSB ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -450,7 +454,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`updateOS ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`updateOS ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -460,7 +464,7 @@ class AppleMDMLockPhoneMDM {
             return { credit: balance.apple };
         }
         catch (error) {
-            logger_1.logger.warn(`getCredit ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`getCredit ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return { credit: 0 };
         }
     }
@@ -475,7 +479,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`lockMacbook ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`lockMac ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -487,7 +491,7 @@ class AppleMDMLockPhoneMDM {
             return data.code === 200;
         }
         catch (error) {
-            logger_1.logger.warn(`restartDevice ~ serailNumber: ${this.query.serialNumber}, error: ${error}`);
+            logger_1.logger.warn(`restartDevice ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }

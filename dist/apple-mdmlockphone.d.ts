@@ -8,7 +8,7 @@ export declare class AppleMDMLockPhoneMDM implements IMDM {
     refreshToken: string | null | undefined;
     static getInstance(query: MDMQuery): Promise<AppleMDMLockPhoneMDM>;
     constructor(query: MDMQuery);
-    sendCommand(url: string, data?: Record<string, unknown>, retry?: number): Promise<any>;
+    sendCommand(url: string, body?: Record<string, unknown>, retry?: number): Promise<any>;
     init(): Promise<void>;
     getDeviceStatus(): Promise<DeviceStatus>;
     getUSBItunesStatus(): Promise<any>;
