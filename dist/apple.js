@@ -38,19 +38,32 @@ class AppleMDM {
             },
             body: JSON.stringify(body),
         });
-        if (!response.ok)
-            throw new Error("network_error");
         const text = await response.text();
+        let responseBody = text;
+        let parseError;
         try {
-            const data = JSON.parse(text);
-            if (data.status !== 200)
-                logger_1.logger.log(`🚀 ~ ${this.query.serialNumber} ~ sendCommand ~ data:`, data);
-            return data;
+            responseBody = JSON.parse(text);
         }
         catch (error) {
-            logger_1.logger.warn(`🚀 ~ ${this.query.serialNumber} ~ sendCommand ~ text:`, text);
-            throw error;
+            parseError = error;
         }
+        const identifier = this.query.serialNumber || this.query.applicationId;
+        const prefix = identifier
+            ? `🚀 ~ AppleMDM ~ sendCommand ~ ${identifier} ~ ${url}:`
+            : `🚀 ~ AppleMDM ~ sendCommand ~ ${url}:`;
+        const logFn = !response.ok || parseError !== undefined ? logger_1.logger.warn : logger_1.logger.log;
+        logFn(prefix, {
+            ...(response.ok ? {} : { status: response.status }),
+            requestBody: body,
+            responseBody,
+        });
+        if (!response.ok) {
+            throw new Error("network_error");
+        }
+        if (parseError !== undefined) {
+            throw parseError;
+        }
+        return responseBody;
     }
     async init() {
         if (this.token)
@@ -97,7 +110,6 @@ class AppleMDM {
                     this.query.serialNumber !== device?.serialNumber) ||
                 (this.query.applicationId &&
                     this.query.applicationId !== device.possessor)) {
-                logger_1.logger.log(this.query.serialNumber, device?.serialNumber);
                 throw new Error("device_not_found");
             }
             device.deviceStatus = this.getDeviceStatus(device.deviceStatus);
@@ -158,7 +170,7 @@ class AppleMDM {
             return data;
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async getEscrowKey() {
@@ -261,7 +273,6 @@ class AppleMDM {
             const data = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
                 id: this.query.mdmId,
             });
-            logger_1.logger.log(`removeMDM: ${this.query.serialNumber}`);
             return [11001009, 200].includes(data.status);
         }
         catch (error) {

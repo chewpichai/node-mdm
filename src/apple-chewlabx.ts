@@ -31,17 +31,17 @@ export class AppleChewLabxMDM implements IMDM {
     this.query = query;
   }
 
-  sendCommand(
+  async sendCommand(
     url: string,
-    data?: Record<string, unknown> | FormData,
+    body?: Record<string, unknown> | FormData,
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET"
-  ) {
+  ): Promise<any> {
     if (!this.token) throw new Error("token_not_found");
 
-    return fetch(`${MDM_URL}${url}`, {
+    const response = await fetch(`${MDM_URL}${url}`, {
       method,
       headers: {
-        ...(data instanceof FormData
+        ...(body instanceof FormData
           ? {}
           : { "content-type": "application/json" }),
         authorization: `Bearer ${this.token}`,
@@ -49,10 +49,65 @@ export class AppleChewLabxMDM implements IMDM {
       body:
         method === "GET"
           ? undefined
-          : data instanceof FormData
-            ? data
-            : JSON.stringify(data),
+          : body instanceof FormData
+            ? body
+            : JSON.stringify(body),
     });
+
+    const text = await response.text();
+
+    let responseBody: unknown = text;
+    let parseError: unknown;
+    if (!text.trim()) {
+      responseBody = undefined;
+    } else {
+      try {
+        responseBody = JSON.parse(text);
+      } catch (error) {
+        parseError = error;
+      }
+    }
+
+    const requestBody =
+      method === "GET"
+        ? undefined
+        : body instanceof FormData
+          ? Object.fromEntries(
+              Array.from(body.entries(), ([key, value]) => [
+                key,
+                typeof Blob !== "undefined" && value instanceof Blob
+                  ? {
+                      ...("name" in value ? { name: (value as File).name } : {}),
+                      size: value.size,
+                      type: value.type,
+                    }
+                  : value,
+              ])
+            )
+          : body;
+
+    const identifier = this.query.serialNumber || this.query.applicationId;
+    const prefix = identifier
+      ? `🚀 ~ AppleChewLabxMDM ~ sendCommand ~ ${identifier} ~ ${method} ${url}:`
+      : `🚀 ~ AppleChewLabxMDM ~ sendCommand ~ ${method} ${url}:`;
+    const logFn =
+      !response.ok || parseError !== undefined ? logger.warn : logger.log;
+
+    logFn(prefix, {
+      ...(response.ok ? {} : { status: response.status }),
+      requestBody,
+      responseBody,
+    });
+
+    if (!response.ok) {
+      throw new Error(`network_error_${response.status}`);
+    }
+
+    if (parseError !== undefined) {
+      throw parseError;
+    }
+
+    return responseBody;
   }
 
   async init() {
@@ -84,10 +139,9 @@ export class AppleChewLabxMDM implements IMDM {
     if (this.query.brand !== "apple-chewlabx") throw new Error("invalid_brand");
 
     try {
-      const response = await this.sendCommand(
+      const device = await this.sendCommand(
         `/devices/${this.query.serialNumber}`
       );
-      const device = await response.json();
 
       if (!device?.serial_number) throw new Error("device_not_found");
 
@@ -127,7 +181,9 @@ export class AppleChewLabxMDM implements IMDM {
         osVersion: device.os_version ?? "",
       };
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `getDevice ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -148,13 +204,14 @@ export class AppleChewLabxMDM implements IMDM {
 
   async getEscrowKey(): Promise<string | undefined> {
     try {
-      const response = await this.sendCommand(
+      const { escrow_key } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/escrow-key`
       );
-      const { escrow_key } = await response.json();
       return escrow_key;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `getEscrowKey ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -163,7 +220,7 @@ export class AppleChewLabxMDM implements IMDM {
     content: string
   ): Promise<[boolean, number | undefined]> {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/lock`,
         {
           message: content,
@@ -172,10 +229,11 @@ export class AppleChewLabxMDM implements IMDM {
         },
         "PUT"
       );
-      const { status } = await response.json();
       return [status === "locking", undefined];
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `enableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -184,39 +242,40 @@ export class AppleChewLabxMDM implements IMDM {
     [true, number | undefined] | [false, string | undefined]
   > {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/unlock`,
         undefined,
         "PUT"
       );
-      const { status } = await response.json();
       return [status === "unlocking", undefined];
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `disableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
 
   async refreshLocation() {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/locations`,
         undefined,
         "POST"
       );
-      const { status } = await response.json();
       return status === "success";
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `refreshLocation ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
 
   async getLocations() {
-    const response = await this.sendCommand(
+    const locations = await this.sendCommand(
       `/devices/${this.query.serialNumber}/locations`
     );
-    const locations = await response.json();
     return locations.map((loc: any) => ({
       lat: loc.latitude,
       lng: loc.longitude,
@@ -225,45 +284,48 @@ export class AppleChewLabxMDM implements IMDM {
 
   async removeMDM(password: string) {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}`,
         undefined,
         "DELETE"
       );
-      const { status } = await response.json();
       return status === "deleted";
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `removeMDM ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
 
   async removePassword() {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/passcode`,
         undefined,
         "DELETE"
       );
-      const { status } = await response.json();
       return status === "clearing";
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `removePassword ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
 
   async hideApp(): Promise<[boolean, number | undefined]> {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/hide-apps`,
         undefined,
         "PUT"
       );
-      const { status } = await response.json();
       return [status === "hiding", undefined];
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `hideApp ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -281,7 +343,9 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `setPermissions ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -300,22 +364,25 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `setWallpaper ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
 
   async updateOS() {
     try {
-      const response = await this.sendCommand(
+      const { status } = await this.sendCommand(
         `/devices/${this.query.serialNumber}/os-update`,
         undefined,
         "POST"
       );
-      const { status } = await response.json();
       return status === "scheduling";
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `updateOS ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -329,7 +396,9 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `disableUSB ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -343,7 +412,9 @@ export class AppleChewLabxMDM implements IMDM {
       );
       return true;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `enableUSB ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }

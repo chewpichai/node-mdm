@@ -22,23 +22,68 @@ class AppleChewLabxMDM {
         this.token = null;
         this.query = query;
     }
-    sendCommand(url, data, method = "GET") {
+    async sendCommand(url, body, method = "GET") {
         if (!this.token)
             throw new Error("token_not_found");
-        return fetch(`${MDM_URL}${url}`, {
+        const response = await fetch(`${MDM_URL}${url}`, {
             method,
             headers: {
-                ...(data instanceof FormData
+                ...(body instanceof FormData
                     ? {}
                     : { "content-type": "application/json" }),
                 authorization: `Bearer ${this.token}`,
             },
             body: method === "GET"
                 ? undefined
-                : data instanceof FormData
-                    ? data
-                    : JSON.stringify(data),
+                : body instanceof FormData
+                    ? body
+                    : JSON.stringify(body),
         });
+        const text = await response.text();
+        let responseBody = text;
+        let parseError;
+        if (!text.trim()) {
+            responseBody = undefined;
+        }
+        else {
+            try {
+                responseBody = JSON.parse(text);
+            }
+            catch (error) {
+                parseError = error;
+            }
+        }
+        const requestBody = method === "GET"
+            ? undefined
+            : body instanceof FormData
+                ? Object.fromEntries(Array.from(body.entries(), ([key, value]) => [
+                    key,
+                    typeof Blob !== "undefined" && value instanceof Blob
+                        ? {
+                            ...("name" in value ? { name: value.name } : {}),
+                            size: value.size,
+                            type: value.type,
+                        }
+                        : value,
+                ]))
+                : body;
+        const identifier = this.query.serialNumber || this.query.applicationId;
+        const prefix = identifier
+            ? `🚀 ~ AppleChewLabxMDM ~ sendCommand ~ ${identifier} ~ ${method} ${url}:`
+            : `🚀 ~ AppleChewLabxMDM ~ sendCommand ~ ${method} ${url}:`;
+        const logFn = !response.ok || parseError !== undefined ? logger_1.logger.warn : logger_1.logger.log;
+        logFn(prefix, {
+            ...(response.ok ? {} : { status: response.status }),
+            requestBody,
+            responseBody,
+        });
+        if (!response.ok) {
+            throw new Error(`network_error_${response.status}`);
+        }
+        if (parseError !== undefined) {
+            throw parseError;
+        }
+        return responseBody;
     }
     async init() {
         if (this.token)
@@ -68,8 +113,7 @@ class AppleChewLabxMDM {
         if (this.query.brand !== "apple-chewlabx")
             throw new Error("invalid_brand");
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}`);
-            const device = await response.json();
+            const device = await this.sendCommand(`/devices/${this.query.serialNumber}`);
             if (!device?.serial_number)
                 throw new Error("device_not_found");
             if (this.query.serialNumber &&
@@ -101,7 +145,7 @@ class AppleChewLabxMDM {
             };
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`getDevice ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     getDeviceStatus(status) {
@@ -120,54 +164,49 @@ class AppleChewLabxMDM {
     }
     async getEscrowKey() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/escrow-key`);
-            const { escrow_key } = await response.json();
+            const { escrow_key } = await this.sendCommand(`/devices/${this.query.serialNumber}/escrow-key`);
             return escrow_key;
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`getEscrowKey ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
         }
     }
     async enableLostMode(phoneNumber, content) {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/lock`, {
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}/lock`, {
                 message: content,
                 phone: phoneNumber,
                 footnote: phoneNumber,
             }, "PUT");
-            const { status } = await response.json();
             return [status === "locking", undefined];
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`enableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
     async disableLostMode() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/unlock`, undefined, "PUT");
-            const { status } = await response.json();
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}/unlock`, undefined, "PUT");
             return [status === "unlocking", undefined];
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`disableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
     async refreshLocation() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/locations`, undefined, "POST");
-            const { status } = await response.json();
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}/locations`, undefined, "POST");
             return status === "success";
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`refreshLocation ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async getLocations() {
-        const response = await this.sendCommand(`/devices/${this.query.serialNumber}/locations`);
-        const locations = await response.json();
+        const locations = await this.sendCommand(`/devices/${this.query.serialNumber}/locations`);
         return locations.map((loc) => ({
             lat: loc.latitude,
             lng: loc.longitude,
@@ -175,34 +214,31 @@ class AppleChewLabxMDM {
     }
     async removeMDM(password) {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}`, undefined, "DELETE");
-            const { status } = await response.json();
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}`, undefined, "DELETE");
             return status === "deleted";
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`removeMDM ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async removePassword() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/passcode`, undefined, "DELETE");
-            const { status } = await response.json();
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}/passcode`, undefined, "DELETE");
             return status === "clearing";
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`removePassword ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async hideApp() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/hide-apps`, undefined, "PUT");
-            const { status } = await response.json();
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}/hide-apps`, undefined, "PUT");
             return [status === "hiding", undefined];
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`hideApp ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return [false, undefined];
         }
     }
@@ -215,7 +251,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`setPermissions ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -230,18 +266,17 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`setWallpaper ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
     async updateOS() {
         try {
-            const response = await this.sendCommand(`/devices/${this.query.serialNumber}/os-update`, undefined, "POST");
-            const { status } = await response.json();
+            const { status } = await this.sendCommand(`/devices/${this.query.serialNumber}/os-update`, undefined, "POST");
             return status === "scheduling";
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`updateOS ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -251,7 +286,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`disableUSB ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }
@@ -261,7 +296,7 @@ class AppleChewLabxMDM {
             return true;
         }
         catch (error) {
-            logger_1.logger.warn(error);
+            logger_1.logger.warn(`enableUSB ~ serialNumber: ${this.query.serialNumber}, error: ${error}`);
             return false;
         }
     }

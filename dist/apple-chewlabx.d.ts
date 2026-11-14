@@ -5,7 +5,7 @@ export declare class AppleChewLabxMDM implements IMDM {
     query: MDMQuery;
     static getInstance(query: MDMQuery): Promise<AppleChewLabxMDM>;
     constructor(query: MDMQuery);
-    sendCommand(url: string, data?: Record<string, unknown> | FormData, method?: "GET" | "POST" | "PUT" | "DELETE"): Promise<Response>;
+    sendCommand(url: string, body?: Record<string, unknown> | FormData, method?: "GET" | "POST" | "PUT" | "DELETE"): Promise<any>;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;
     getDeviceStatus(status: string): DeviceStatus;

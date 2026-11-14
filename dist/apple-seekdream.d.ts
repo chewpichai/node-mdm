@@ -6,7 +6,7 @@ export declare class AppleSeekDreamMDM implements IMDM {
     query: MDMQuery;
     static getInstance(query: MDMQuery): Promise<AppleSeekDreamMDM>;
     constructor(query: MDMQuery);
-    sendCommand(url: string, data?: Record<string, unknown>): Promise<Response>;
+    sendCommand(url: string, body?: Record<string, unknown>): Promise<any>;
     getHashedPassword(): string;
     init(): Promise<void>;
     getDevice(): Promise<MDMDevice | undefined>;

@@ -39,7 +39,7 @@ export class AppleMDM implements IMDM {
     this.query = query;
   }
 
-  async sendCommand(url: string, body: Record<string, unknown>) {
+  async sendCommand(url: string, body: Record<string, unknown>): Promise<any> {
     if (!this.token) throw new Error("token_not_found");
 
     const response = await fetch(`${MDM_URL}${url}`, {
@@ -51,27 +51,38 @@ export class AppleMDM implements IMDM {
       body: JSON.stringify(body),
     });
 
-    if (!response.ok) throw new Error("network_error");
-
     const text = await response.text();
 
+    let responseBody: unknown = text;
+    let parseError: unknown;
     try {
-      const data = JSON.parse(text);
-
-      if (data.status !== 200)
-        logger.log(
-          `🚀 ~ ${this.query.serialNumber} ~ sendCommand ~ data:`,
-          data
-        );
-
-      return data;
+      responseBody = JSON.parse(text);
     } catch (error) {
-      logger.warn(
-        `🚀 ~ ${this.query.serialNumber} ~ sendCommand ~ text:`,
-        text
-      );
-      throw error;
+      parseError = error;
     }
+
+    const identifier = this.query.serialNumber || this.query.applicationId;
+    const prefix = identifier
+      ? `🚀 ~ AppleMDM ~ sendCommand ~ ${identifier} ~ ${url}:`
+      : `🚀 ~ AppleMDM ~ sendCommand ~ ${url}:`;
+    const logFn =
+      !response.ok || parseError !== undefined ? logger.warn : logger.log;
+
+    logFn(prefix, {
+      ...(response.ok ? {} : { status: response.status }),
+      requestBody: body,
+      responseBody,
+    });
+
+    if (!response.ok) {
+      throw new Error("network_error");
+    }
+
+    if (parseError !== undefined) {
+      throw parseError;
+    }
+
+    return responseBody;
   }
 
   async init() {
@@ -127,7 +138,6 @@ export class AppleMDM implements IMDM {
         (this.query.applicationId &&
           this.query.applicationId !== device.possessor)
       ) {
-        logger.log(this.query.serialNumber, device?.serialNumber);
         throw new Error("device_not_found");
       }
 
@@ -203,7 +213,7 @@ export class AppleMDM implements IMDM {
       );
       return data;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);
     }
   }
 
@@ -320,7 +330,6 @@ export class AppleMDM implements IMDM {
       const data = await this.sendCommand("/mdm/saas/device/deviceUnLock", {
         id: this.query.mdmId,
       });
-      logger.log(`removeMDM: ${this.query.serialNumber}`);
       return [11001009, 200].includes(data.status);
     } catch (error) {
       logger.warn(`serialNumber: ${this.query.serialNumber}, error: ${error}`);

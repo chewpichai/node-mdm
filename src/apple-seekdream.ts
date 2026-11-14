@@ -38,18 +38,55 @@ export class AppleSeekDreamMDM implements IMDM {
     this.query = query;
   }
 
-  async sendCommand(url: string, data?: Record<string, unknown>) {
+  async sendCommand(
+    url: string,
+    body?: Record<string, unknown>
+  ): Promise<any> {
     if (!this.token) throw new Error("token_not_found");
 
-    return await fetch(`${MDM_URL}${url}`, {
-      method: data ? "POST" : "GET",
+    const response = await fetch(`${MDM_URL}${url}`, {
+      method: body ? "POST" : "GET",
       headers: {
         "Content-Type": "application/json",
         "X-API-Key": MDM_API_KEY,
         token: this.token,
       },
-      body: data ? JSON.stringify(data) : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
+
+    const text = await response.text();
+
+    let responseBody: unknown = text;
+    let parseError: unknown;
+    try {
+      responseBody = JSON.parse(text);
+    } catch (error) {
+      parseError = error;
+    }
+
+    const loggedUrl = url.replace(/([?&]secondPassword=)[^&]*/i, "$1***");
+    const identifier = this.query.serialNumber || this.query.applicationId;
+    const prefix = identifier
+      ? `🚀 ~ AppleSeekDreamMDM ~ sendCommand ~ ${identifier} ~ ${loggedUrl}:`
+      : `🚀 ~ AppleSeekDreamMDM ~ sendCommand ~ ${loggedUrl}:`;
+    const logFn =
+      !response.ok || parseError !== undefined ? logger.warn : logger.log;
+
+    logFn(prefix, {
+      ...(response.ok ? {} : { status: response.status }),
+      requestBody: body,
+      responseBody,
+    });
+
+    if (!response.ok) {
+      throw new Error(`network_error_${response.status}`);
+    }
+
+    if (parseError !== undefined) {
+      throw parseError;
+    }
+
+    return responseBody;
   }
 
   getHashedPassword() {
@@ -91,12 +128,11 @@ export class AppleSeekDreamMDM implements IMDM {
       throw new Error("invalid_brand");
 
     try {
-      const response = await this.sendCommand(
-        `/device/info?serial=${this.query.serialNumber}`
-      );
       const {
         data: { detail: device },
-      } = await response.json();
+      } = await this.sendCommand(
+        `/device/info?serial=${this.query.serialNumber}`
+      );
 
       if (
         this.query.serialNumber &&
@@ -128,7 +164,9 @@ export class AppleSeekDreamMDM implements IMDM {
         merchantId: device.merchant_id,
       };
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `getDevice ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -141,14 +179,12 @@ export class AppleSeekDreamMDM implements IMDM {
         serial: this.query.serialNumber,
         secondPassword: this.getHashedPassword(),
       });
-      const response = await this.sendCommand(
-        `/device/activateLock?${params.toString()}`
-      );
-      const data = await response.json();
-      logger.log("getEscrowKey:", data);
+      await this.sendCommand(`/device/activateLock?${params.toString()}`);
       return "";
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `getEscrowKey ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
     }
   }
 
@@ -157,7 +193,7 @@ export class AppleSeekDreamMDM implements IMDM {
     content: string
   ): Promise<[boolean, number | undefined]> {
     try {
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         `/device/lock?serial=${this.query.serialNumber}`,
         {
           phone: phoneNumber,
@@ -166,11 +202,11 @@ export class AppleSeekDreamMDM implements IMDM {
           location: true,
         }
       );
-      const data = await response.json();
-      logger.log("enableLostMode:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `enableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
@@ -179,36 +215,33 @@ export class AppleSeekDreamMDM implements IMDM {
     [true, number | undefined] | [false, string | undefined]
   > {
     try {
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         `/device/unlock?serial=${this.query.serialNumber}`,
         {}
       );
-      const data = await response.json();
-      logger.log("disableLostMode:", data);
       return [data.code === 200, undefined];
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `disableLostMode ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return [false, undefined];
     }
   }
 
   async refreshLocation() {
-    const response = await this.sendCommand(
+    const data = await this.sendCommand(
       `/device/location?serial=${this.query.serialNumber}`,
       {}
     );
-    const data = await response.json();
-    logger.log("refreshLocations:", data);
     return data.code === 200;
   }
 
   async getLocations(): Promise<DeviceLocation[]> {
-    const response = await this.sendCommand(
-      `/device/location?serial=${this.query.serialNumber}`
-    );
     const {
       data: { locationList },
-    } = await response.json();
+    } = await this.sendCommand(
+      `/device/location?serial=${this.query.serialNumber}`
+    );
     return locationList.map((location: any) => ({
       serialNumber: this.query.serialNumber,
       latitude: Number(location.location_gg.split(",")[0]),
@@ -222,15 +255,15 @@ export class AppleSeekDreamMDM implements IMDM {
 
   async removePassword() {
     try {
-      const response = await this.sendCommand(
+      const data = await this.sendCommand(
         `/device/clearPasscode?serial=${this.query.serialNumber}`,
         {}
       );
-      const data = await response.json();
-      logger.log("removePassword:", data);
       return data.code === 200;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `removePassword ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -261,16 +294,16 @@ export class AppleSeekDreamMDM implements IMDM {
 
   async setWallpaper(changeable: boolean, wallpaper?: number) {
     try {
-      const response = await this.sendCommand("/device/wallpaper", {
+      const data = await this.sendCommand("/device/wallpaper", {
         wp_id: wallpaper,
         wp_type: 2,
         allowed: changeable ? 0 : 1,
       });
-      const data = await response.json();
-      logger.log("setWallpaper:", data);
       return data.code === 200;
     } catch (error) {
-      logger.warn(error);
+      logger.warn(
+        `setWallpaper ~ serialNumber: ${this.query.serialNumber}, error: ${error}`
+      );
       return false;
     }
   }
@@ -293,12 +326,9 @@ export class AppleSeekDreamMDM implements IMDM {
       pageSize: "1",
       mch_name: MDM_USERNAME,
     });
-    const response = await this.sendCommand(
-      `/user/merchant?${params.toString()}`
-    );
     const {
       data: { list },
-    } = await response.json();
+    } = await this.sendCommand(`/user/merchant?${params.toString()}`);
     return { credit: Number(list[0].merchant_balance) };
   }
 }
