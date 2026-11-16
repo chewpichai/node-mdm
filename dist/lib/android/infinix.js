@@ -115,7 +115,7 @@ async function getDeviceStatus(imei) {
         apiKey: API_KEY,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ getDeviceStatus ~ data:`, data);
-    if (data.data?.serverLockStatus !== 1000)
+    if (data.data?.serverLockStatus === 1000)
         return types_1.DeviceStatus.locked;
     switch (data.data?.serverState) {
         case 500:

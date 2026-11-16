@@ -84,7 +84,7 @@ async function getDeviceStatus(imei: string): Promise<DeviceStatus> {
   });
   logger.log(`🚀 ~ ${imei} ~ getDeviceStatus ~ data:`, data);
 
-  if (data.data?.serverLockStatus !== 1000) return DeviceStatus.locked;
+  if (data.data?.serverLockStatus === 1000) return DeviceStatus.locked;
 
   switch (data.data?.serverState) {
     case 500:
