@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dayjs_1 = __importDefault(require("dayjs"));
-const logger_1 = require("../../logger");
 const types_1 = require("../../../types");
 const cache_1 = require("../../cache");
+const logger_1 = require("../../logger");
+const validate_1 = require("./validate");
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
 const API_KEY = process.env.XIAOMI_API_KEY;
 const TENANT_ID = process.env.XIAOMI_TENANT_ID;
@@ -54,6 +55,9 @@ async function uploadDevice(imei) {
     return isSuccess ? 200 : 461;
 }
 async function getDevice(imei) {
+    const { device: validatedDevice } = await (0, validate_1.queryDevice)(imei);
+    if (!validatedDevice)
+        return;
     const data = await sendCommand("/query/devices", {
         deviceList: [{ deviceUid: imei }],
     });
@@ -64,7 +68,7 @@ async function getDevice(imei) {
     return {
         id: 0,
         deviceStatus: getDeviceStatus(device.stateInfo.toLowerCase()),
-        phoneModel: device.deviceMarketName,
+        phoneModel: validatedDevice.goodsInfo.goodsName,
         description: "",
         serialNumber: imei,
         imei,

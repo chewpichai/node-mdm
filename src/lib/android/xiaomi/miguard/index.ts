@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import zlib from "zlib";
-import { logger } from "../../../logger";
 import { DeviceStatus, MDMDevice } from "../../../../types";
+import { logger } from "../../../logger";
+import { queryDevice } from "../validate";
 import { AESUtils } from "./aesUtils";
 import { ErrorCode } from "./errorCode";
 import { PartnerResponse } from "./partnerResponse";
@@ -295,6 +296,9 @@ async function uploadDevice(imei: string): Promise<void> {
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
+  const { device: validatedDevice } = await queryDevice(imei);
+  if (!validatedDevice) return;
+
   const data = await sendCommand<{
     code: number;
     msg: string;
@@ -308,7 +312,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   return {
     id: 0,
     deviceStatus: getDeviceStatus(data.content.financialStatus),
-    phoneModel: "",
+    phoneModel: validatedDevice.goodsInfo.goodsName,
     description: "",
     serialNumber: imei,
     imei,

@@ -8,6 +8,7 @@ import {
   getMDM,
   logger,
 } from "../dist";
+import { queryDevice } from "../dist/lib/android/xiaomi/validate";
 
 const testAppleMDM = async () => {
   const mdm = (await getMDM({
@@ -195,10 +196,11 @@ const testAndroidOEMMDM = async () => {
   // await testAndroidMDM();
   // await testAndroidSeekdreamMDM();
   // await testAppleChewLabxMDM();
-  await testAppleMDMLockPhoneMDM();
+  // await testAppleMDMLockPhoneMDM();
   // await testAppleSeekDreamMDM();
   // await testAppleMDMLockPhoneMDMDevices();
   // await testAndroidOEMMDM();
   // await miguard.uploadDevice("869950080069228");
   // await miguard.lockDevice("868952080078101", "", "");
+  console.log(await queryDevice("860081084055648"));
 })();

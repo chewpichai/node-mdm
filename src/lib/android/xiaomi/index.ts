@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
-import { logger } from "../../logger";
 import { DeviceStatus, MDMDevice } from "../../../types";
 import { getCache } from "../../cache";
+import { logger } from "../../logger";
+import { queryDevice } from "./validate";
 
 const BASE_URL = "https://api.cloud.trustonic.com/api/v2";
 const API_KEY = process.env.XIAOMI_API_KEY;
@@ -60,6 +61,9 @@ async function uploadDevice(imei: string): Promise<number> {
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
+  const { device: validatedDevice } = await queryDevice(imei);
+  if (!validatedDevice) return;
+
   const data = await sendCommand("/query/devices", {
     deviceList: [{ deviceUid: imei }],
   });
@@ -70,7 +74,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   return {
     id: 0,
     deviceStatus: getDeviceStatus(device.stateInfo.toLowerCase()),
-    phoneModel: device.deviceMarketName,
+    phoneModel: validatedDevice.goodsInfo.goodsName,
     description: "",
     serialNumber: imei,
     imei,
