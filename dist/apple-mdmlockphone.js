@@ -188,7 +188,7 @@ class AppleMDMLockPhoneMDM {
                     this.query.serialNumber !== device?.sserialno) ||
                 (this.query.applicationId &&
                     this.query.applicationId !== device.contractCode)) {
-                logger_1.logger.log(`query: ${this.query}`);
+                logger_1.logger.log(`query: ${JSON.stringify(this.query)}`);
                 throw new Error(`device_not_found_${this.query.serialNumber || this.query.applicationId}`);
             }
             this.query.serialNumber = device.sserialno;

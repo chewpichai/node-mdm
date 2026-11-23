@@ -228,7 +228,7 @@ export class AppleMDMLockPhoneMDM implements IMDM {
         (this.query.applicationId &&
           this.query.applicationId !== device.contractCode)
       ) {
-        logger.log(`query: ${this.query}`);
+        logger.log(`query: ${JSON.stringify(this.query)}`);
         throw new Error(
           `device_not_found_${this.query.serialNumber || this.query.applicationId}`
         );
