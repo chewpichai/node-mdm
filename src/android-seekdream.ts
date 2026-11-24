@@ -10,6 +10,7 @@ const MDM_USERNAME = process.env.MDM_SEEKDREAM_USERNAME;
 const MDM_PASSWORD = process.env.MDM_SEEKDREAM_PASSWORD;
 const MDM_API_KEY = process.env.MDM_SEEKDREAM_API_KEY;
 const MDM_ROLE = process.env.MDM_SEEKDREAM_ROLE;
+const MDM_MERCHANT_ID = process.env.MDM_SEEKDREAM_MERCHANT_ID;
 
 export class AndroidSeekDreamMDM implements IMDM {
   tokenKey: string;
@@ -146,12 +147,10 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/lock", {
         serial: this.query.serialNumber,
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
         phone: phoneNumber,
         content,
       });
@@ -170,12 +169,10 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/unlock", {
         serial: this.query.serialNumber,
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
       });
       const data = await response.json();
       logger.log("🚀 ~ AndroidSeekDreamMDM ~ disableLostMode ~ data:", data);
@@ -187,13 +184,11 @@ export class AndroidSeekDreamMDM implements IMDM {
   }
 
   async getLocations() {
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     const params = new URLSearchParams();
     params.append("serial", this.query.serialNumber);
     params.append("current", "1");
     params.append("pageSize", "20");
-    params.append("merchant_id", this.query.merchantId);
+    params.append("merchant_id", this.query.merchantId ?? MDM_MERCHANT_ID);
 
     const response = await this.sendCommand(`/google/getLocations?${params}`);
     const { data } = await response.json();
@@ -210,13 +205,11 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/disown", {
         serial: this.query.serialNumber,
         secondPassword: password,
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
       });
       const data = await response.json();
       logger.log("🚀 ~ AndroidSeekDreamMDM ~ removeMDM ~ data:", data);
@@ -231,12 +224,10 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/clearPassword", {
         serial: this.query.serialNumber,
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
       });
       const data = await response.json();
       logger.log("🚀 ~ AndroidSeekDreamMDM ~ clearPassword ~ data:", data);
@@ -263,13 +254,11 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const params = new URLSearchParams();
       params.append("current", "1");
       params.append("pageSize", "8");
-      params.append("merchant_id", this.query.merchantId);
+      params.append("merchant_id", this.query.merchantId ?? MDM_MERCHANT_ID);
 
       const response = await this.sendCommand(`/user/wallpaper?${params}`);
       const { data } = await response.json();
@@ -289,15 +278,13 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/pushWallpaper", {
         serial: this.query.serialNumber,
         wp_type: "3",
         wp_id: wallpaperId,
         allowed: changeable ? "1" : "0",
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
       });
       const data = await response.json();
       logger.log("🚀 ~ AndroidSeekDreamMDM ~ setWallpaper ~ data:", data);
@@ -316,12 +303,10 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/reboot", {
         serial: this.query.serialNumber,
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
       });
       const data = await response.json();
       logger.log("🚀 ~ AndroidSeekDreamMDM ~ reboot ~ data:", data);
@@ -336,12 +321,10 @@ export class AndroidSeekDreamMDM implements IMDM {
     if (this.query.brand !== "android-seekdream")
       throw new Error("invalid_brand");
 
-    if (!this.query.merchantId) throw new Error("merchant_id_not_found");
-
     try {
       const response = await this.sendCommand("/google/playSound", {
         serial: this.query.serialNumber,
-        merchant_id: this.query.merchantId,
+        merchant_id: this.query.merchantId ?? MDM_MERCHANT_ID,
       });
       const data = await response.json();
       logger.log("🚀 ~ AndroidSeekDreamMDM ~ playSound ~ data:", data);
