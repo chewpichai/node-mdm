@@ -294,7 +294,10 @@ export class AppleMDM implements IMDM {
       page: 1,
       deviceId: this.query.mdmId,
     });
-    return rows as DeviceLocation[];
+    return rows.map((r: { lng: number; lat: number }) => ({
+      lng: r.lng,
+      lat: r.lat,
+    })) as DeviceLocation[];
   }
 
   async enableSupervision() {

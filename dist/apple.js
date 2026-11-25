@@ -238,7 +238,10 @@ class AppleMDM {
             page: 1,
             deviceId: this.query.mdmId,
         });
-        return rows;
+        return rows.map((r) => ({
+            lng: r.lng,
+            lat: r.lat,
+        }));
     }
     async enableSupervision() {
         if (!this.query.mdmId)

@@ -185,7 +185,7 @@ class AppleMDMLockPhoneMDM {
                 .at(0);
             if (!device ||
                 (this.query.serialNumber &&
-                    this.query.serialNumber !== device?.sserialno) ||
+                    this.query.serialNumber !== device.sserialno) ||
                 (this.query.applicationId &&
                     this.query.applicationId !== device.contractCode)) {
                 logger_1.logger.log(`query: ${JSON.stringify(this.query)}`);
