@@ -39,8 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const apple_1 = require("../../apple");
-const logger_1 = require("../logger");
 const types_1 = require("../../types");
+const logger_1 = require("../logger");
 const BASE_URL = "https://ilockcardf-isp.realme.com";
 const CARRIER_CODE = process.env.REALME_CARRIER_CODE;
 const TOKEN = process.env.REALME_TOKEN;
@@ -143,7 +143,27 @@ async function sendMessage(imei, phone, message) {
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.result === "SUCCESS";
 }
+async function deleteDevice(imei) {
+    let data = await sendCommand("/package/deletePackage", {
+        deviceId: imei,
+        type: 1,
+    });
+    logger_1.logger.log(`🚀 ~ ${imei} ~ deletePackage ~ data:`, data);
+    const isSuccess = data.result === "SUCCESS";
+    if (!isSuccess)
+        return false;
+    await (0, apple_1.sleep)(5000);
+    data = await sendCommand("/flexiblePackage/upload", {
+        deviceUid: imei,
+        operationType: 0,
+    });
+    logger_1.logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
+    return data.message === "SUCCESS";
+}
 async function completeDevice(imei) {
+    const device = await getDevice(imei);
+    if (device?.deviceStatus === types_1.DeviceStatus.activating)
+        return deleteDevice(imei);
     const data = await sendCommand("/complete", { deviceUid: imei });
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.result === "SUCCESS";

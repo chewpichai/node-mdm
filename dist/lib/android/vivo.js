@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VTrustOpenAPI = exports.VTrustControlType = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
-const logger_1 = require("../logger");
 const types_1 = require("../../types");
+const logger_1 = require("../logger");
 var VTrustControlType;
 (function (VTrustControlType) {
     VTrustControlType[VTrustControlType["LOCK"] = 1] = "LOCK";
@@ -305,7 +305,15 @@ async function sendMessage(imei, phone, message) {
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.message === "SUCCESS";
 }
+async function deleteDevice(imei) {
+    const data = await getClient().delete(imei);
+    logger_1.logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
+    return data.message === "SUCCESS";
+}
 async function completeDevice(imei) {
+    const device = await getDevice(imei);
+    if (device?.deviceStatus === types_1.DeviceStatus.activating)
+        return deleteDevice(imei);
     const data = await getClient().completeContract(imei);
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.message === "SUCCESS";

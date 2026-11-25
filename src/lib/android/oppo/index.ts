@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { sleep } from "../../../apple";
-import { logger } from "../../logger";
 import { DeviceStatus, MDMDevice } from "../../../types";
+import { logger } from "../../logger";
 import { oGuardSign, possefySign } from "./sign";
 
 const BASE_URL = "https://ilockcardf-isp.apps.coloros.com";
@@ -132,6 +132,25 @@ async function sendMessage(imei: string, phone: string, message: string) {
   });
   logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
   return data.result === "SUCCESS";
+}
+
+async function deleteDevice(imei: string) {
+  let data = await sendCommand("/setmeal/delete", {
+    deviceUid: imei,
+    type: 1,
+  });
+  logger.log(`🚀 ~ ${imei} ~ deletePackage ~ data:`, data);
+  const isSuccess = data.result === "SUCCESS";
+  if (isSuccess) return false;
+
+  await sleep(5000);
+
+  data = await sendCommand("/flexiblePackage/upload", {
+    deviceUid: imei,
+    operationType: 0,
+  });
+  logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
+  return data.message === "SUCCESS";
 }
 
 async function completeDevice(imei: string) {

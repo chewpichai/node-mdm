@@ -159,7 +159,18 @@ async function sendMessage(imei, phone, message) {
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
     return data.code === 200;
 }
+async function deleteDevice(imei) {
+    const data = await sendCommand("/api/partner/lock/v1/imei/cancel", {
+        imeiInfo: imei,
+        apiKey: API_KEY,
+    });
+    logger_1.logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
+    return data.code === 200;
+}
 async function completeDevice(imei) {
+    const device = await getDevice(imei);
+    if (device?.deviceStatus === types_1.DeviceStatus.activating)
+        return deleteDevice(imei);
     const data = await sendCommand("/api/partner/lock/v1/removeLock", {
         imei,
         apiKey: API_KEY,

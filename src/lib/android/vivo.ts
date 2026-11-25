@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import dayjs from "dayjs";
-import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
+import { logger } from "../logger";
 
 export interface VTrustOpenAPIOptions {
   clientId?: string;
@@ -419,7 +419,17 @@ async function sendMessage(
   return data.message === "SUCCESS";
 }
 
+async function deleteDevice(imei: string): Promise<boolean> {
+  const data = await getClient().delete(imei);
+  logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
+  return data.message === "SUCCESS";
+}
+
 async function completeDevice(imei: string): Promise<boolean> {
+  const device = await getDevice(imei);
+  if (device?.deviceStatus === DeviceStatus.activating)
+    return deleteDevice(imei);
+
   const data = await getClient().completeContract(imei);
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.message === "SUCCESS";
