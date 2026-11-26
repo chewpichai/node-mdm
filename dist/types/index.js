@@ -18,6 +18,7 @@ exports.OEM_BRANDS = [
     "honor",
     "infinix",
     "iqoo",
+    "mi",
     "nubia",
     "oppo",
     "realme",

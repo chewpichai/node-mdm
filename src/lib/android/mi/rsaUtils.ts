@@ -1,10 +1,10 @@
-import crypto from 'node:crypto';
-import zlib from 'node:zlib';
-import { logger } from '../../../logger';
+import crypto from "node:crypto";
+import zlib from "node:zlib";
+import { logger } from "../../logger";
 
 function cleanBase64Key(rawKey: string): Buffer {
-  const clean = rawKey.replace(/[\r\n\s]/g, '');
-  return Buffer.from(clean, 'base64');
+  const clean = rawKey.replace(/[\r\n\s]/g, "");
+  return Buffer.from(clean, "base64");
 }
 
 /**
@@ -19,7 +19,7 @@ function pkcs1Unpad(buf: Buffer): Buffer {
   } else if (buf[0] === 0x02) {
     idx = 1;
   } else {
-    throw new Error('Invalid PKCS#1 padding: missing leading 0x00 0x02 marker');
+    throw new Error("Invalid PKCS#1 padding: missing leading 0x00 0x02 marker");
   }
 
   while (idx < buf.length && buf[idx] !== 0x00) {
@@ -27,17 +27,17 @@ function pkcs1Unpad(buf: Buffer): Buffer {
   }
 
   if (idx >= buf.length) {
-    throw new Error('Invalid PKCS#1 padding: missing delimiter 0x00');
+    throw new Error("Invalid PKCS#1 padding: missing delimiter 0x00");
   }
 
   return buf.subarray(idx + 1);
 }
 
 export class RSAUtils {
-  public static readonly KEY_ALGORITHM = 'RSA';
-  public static readonly SIGNATURE_ALGORITHM = 'SHA1WithRSA';
-  public static readonly ENCODING = 'utf-8';
-  public static readonly X509 = 'X.509';
+  public static readonly KEY_ALGORITHM = "RSA";
+  public static readonly SIGNATURE_ALGORITHM = "SHA1WithRSA";
+  public static readonly ENCODING = "utf-8";
+  public static readonly X509 = "X.509";
 
   // RSA max block sizes for 1024-bit RSA
   private static readonly MAX_ENCRYPT_BLOCK = 117;
@@ -48,7 +48,7 @@ export class RSAUtils {
    */
   public static getPublicKey(key: string): crypto.KeyObject {
     const der = cleanBase64Key(key);
-    return crypto.createPublicKey({ key: der, format: 'der', type: 'spki' });
+    return crypto.createPublicKey({ key: der, format: "der", type: "spki" });
   }
 
   /**
@@ -56,7 +56,7 @@ export class RSAUtils {
    */
   public static getPrivateKey(key: string): crypto.KeyObject {
     const der = cleanBase64Key(key);
-    return crypto.createPrivateKey({ key: der, format: 'der', type: 'pkcs8' });
+    return crypto.createPrivateKey({ key: der, format: "der", type: "pkcs8" });
   }
 
   /**
@@ -67,14 +67,17 @@ export class RSAUtils {
    * @param privateKey Base64-encoded PKCS#8 private key
    * @returns URL-safe Base64 signature string, or null on error
    */
-  public static signByPrivateKey(content: string, privateKey: string): string | null {
+  public static signByPrivateKey(
+    content: string,
+    privateKey: string
+  ): string | null {
     try {
       const priKey = this.getPrivateKey(privateKey);
-      const signer = crypto.createSign('RSA-SHA1');
-      signer.update(content, 'utf8');
-      return signer.sign(priKey, 'base64url');
+      const signer = crypto.createSign("RSA-SHA1");
+      signer.update(content, "utf8");
+      return signer.sign(priKey, "base64url");
     } catch (e) {
-      logger.error('sign error', e);
+      logger.error("sign error", e);
       return null;
     }
   }
@@ -88,15 +91,19 @@ export class RSAUtils {
    * @param publicKey Base64-encoded X.509 SPKI public key
    * @returns true if valid, false otherwise
    */
-  public static verifySignByPublicKey(content: string, sign: string, publicKey: string): boolean {
+  public static verifySignByPublicKey(
+    content: string,
+    sign: string,
+    publicKey: string
+  ): boolean {
     try {
       const pubKey = this.getPublicKey(publicKey);
-      const verifier = crypto.createVerify('RSA-SHA1');
-      verifier.update(content, 'utf8');
-      const signBuf = Buffer.from(sign, 'base64url');
+      const verifier = crypto.createVerify("RSA-SHA1");
+      verifier.update(content, "utf8");
+      const signBuf = Buffer.from(sign, "base64url");
       return verifier.verify(pubKey, signBuf);
     } catch (e) {
-      logger.error('verify sign error', e);
+      logger.error("verify sign error", e);
       return false;
     }
   }
@@ -108,19 +115,22 @@ export class RSAUtils {
    * @param publicKey Base64-encoded public key
    * @returns Standard Base64-encoded ciphertext, or null on error
    */
-  public static encryptByPublicKey(plainText: string, publicKey: string): string | null {
+  public static encryptByPublicKey(
+    plainText: string,
+    publicKey: string
+  ): string | null {
     try {
       const pubKey = this.getPublicKey(publicKey);
       const encrypted = crypto.publicEncrypt(
         {
           key: pubKey,
-          padding: crypto.constants.RSA_PKCS1_PADDING
+          padding: crypto.constants.RSA_PKCS1_PADDING,
         },
-        Buffer.from(plainText, 'utf8')
+        Buffer.from(plainText, "utf8")
       );
-      return encrypted.toString('base64');
+      return encrypted.toString("base64");
     } catch (e) {
-      logger.error('encrypt error', e);
+      logger.error("encrypt error", e);
       return null;
     }
   }
@@ -128,19 +138,22 @@ export class RSAUtils {
   /**
    * Encrypts plaintext using RSA public key, returns URL-safe Base64 string.
    */
-  public static encryptURLSafeByPublicKey(plainText: string, publicKey: string): string | null {
+  public static encryptURLSafeByPublicKey(
+    plainText: string,
+    publicKey: string
+  ): string | null {
     try {
       const pubKey = this.getPublicKey(publicKey);
       const encrypted = crypto.publicEncrypt(
         {
           key: pubKey,
-          padding: crypto.constants.RSA_PKCS1_PADDING
+          padding: crypto.constants.RSA_PKCS1_PADDING,
         },
-        Buffer.from(plainText, 'utf8')
+        Buffer.from(plainText, "utf8")
       );
-      return encrypted.toString('base64url');
+      return encrypted.toString("base64url");
     } catch (e) {
-      logger.error('encrypt URL safe error', e);
+      logger.error("encrypt URL safe error", e);
       return null;
     }
   }
@@ -152,21 +165,24 @@ export class RSAUtils {
    * @param privateKey Base64-encoded private key
    * @returns Decrypted plaintext string, or null on error
    */
-  public static decryptByPrivateKey(enStr: string, privateKey: string): string | null {
+  public static decryptByPrivateKey(
+    enStr: string,
+    privateKey: string
+  ): string | null {
     try {
       const priKey = this.getPrivateKey(privateKey);
-      const cipherBuf = Buffer.from(enStr, 'base64');
+      const cipherBuf = Buffer.from(enStr, "base64");
       const raw = crypto.privateDecrypt(
         {
           key: priKey,
-          padding: crypto.constants.RSA_NO_PADDING
+          padding: crypto.constants.RSA_NO_PADDING,
         },
         cipherBuf
       );
       const unpadded = pkcs1Unpad(raw);
-      return unpadded.toString('utf8');
+      return unpadded.toString("utf8");
     } catch (e) {
-      logger.error('decrypt error', e);
+      logger.error("decrypt error", e);
       return null;
     }
   }
@@ -174,20 +190,26 @@ export class RSAUtils {
   /**
    * Segmented encryption for plaintexts longer than 117 bytes.
    */
-  public static encryptBySegment(publicKey: string, plainText: string): string | null {
+  public static encryptBySegment(
+    publicKey: string,
+    plainText: string
+  ): string | null {
     try {
       const pubKey = this.getPublicKey(publicKey);
-      const plainBytes = Buffer.from(plainText, 'utf8');
+      const plainBytes = Buffer.from(plainText, "utf8");
       const chunks: Buffer[] = [];
       let offset = 0;
 
       while (offset < plainBytes.length) {
-        const end = Math.min(offset + this.MAX_ENCRYPT_BLOCK, plainBytes.length);
+        const end = Math.min(
+          offset + this.MAX_ENCRYPT_BLOCK,
+          plainBytes.length
+        );
         const chunk = plainBytes.subarray(offset, end);
         const encryptedChunk = crypto.publicEncrypt(
           {
             key: pubKey,
-            padding: crypto.constants.RSA_PKCS1_PADDING
+            padding: crypto.constants.RSA_PKCS1_PADDING,
           },
           chunk
         );
@@ -195,9 +217,9 @@ export class RSAUtils {
         offset = end;
       }
 
-      return Buffer.concat(chunks).toString('base64');
+      return Buffer.concat(chunks).toString("base64");
     } catch (e) {
-      logger.error('encryptBySegment error', e);
+      logger.error("encryptBySegment error", e);
       return null;
     }
   }
@@ -205,20 +227,26 @@ export class RSAUtils {
   /**
    * Segmented decryption for ciphertexts longer than 128 bytes.
    */
-  public static decryptBySegment(privateKey: string, encodedText: string): string | null {
+  public static decryptBySegment(
+    privateKey: string,
+    encodedText: string
+  ): string | null {
     try {
       const priKey = this.getPrivateKey(privateKey);
-      const cipherBytes = Buffer.from(encodedText, 'base64');
+      const cipherBytes = Buffer.from(encodedText, "base64");
       const chunks: Buffer[] = [];
       let offset = 0;
 
       while (offset < cipherBytes.length) {
-        const end = Math.min(offset + this.MAX_DECRYPT_BLOCK, cipherBytes.length);
+        const end = Math.min(
+          offset + this.MAX_DECRYPT_BLOCK,
+          cipherBytes.length
+        );
         const chunk = cipherBytes.subarray(offset, end);
         const raw = crypto.privateDecrypt(
           {
             key: priKey,
-            padding: crypto.constants.RSA_NO_PADDING
+            padding: crypto.constants.RSA_NO_PADDING,
           },
           chunk
         );
@@ -227,9 +255,9 @@ export class RSAUtils {
         offset = end;
       }
 
-      return Buffer.concat(chunks).toString('utf8');
+      return Buffer.concat(chunks).toString("utf8");
     } catch (e) {
-      logger.error('decryptBySegment error', e);
+      logger.error("decryptBySegment error", e);
       return null;
     }
   }
@@ -246,24 +274,24 @@ export function getSignContent(params: Record<string, any>): string {
 
   for (const key of sortedKeys) {
     const val = params[key];
-    if (val !== undefined && val !== null && val !== '') {
+    if (val !== undefined && val !== null && val !== "") {
       parts.push(`${key}=${val}`);
     }
   }
 
-  return parts.join('&');
+  return parts.join("&");
 }
 
 /**
  * Compresses string with GZIP, matching Java's GZIPOutputStream.
  */
 export function compressGzip(str: string): Buffer {
-  return zlib.gzipSync(Buffer.from(str, 'utf8'));
+  return zlib.gzipSync(Buffer.from(str, "utf8"));
 }
 
 /**
  * Decompresses GZIP buffer into UTF-8 string.
  */
 export function decompressGzip(buf: Buffer): string {
-  return zlib.gunzipSync(buf).toString('utf8');
+  return zlib.gunzipSync(buf).toString("utf8");
 }

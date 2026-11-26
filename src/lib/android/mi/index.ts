@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import zlib from "zlib";
-import { DeviceStatus, MDMDevice } from "../../../../types";
-import { logger } from "../../../logger";
-import { queryDevice } from "../validate";
+import { DeviceStatus, MDMDevice } from "../../../types";
+import { logger } from "../../logger";
+import { queryDevice } from "../xiaomi/validate";
 import { AESUtils } from "./aesUtils";
 import { ErrorCode } from "./errorCode";
 import { PartnerResponse } from "./partnerResponse";
@@ -284,7 +284,7 @@ async function sendCommand<T>(
   return JSON.parse(parsedResponse.data);
 }
 
-async function uploadDevice(imei: string): Promise<void> {
+async function uploadDevice(imei: string): Promise<number> {
   const data = await sendCommand<{ code: number; msg: string }>(
     "mi.lock.device.register",
     {
@@ -293,6 +293,7 @@ async function uploadDevice(imei: string): Promise<void> {
     }
   );
   logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
+  return data.code === 0 ? 200 : 461;
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
