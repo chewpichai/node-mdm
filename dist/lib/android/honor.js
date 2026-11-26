@@ -39,8 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const utc_1 = __importDefault(require("dayjs/plugin/utc"));
-const logger_1 = require("../logger");
 const types_1 = require("../../types");
+const logger_1 = require("../logger");
 dayjs_1.default.extend(utc_1.default);
 const BASE_URL = "https://apigw.yun.hihonor.com/api/devicelock/v1";
 const APP_ID = process.env.HONOR_APP_ID;
@@ -160,7 +160,9 @@ async function sendMessage(imei, phone, message) {
     return data.message === "success";
 }
 async function completeDevice(imei) {
-    const data = await sendCommand("/unbind/deliver", { registeredIds: [imei] });
+    const data = await sendCommand("/unbind/deliver", {
+        registeredIds: [[imei]],
+    });
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
     return data.message === "success";
 }

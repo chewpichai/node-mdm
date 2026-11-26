@@ -1,8 +1,8 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
+import { logger } from "../logger";
 
 dayjs.extend(utc);
 
@@ -147,7 +147,9 @@ async function sendMessage(imei: string, phone: string, message: string) {
 }
 
 async function completeDevice(imei: string) {
-  const data = await sendCommand("/unbind/deliver", { registeredIds: [imei] });
+  const data = await sendCommand("/unbind/deliver", {
+    registeredIds: [[imei]],
+  });
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.message === "success";
 }
