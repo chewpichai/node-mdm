@@ -40,7 +40,7 @@ async function sendCommand(
 }
 
 async function uploadDevice(imei: string): Promise<number> {
-  let data = await sendCommand("/devices/import", { deviceInfos: [imei] });
+  let data = await sendCommand("/devices/import", { deviceInfos: [[imei]] });
   logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
   return data.message === "success" ? 200 : data.code;
 }
@@ -148,7 +148,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/unbind/deliver", {
-    registeredIds: [[imei]],
+    registeredIds: [imei],
   });
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
   return data.message === "success";
