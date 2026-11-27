@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import zlib from "zlib";
 import { DeviceStatus, MDMDevice } from "../../../types";
 import { logger } from "../../logger";
-import { queryDevice } from "../xiaomi/validate";
 import { AESUtils } from "./aesUtils";
 import { ErrorCode } from "./errorCode";
 import { PartnerResponse } from "./partnerResponse";
@@ -297,8 +296,8 @@ async function uploadDevice(imei: string): Promise<number> {
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
-  const { device: validatedDevice } = await queryDevice(imei);
-  if (!validatedDevice) return;
+  // const { device: validatedDevice } = await queryDevice(imei);
+  // if (!validatedDevice) return;
 
   const data = await sendCommand<{
     code: number;
@@ -313,7 +312,7 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   return {
     id: 0,
     deviceStatus: getDeviceStatus(data.content.financialStatus),
-    phoneModel: validatedDevice.goodsInfo.goodsName,
+    phoneModel: "",
     description: "",
     serialNumber: imei,
     imei,

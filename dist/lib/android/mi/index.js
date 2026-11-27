@@ -9,7 +9,6 @@ const dayjs_1 = __importDefault(require("dayjs"));
 const zlib_1 = __importDefault(require("zlib"));
 const types_1 = require("../../../types");
 const logger_1 = require("../../logger");
-const validate_1 = require("../xiaomi/validate");
 const aesUtils_1 = require("./aesUtils");
 const errorCode_1 = require("./errorCode");
 const partnerResponse_1 = require("./partnerResponse");
@@ -234,9 +233,8 @@ async function uploadDevice(imei) {
     return data.code === 0 ? 200 : 461;
 }
 async function getDevice(imei) {
-    const { device: validatedDevice } = await (0, validate_1.queryDevice)(imei);
-    if (!validatedDevice)
-        return;
+    // const { device: validatedDevice } = await queryDevice(imei);
+    // if (!validatedDevice) return;
     const data = await sendCommand("mi.lock.device.status", {
         financialOrgNo: ORG_NO,
         deviceRegisterNo: imei,
@@ -245,7 +243,7 @@ async function getDevice(imei) {
     return {
         id: 0,
         deviceStatus: getDeviceStatus(data.content.financialStatus),
-        phoneModel: validatedDevice.goodsInfo.goodsName,
+        phoneModel: "",
         description: "",
         serialNumber: imei,
         imei,
