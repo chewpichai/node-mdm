@@ -279,7 +279,7 @@ async function lockDevice(imei, phone, message) {
         content: message,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-    return data.msg === "success";
+    return data.msg.toLowerCase() === "success";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("mi.lock.device.policy.send", {
@@ -288,7 +288,7 @@ async function unlockDevice(imei) {
         policyNo: "unlock",
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-    return data.msg === "success";
+    return data.msg.toLowerCase() === "success";
 }
 async function sendMessage(imei, phone, message) {
     const data = await sendCommand("mi.lock.device.policy.send", {
@@ -299,7 +299,7 @@ async function sendMessage(imei, phone, message) {
         content: message,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-    return data.msg === "success";
+    return data.msg.toLowerCase() === "success";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("mi.lock.device.policy.send", {
@@ -308,7 +308,7 @@ async function completeDevice(imei) {
         policyNo: "release",
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-    return data.msg === "success";
+    return data.msg.toLowerCase() === "success";
 }
 exports.default = {
     uploadDevice,

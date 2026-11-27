@@ -355,7 +355,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     }
   );
   logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-  return data.msg === "success";
+  return data.msg.toLowerCase() === "success";
 }
 
 async function unlockDevice(imei: string) {
@@ -368,7 +368,7 @@ async function unlockDevice(imei: string) {
     }
   );
   logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-  return data.msg === "success";
+  return data.msg.toLowerCase() === "success";
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -383,7 +383,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     }
   );
   logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-  return data.msg === "success";
+  return data.msg.toLowerCase() === "success";
 }
 
 async function completeDevice(imei: string) {
@@ -396,7 +396,7 @@ async function completeDevice(imei: string) {
     }
   );
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-  return data.msg === "success";
+  return data.msg.toLowerCase() === "success";
 }
 
 export default {
