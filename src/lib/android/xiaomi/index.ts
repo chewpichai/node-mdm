@@ -55,7 +55,8 @@ async function uploadDevice(imei: string): Promise<number> {
     ],
   });
   logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-  const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
+  const isSuccess =
+    data.deviceList[0].resultCode.toLowerCase() === "request_success";
 
   return isSuccess ? 200 : 461;
 }
@@ -115,7 +116,9 @@ async function lockDevice(imei: string, phone: string, message: string) {
     ],
   });
   logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-  return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
+  return (
+    data.lockResponseList[0].resultCode.toLowerCase() === "request_success"
+  );
 }
 
 async function unlockDevice(imei: string) {
@@ -123,7 +126,9 @@ async function unlockDevice(imei: string) {
     unLockList: [{ deviceUid: imei }],
   });
   logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-  return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
+  return (
+    data.unlockResponseList[0].resultCode.toLowerCase() === "request_success"
+  );
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -138,7 +143,9 @@ async function sendMessage(imei: string, phone: string, message: string) {
     ],
   });
   logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-  return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
+  return (
+    data.messageResponseList[0].resultCode.toLowerCase() === "request_success"
+  );
 }
 
 async function completeDevice(imei: string) {
@@ -148,7 +155,9 @@ async function completeDevice(imei: string) {
     "PUT"
   );
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-  return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
+  return (
+    data.releaseResponseList[0].resultCode.toLowerCase() === "request_success"
+  );
 }
 
 export default {

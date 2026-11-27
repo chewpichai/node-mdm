@@ -234,7 +234,7 @@ function getClient() {
 async function uploadDevice(imei) {
     const data = await getClient().enroll(imei);
     logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-    const isSuccess = data.message === "SUCCESS";
+    const isSuccess = data.message.toLowerCase() === "success";
     if (isSuccess)
         return 200;
     return 461;
@@ -242,7 +242,7 @@ async function uploadDevice(imei) {
 async function getDevice(imei) {
     const data = await getClient().queryDeviceInfo(imei);
     logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
-    if (data.message !== "SUCCESS" || !data.data)
+    if (data.message.toLowerCase() !== "success" || !data.data)
         return;
     const device = data.data;
     const status = getDeviceStatus(device.status);
@@ -293,22 +293,22 @@ function getDeviceStatus(status) {
 async function lockDevice(imei, phone, message) {
     const data = await getClient().control(imei, 1);
     logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-    return data.message === "SUCCESS";
+    return data.message.toLowerCase() === "success";
 }
 async function unlockDevice(imei) {
     const data = await getClient().control(imei, 2);
     logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-    return data.message === "SUCCESS";
+    return data.message.toLowerCase() === "success";
 }
 async function sendMessage(imei, phone, message) {
     const data = await getClient().message(imei, phone, message);
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-    return data.message === "SUCCESS";
+    return data.message.toLowerCase() === "success";
 }
 async function deleteDevice(imei) {
     const data = await getClient().delete(imei);
     logger_1.logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
-    return data.message === "SUCCESS";
+    return data.message.toLowerCase() === "success";
 }
 async function completeDevice(imei) {
     const device = await getDevice(imei);
@@ -316,7 +316,7 @@ async function completeDevice(imei) {
         return deleteDevice(imei);
     const data = await getClient().completeContract(imei);
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-    return data.message === "SUCCESS";
+    return data.message.toLowerCase() === "success";
 }
 exports.default = {
     uploadDevice,

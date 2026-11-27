@@ -39,8 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const utc_1 = __importDefault(require("dayjs/plugin/utc"));
-const logger_1 = require("../logger");
 const types_1 = require("../../types");
+const logger_1 = require("../logger");
 dayjs_1.default.extend(utc_1.default);
 const BASE_URL = "https://vdmsvn.ztems.com/vdms20/api/north";
 const KEY_ID = process.env.NUBIA_KEY_ID;
@@ -68,12 +68,12 @@ async function sendCommand(path, body) {
 async function uploadDevice(imei) {
     let data = await sendCommand("/enroll", [{ imei }]);
     logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-    return data.message === "success" ? 200 : data.code;
+    return data.message.toLowerCase() === "success" ? 200 : data.code;
 }
 async function getDevice(imei) {
     const data = await sendCommand("/get-model", [{ imei }]);
     logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
-    if (data.message !== "success" || data.data.length === 0)
+    if (data.message.toLowerCase() !== "success" || data.data.length === 0)
         return;
     const device = data.data[0];
     return {
@@ -122,7 +122,7 @@ async function lockDevice(imei, phone, message) {
         lockInfoList: [{ type: "LOCK_PHONE" }],
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-    return data.message === "success";
+    return data.message.toLowerCase() === "success";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/unlock", {
@@ -130,7 +130,7 @@ async function unlockDevice(imei) {
         lockInfoList: [{ type: "LOCK_PHONE" }],
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-    return data.message === "success";
+    return data.message.toLowerCase() === "success";
 }
 async function sendMessage(imei, phone, message) {
     const data = await sendCommand("/alert", {
@@ -138,12 +138,12 @@ async function sendMessage(imei, phone, message) {
         alertMessage: message,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-    return data.message === "success";
+    return data.message.toLowerCase() === "success";
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/deregister", [{ imei }]);
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-    return data.message === "success";
+    return data.message.toLowerCase() === "success";
 }
 exports.default = {
     uploadDevice,

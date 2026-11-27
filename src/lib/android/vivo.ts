@@ -335,7 +335,7 @@ function getClient(): VTrustOpenAPI {
 async function uploadDevice(imei: string): Promise<number> {
   const data = await getClient().enroll(imei);
   logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-  const isSuccess = data.message === "SUCCESS";
+  const isSuccess = data.message.toLowerCase() === "success";
   if (isSuccess) return 200;
   return 461;
 }
@@ -343,7 +343,7 @@ async function uploadDevice(imei: string): Promise<number> {
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await getClient().queryDeviceInfo(imei);
   logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
-  if (data.message !== "SUCCESS" || !data.data) return;
+  if (data.message.toLowerCase() !== "success" || !data.data) return;
   const device = data.data;
   const status = getDeviceStatus(device.status as number);
 
@@ -400,13 +400,13 @@ async function lockDevice(
 ): Promise<boolean> {
   const data = await getClient().control(imei, 1);
   logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-  return data.message === "SUCCESS";
+  return data.message.toLowerCase() === "success";
 }
 
 async function unlockDevice(imei: string): Promise<boolean> {
   const data = await getClient().control(imei, 2);
   logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-  return data.message === "SUCCESS";
+  return data.message.toLowerCase() === "success";
 }
 
 async function sendMessage(
@@ -416,13 +416,13 @@ async function sendMessage(
 ): Promise<boolean> {
   const data = await getClient().message(imei, phone, message);
   logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-  return data.message === "SUCCESS";
+  return data.message.toLowerCase() === "success";
 }
 
 async function deleteDevice(imei: string): Promise<boolean> {
   const data = await getClient().delete(imei);
   logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
-  return data.message === "SUCCESS";
+  return data.message.toLowerCase() === "success";
 }
 
 async function completeDevice(imei: string): Promise<boolean> {
@@ -432,7 +432,7 @@ async function completeDevice(imei: string): Promise<boolean> {
 
   const data = await getClient().completeContract(imei);
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-  return data.message === "SUCCESS";
+  return data.message.toLowerCase() === "success";
 }
 
 export default {

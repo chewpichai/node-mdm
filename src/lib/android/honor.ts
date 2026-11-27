@@ -42,7 +42,7 @@ async function sendCommand(
 async function uploadDevice(imei: string): Promise<number> {
   let data = await sendCommand("/devices/import", { deviceInfos: [[imei]] });
   logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-  return data.message === "success" ? 200 : data.code;
+  return data.message.toLowerCase() === "success" ? 200 : data.code;
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
@@ -53,7 +53,8 @@ async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   });
   const data = await sendCommand(`/devices?${params.toString()}`, null, "GET");
   logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
-  if (data.message !== "success" || data.data.length === 0) return;
+  if (data.message.toLowerCase() !== "success" || data.data.length === 0)
+    return;
 
   const device: {
     createTime: string;
@@ -120,7 +121,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     },
   });
   logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 async function unlockDevice(imei: string) {
@@ -129,7 +130,7 @@ async function unlockDevice(imei: string) {
     unlockPolicy: {},
   });
   logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -143,7 +144,7 @@ async function sendMessage(imei: string, phone: string, message: string) {
     },
   });
   logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 async function completeDevice(imei: string) {
@@ -151,7 +152,7 @@ async function completeDevice(imei: string) {
     registeredIds: [imei],
   });
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 export default {

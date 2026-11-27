@@ -58,7 +58,7 @@ async function uploadDevice(imei) {
         type: 1,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ bindPackage ~ data:`, data);
-    isSuccess = data.result === "SUCCESS";
+    isSuccess = data.result.toLowerCase() === "success";
     if (isSuccess)
         return 200;
     return data.error?.code || 400;
@@ -70,7 +70,7 @@ async function getDevice(imei) {
         modelName = (await response.json()).data?.model_name;
     const data = await sendCommand("/getDeviceStatus", { deviceUid: imei });
     logger_1.logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
-    if (data.message !== "SUCCESS" || data.data.list.length === 0)
+    if (data.message.toLowerCase() !== "success" || data.data.list.length === 0)
         return;
     const device = data.data.list[0];
     return {
@@ -108,12 +108,12 @@ async function lockDevice(imei, phone, message) {
         message,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-    return data.result === "SUCCESS";
+    return data.result.toLowerCase() === "success";
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/unlock", { deviceUid: imei });
     logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-    return data.result === "SUCCESS";
+    return data.result.toLowerCase() === "success";
 }
 async function sendMessage(imei, phone, message) {
     const data = await sendCommand("/sendMessage", {
@@ -122,7 +122,7 @@ async function sendMessage(imei, phone, message) {
         message,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-    return data.result === "SUCCESS";
+    return data.result.toLowerCase() === "success";
 }
 async function deleteDevice(imei) {
     let data = await sendCommand("/setmeal/delete", {
@@ -130,7 +130,7 @@ async function deleteDevice(imei) {
         type: 1,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ deletePackage ~ data:`, data);
-    const isSuccess = data.result === "SUCCESS";
+    const isSuccess = data.result.toLowerCase() === "success";
     if (isSuccess)
         return false;
     await (0, apple_1.sleep)(5000);
@@ -139,12 +139,15 @@ async function deleteDevice(imei) {
         operationType: 0,
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ deleteDevice ~ data:`, data);
-    return data.message === "SUCCESS";
+    return data.message.toLowerCase() === "success";
 }
 async function completeDevice(imei) {
+    const device = await getDevice(imei);
+    if (device?.deviceStatus !== types_1.DeviceStatus.activating)
+        return deleteDevice(imei);
     const data = await sendCommand("/complete", { deviceUid: imei });
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-    return data.result === "SUCCESS";
+    return data.result.toLowerCase() === "success";
 }
 exports.default = {
     uploadDevice,

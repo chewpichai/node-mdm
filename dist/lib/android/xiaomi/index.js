@@ -51,7 +51,7 @@ async function uploadDevice(imei) {
         ],
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-    const isSuccess = data.deviceList[0].resultCode === "REQUEST_SUCCESS";
+    const isSuccess = data.deviceList[0].resultCode.toLowerCase() === "request_success";
     return isSuccess ? 200 : 461;
 }
 async function getDevice(imei) {
@@ -107,14 +107,14 @@ async function lockDevice(imei, phone, message) {
         ],
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-    return data.lockResponseList[0].resultCode === "REQUEST_SUCCESS";
+    return (data.lockResponseList[0].resultCode.toLowerCase() === "request_success");
 }
 async function unlockDevice(imei) {
     const data = await sendCommand("/device/unlock/", {
         unLockList: [{ deviceUid: imei }],
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-    return data.unlockResponseList[0].resultCode === "REQUEST_SUCCESS";
+    return (data.unlockResponseList[0].resultCode.toLowerCase() === "request_success");
 }
 async function sendMessage(imei, phone, message) {
     const data = await sendCommand("/device/notify/", {
@@ -128,12 +128,12 @@ async function sendMessage(imei, phone, message) {
         ],
     });
     logger_1.logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-    return data.messageResponseList[0].resultCode === "REQUEST_SUCCESS";
+    return (data.messageResponseList[0].resultCode.toLowerCase() === "request_success");
 }
 async function completeDevice(imei) {
     const data = await sendCommand("/device/release/", { deviceReleaseList: [{ deviceUid: imei }] }, "PUT");
     logger_1.logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-    return data.releaseResponseList[0].resultCode === "REQUEST_SUCCESS";
+    return (data.releaseResponseList[0].resultCode.toLowerCase() === "request_success");
 }
 exports.default = {
     uploadDevice,

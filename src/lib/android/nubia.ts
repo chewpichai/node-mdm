@@ -1,8 +1,8 @@
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { logger } from "../logger";
 import { DeviceStatus, MDMDevice } from "../../types";
+import { logger } from "../logger";
 
 dayjs.extend(utc);
 
@@ -38,13 +38,14 @@ async function sendCommand(
 async function uploadDevice(imei: string): Promise<number> {
   let data = await sendCommand("/enroll", [{ imei }]);
   logger.log(`🚀 ~ ${imei} ~ uploadDevice ~ data:`, data);
-  return data.message === "success" ? 200 : data.code;
+  return data.message.toLowerCase() === "success" ? 200 : data.code;
 }
 
 async function getDevice(imei: string): Promise<MDMDevice | undefined> {
   const data = await sendCommand("/get-model", [{ imei }]);
   logger.log(`🚀 ~ ${imei} ~ getDevice ~ data:`, data);
-  if (data.message !== "success" || data.data.length === 0) return;
+  if (data.message.toLowerCase() !== "success" || data.data.length === 0)
+    return;
 
   const device: {
     createTime: string;
@@ -105,7 +106,7 @@ async function lockDevice(imei: string, phone: string, message: string) {
     lockInfoList: [{ type: "LOCK_PHONE" }],
   });
   logger.log(`🚀 ~ ${imei} ~ lockDevice ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 async function unlockDevice(imei: string) {
@@ -114,7 +115,7 @@ async function unlockDevice(imei: string) {
     lockInfoList: [{ type: "LOCK_PHONE" }],
   });
   logger.log(`🚀 ~ ${imei} ~ unlockDevice ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 async function sendMessage(imei: string, phone: string, message: string) {
@@ -123,13 +124,13 @@ async function sendMessage(imei: string, phone: string, message: string) {
     alertMessage: message,
   });
   logger.log(`🚀 ~ ${imei} ~ sendMessage ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 async function completeDevice(imei: string) {
   const data = await sendCommand("/deregister", [{ imei }]);
   logger.log(`🚀 ~ ${imei} ~ completeDevice ~ data:`, data);
-  return data.message === "success";
+  return data.message.toLowerCase() === "success";
 }
 
 export default {
